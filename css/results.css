@@ -2016,8 +2016,24 @@
     animation: fade 0.5s ease both;
 }
 
-.wheel__petal:hover {
+.wheel__petal--hovered {
     fill-opacity: 0.78;
+}
+
+/* The whole slice, out past the longest a petal can reach, is what answers a
+   pointer: it lies over the petal, so the petal is lit by a class rather than
+   by :hover. */
+.wheel__hit {
+    fill: transparent;
+    cursor: help;
+}
+
+.wheel .chart__label {
+    cursor: help;
+}
+
+.wheel .chart__label--hovered {
+    fill: var(--text);
 }
 
 /* The longest of them — the story loudest in this person — is the one the

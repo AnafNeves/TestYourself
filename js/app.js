@@ -1431,6 +1431,8 @@
         $("briefing-body").innerHTML = worded(question.text)
     }
 
+    let leadShown = "" // the last questionnaire lead-in put on screen
+
     function renderQuestion() {
         const question = questions[index]
         const survey = $("screen-survey")
@@ -1450,7 +1452,19 @@
             // The item is HTML: a question may carry its own stem, with the thing
             // actually being asked set apart inside it. It comes from content/.
             $("text").innerHTML = worded(question.text)
-            $("instructions").innerHTML = question.instructions || ""
+
+            // A lead-in that differs from the last one shown is lit up once, or
+            // it is read past as the one before. The class comes off first and
+            // the width is read, so that two new ones in a row both play.
+            const lead = $("instructions")
+            const fresh = Boolean(question.instructions) && question.instructions !== leadShown
+            lead.innerHTML = question.instructions || ""
+            lead.classList.remove("instructions--new")
+            if (fresh) {
+                void lead.offsetWidth
+                lead.classList.add("instructions--new")
+            }
+            if (question.instructions) leadShown = question.instructions
 
             renderScale(question)
             markSelection(responses[question.key])

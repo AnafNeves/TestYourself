@@ -146,6 +146,9 @@ defineBlock("health", [
                 { value: 9, text: "Obsessive-Compulsive Disorder (OCD)" },
                 { value: 10, text: "Panic Disorder" },
                 { value: 11, text: "Post-Traumatic Stress Disorder (PTSD)" },
+                // Added later: in its alphabetical place, under a number of its
+                // own so the ones after it keep theirs.
+                { value: 15, text: "Premenstrual Dysphoric Disorder (PMDD)" },
                 { value: 12, text: "Schizophrenia" },
                 { value: 13, text: "Social Anxiety Disorder (social phobia)" },
                 { value: 14, text: "Specific Phobia" },
@@ -164,7 +167,7 @@ defineBlock("health", [
             {
                 key: "Psychiatric_Treatment",
                 text: "Are you currently receiving any of the following?",
-                showIf: { key: "Psychiatric_Diagnoses", is: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 99] },
+                showIf: { key: "Psychiatric_Diagnoses", is: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 99] },
                 format: {
                     options: [
                         { value: 1, text: "Antidepressant medication (e.g., PROZAC, ZOLOFT, EFFEXOR)" },

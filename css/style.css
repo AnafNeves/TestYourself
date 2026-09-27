@@ -1214,11 +1214,32 @@ h1 {
 
 /* ------------------------------- survey --------------------------------- */
 
+/* The lead-in over a questionnaire changes where one questionnaire hands over
+   to the next, and a lead-in read past turns the items under it into different
+   questions — so it is edged in the item's own colour to be seen at all, and
+   lit up once when it is new (`instructions--new`), since what changes between
+   two items that look alike is otherwise easy to miss. */
 .instructions {
-    color: var(--muted);
-    font-size: 15px;
+    color: var(--text);
+    font-size: 16.5px;
     font-style: italic;
+    line-height: 1.45;
     margin: 30px 0 0;
+    padding: 8px 14px;
+    border-left: 3px solid var(--selected, var(--accent));
+    border-radius: 0 10px 10px 0;
+    background: color-mix(in srgb, var(--selected, var(--accent)) 12%, transparent);
+}
+
+.instructions--new {
+    animation: instructions-new 1.8s ease-out 0.25s;
+}
+
+@keyframes instructions-new {
+    0%,
+    30% {
+        background: color-mix(in srgb, var(--selected, var(--accent)) 42%, transparent);
+    }
 }
 
 .instructions b {

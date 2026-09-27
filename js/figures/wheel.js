@@ -11,7 +11,6 @@
 function makeWheel(shared) {
     "use strict"
 
-    const dimensions = shared.dimensions
     const score = shared.score
     const known = shared.known
     const reachOf = shared.reachOf
@@ -29,63 +28,75 @@ function makeWheel(shared) {
     const WHEEL = [
         {
             dimension: "Idealist",
+            short: "The Idealist trusts that things will turn out well, and stays loyal to people and hopes.",
             colour: "#79bc43",
             reading: "you tend to expect things to turn out well, and that trust keeps you loyal to people and projects long after others have given up on them.",
         },
         {
             dimension: "Sage",
+            short: "The Sage wants the truth more than comfort, and goes looking for it.",
             colour: "#40a75b",
             reading: "you would rather know the truth than be comfortable, and you go looking for it even when nobody wants to hear it.",
         },
         {
             dimension: "Seeker",
+            short: "The Seeker is drawn to the next horizon, and finds out who they are by setting out.",
             colour: "#009a93",
             reading: "what pulls you is the next horizon rather than the safe harbour, and you have learnt more about yourself by leaving than by staying.",
         },
         {
             dimension: "Revolutionary",
+            short: "The Revolutionary lets what is finished end, and clears the ground for something new.",
             colour: "#009fe3",
             reading:
                 "you can let things end. Where others patch and preserve, you clear the ground, because nothing new grows in a space that is already taken.",
         },
         {
             dimension: "Magician",
+            short: "The Magician changes how a situation is seen, and so changes how it turns out.",
             colour: "#3b429f",
             reading:
                 "you work on how a situation is seen rather than on the situation itself, and you have found that changing the frame tends to change the outcome.",
         },
         {
             dimension: "Warrior",
+            short: "The Warrior goes straight at whatever stands in the way, and takes problems on as their own.",
             colour: "#5d399c",
             reading: "you go straight at whatever is in the way, and once you can see a problem you feel personally responsible for it.",
         },
         {
             dimension: "Realist",
+            short: "The Realist keeps both feet on the ground, and stands beside people rather than above them.",
             colour: "#9e299a",
             reading: "you have no need to stand above anyone. You are usually the steady, down-to-earth one in the room rather than the loud one.",
         },
         {
             dimension: "Jester",
+            short: "The Jester keeps things light, and finds the joy in the moment.",
             colour: "#e41b6c",
             reading: "you hold on to lightness, because taking something seriously is not the same as taking it heavily.",
         },
         {
             dimension: "Lover",
+            short: "The Lover lives for closeness, and finds meaning in intimacy.",
             colour: "#ea3f35",
             reading: "you measure a life by its closeness. For you, meaning is found in intimacy, not earned somewhere else and brought home.",
         },
         {
             dimension: "Creator",
+            short: "The Creator needs to make something, and prizes beauty and originality.",
             colour: "#f68d1e",
             reading: "you need to be making something, and to you beauty and originality are the point, not the decoration.",
         },
         {
             dimension: "Ruler",
+            short: "The Ruler holds things together, and builds order where there was none.",
             colour: "#fab913",
             reading: "you are at your best when you are holding things together, and order is something you build rather than something you put up with.",
         },
         {
             dimension: "Caregiver",
+            short: "The Caregiver notices who is struggling, and looks after them.",
             colour: "#e8d21a",
             reading: "you notice who is struggling before they say anything, and you can't quite leave it there. That is a gift, and it is worth asking who looks after you.",
         },
@@ -138,6 +149,8 @@ function makeWheel(shared) {
 
         for (let ring = 1; ring <= 3; ring++) chart.appendChild(draw("circle", { class: "chart__ring", cx: CX, cy: CY, r: (R * ring) / 3 }))
 
+        const labels = []
+
         // Spokes and names first, so the petals lie over them.
         HELD.forEach((one, position) => {
             const angle = position * step - Math.PI / 2
@@ -154,7 +167,10 @@ function makeWheel(shared) {
             })
             label.textContent = one.dimension
             chart.appendChild(label)
+            labels.push(label)
         })
+
+        const petals = []
 
         HELD.forEach((one, position) => {
             const value = tease ? teaseValue(one.dimension) : score(one.dimension)
@@ -168,14 +184,36 @@ function makeWheel(shared) {
                 // still an answer, and a petal of no size reads as one never given.
                 d: petal(angle, half, Math.max(9, reachOf(one.dimension, value) * R)),
             })
-
-            if (!tease) {
-                const text = one.dimension + ": " + value.toFixed(1) + " of " + dimensions[one.dimension][0].highest
-                shape.appendChild(draw("title", {})).textContent = text
-                shape.addEventListener("mouseenter", () => showTip(shape, text))
-                shape.addEventListener("mouseleave", hideTip)
-            }
+            petals[position] = shape
             chart.appendChild(shape)
+        })
+
+        if (tease) return
+
+        // What each archetype is, whichever came out longest: the reading under
+        // the wheel is about the leading one alone, and the other eleven are
+        // otherwise only names. The whole slice answers, and its name, since a
+        // short petal is a small thing to find with a pointer. No score: the
+        // petal already shows how much, and the tip says what.
+        HELD.forEach((one, position) => {
+            const angle = position * step - Math.PI / 2
+            const hit = draw("path", { class: "wheel__hit", d: petal(angle, step / 2, R + 10) })
+            hit.appendChild(draw("title", {})).textContent = one.short
+            chart.appendChild(hit)
+
+            for (const target of [hit, labels[position]]) {
+                target.addEventListener("mouseenter", () => {
+                    if (petals[position]) petals[position].classList.add("wheel__petal--hovered")
+                    labels[position].classList.add("chart__label--hovered")
+                    // Off the name, at the rim, where it covers no other petal.
+                    showTip(labels[position], one.short)
+                })
+                target.addEventListener("mouseleave", () => {
+                    if (petals[position]) petals[position].classList.remove("wheel__petal--hovered")
+                    labels[position].classList.remove("chart__label--hovered")
+                    hideTip()
+                })
+            }
         })
     }
 

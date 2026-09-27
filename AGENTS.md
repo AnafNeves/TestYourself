@@ -198,7 +198,9 @@ It comes from the block file it is written in and nowhere else.
 **The stem belongs over the box, not in it.** The lead-in that frames a whole
 questionnaire — "Over the last 2 weeks, how often have you been bothered by the
 following problem?" — is that questionnaire's `instructions`, which stands
-italic above the item and is re-read with every one of them. Written into each
+italic above the item, edged and tinted in the item's colour, and is re-read with every one of them. A lead-in
+different from the last one shown lights up once (`instructions--new`, `leadShown` in `renderQuestion`), since
+a changed lead-in over items that look alike is easily read past. Written into each
 item, it would put the lead-in and the thing being asked in one box, on one
 card, unlike every other scale in the run; the commented-out CDS-2 and PCL-2
 beside the PHQ-4 still carry theirs and want the same move if they ever come
@@ -621,7 +623,9 @@ another instead of against other people, which is also why they are a wheel and
 not rows: a row wants a percentile, and there is none to give. Three-item scales
 tie often, so `leading()` returns *all* of the archetypes tied for the top
 rather than picking one, and past `WHEEL_MOST` of them the wheel is called an
-even one instead of crowning anybody. The twelve take no axes on the whole-run
+even one instead of crowning anybody. Hovering a slice or its name says what that archetype is (`short` on each of `WHEEL`, third person, so it
+claims nothing about the person), for the eleven the reading under the wheel does not cover; it gives no score.
+The slice is an invisible wedge (`.wheel__hit`) over the petal, so the petal is lit by a class and not `:hover`. The twelve take no axes on the whole-run
 profile web or card: the wheel is how they are read back, and twelve more axes
 on the web would only repeat it and crowd out everything else there.
 
