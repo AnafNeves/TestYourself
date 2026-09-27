@@ -78,6 +78,10 @@
 
             <div class="sidebar__descent">
                 <div class="sidebar__line" id="descent-line" aria-hidden="true"><span class="sidebar__fill" id="descent-fill"></span></div>
+                <!-- What the descent passes on the way down: a pin each, filled
+                     in by buildSidebar. Under the stops, so a level is never
+                     covered by one. -->
+                <div class="sidebar__marks" id="marks" aria-label="Landmarks"></div>
                 <nav class="sidebar__levels" id="levels" aria-label="Your descent"></nav>
             </div>
 
@@ -353,6 +357,10 @@
 
                 <div class="survey__foot">
                     <button class="btn btn--ghost" id="back">← Previous</button>
+                    <!-- How few answers are left before the level opens, once
+                         there are few enough to count. Written by
+                         renderCountdown. -->
+                    <p class="survey__countdown" id="countdown" aria-live="polite" hidden></p>
                 </div>
             </section>
 

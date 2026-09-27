@@ -43,9 +43,9 @@ showcase of stand-in figures the landing page cycles (`renderShowcase`), and
 | `js/vendor/datapipe-client.js` | **The one file on the page that is not ours**: DataPipe's client, pinned and kept here rather than fetched from a CDN, which is how the answers go out — as they are given and again whole at the end. Nothing reads it at load; `app.js` asks for it by name (`window.DataPipe`) when the test begins, and does without it if it is not there. See **Where it goes**, which says what it does, why it is vendored, which version this is and how to update it. Nothing else belongs in `vendor/`, and nothing of ours does. |
 | `index.html` | Static skeleton, and the load order above. Screens and panels are markup; everything inside them is filled in by the scripts via `$(id)`. The favicon is an inline SVG data URI in the head — the A of the name over the hero's wheel on the dark blue of the water, the petals stronger than on the page so that they hold at sixteen pixels and the A a drawn path, since a favicon cannot count on a serif to set it in. The preview card in `assets/preview/` carries no mark. |
 | `assets/` | The logos on the hero and the consent form, referenced from `index.html`, and `assets/icar/` — the pictures of the reasoning level's matrix and rotation items, a problem and its candidates apiece, cut out of the eight published figures by `assets/icar/source/cut.py` (which sits beside the figures it cuts, and is run by hand when they change), referenced from `content/block_icar.js` as `<img>` in the items' own `text` and as `image:` on their options, which is the one place a script reaches for a file. No stylesheet does. And `assets/theories/`, **the four old pictures level 1's two old theories are drawn with**: `sky.jpg`, Dürer's map of the northern sky with the twelve zodiac figures round the ecliptic (1515, the National Gallery of Art's CC0 scan), cut to a disc round its pole, and `signs/<sign>.jpg`, the twelve out of a hand-coloured sixteenth-century German woodcut of the zodiac, for the star card; `woodcut.jpg`, Thurneysser's woodcut of the four humours (*Quinta Essentia*, 1574), and `faces/<temperament>.jpg`, one head apiece out of Lavater's plate of the four temperaments, toned to an old page, for the temperament. The two drawn as masks (`sky.jpg`, `woodcut.jpg`) are inverted, white ink on black. All four are public domain, off Wikimedia Commons, and cut by `assets/theories/source/cut.py`, which **fetches any original it does not find** into `source/` — the originals are sixteen megabytes and git-ignored, the cuts committed — and finds what it cuts rather than taking positions by hand: the woodcut's frame and cross, Lavater's four ovals, the sky's pole (where its twelve lines of longitude meet) and ecliptic (the ring of heaviest ink round it), the zodiac sheet's gutters. It prints what the page needs back (`CROSS`, `SKY_RING`) for `theories.js`. The one thing read by eye is where each zodiac figure stands on Dürer's ring (`sky` on each of `SIGNS`). Referenced from `js/figures/theories.js`, the second place a script reaches for a file. And `assets/preview/`, **the picture a shared link unfurls into**: `card.jpg`, 1200×630, named by the `og:image` in `index.html`'s head (with a `?v=` on the end, raised whenever the picture changes, since WhatsApp, Facebook and the rest cache a preview by its address and would otherwise go on showing the old one) beside the other Open Graph and `twitter:card` tags, and photographed out of `card.html` (the hero redrawn at that size, wheel and all, its look restated rather than imported, so a change to the hero is copied across by hand) by `make.py` (Edge or Chrome headless, then Pillow for the JPEG, since the 400 KB PNG is over what WhatsApp will show) — run by hand when `card.html` changes, and commit both. Crawlers run no script, so **every link unfurls the same**, whatever its `?start=`, `?level=` or `?card=` says: a preview per level would want a server. **There is no `og:url`, on purpose**: Facebook treats it as the address being shared, which would take `?source=` and `?start=` off every link shared there. The image's address is absolute, so it names the deployed site and shows nothing until that is pushed. And `assets/readme/`, **the pictures in README.md's table of levels**: one JPEG a scored level, named by its `key` in lower case, each the level's results as a shared level link opens them (`?card=1&level=`) at stand-in scores, photographed by `make.py` (Playwright with Edge, then Pillow; it serves the folder on a port of its own), cut off and faded at 1000 pixels tall. Run it by hand when a figure changes and commit the pictures with it. The stand-ins are hashed from each dimension's name, so a rerun draws the same pictures; `BANDS` gives Mood & Health a lower band, since a reach off the middle of the HiTOP-BR is a standing near its top. The links under the pictures start the run on each level with `?start=` and the level's first block. |
-| `data/norms/` | A workbench, not part of the page: `make_norms.R` prints, ready to paste, every set of norms in the app that is *not* invented. Two sections, independent of each other so that a missing package or a dropped connection costs you one and not both — the HiTOP-BR's development-sample means and SDs out of the {hitop} R package, and the MINT's worked out from the raw answers of the studies that have asked it, pulled from their repositories and scored the way `content/block_mint.js` scores them. It prints the two number lines and never the `interpretations` beside them, which are the app's own prose. Nothing on the page reaches for it, and R is not a dependency of anything that runs. |
+| `data/norms/` | A workbench, not part of the page: **one script a questionnaire**, `norms_<questionnaire>.R`, each printing, ready to paste, a set of norms in the app that is *not* invented, and each runnable on its own — `norms_hitop.R`, the HiTOP-BR's development-sample means and SDs out of the {hitop} R package, and `norms_mint.R`, the MINT's worked out from the raw answers of the studies that have asked it, pulled from their repositories and scored the way `content/block_mint.js` scores them. `make_norms.R` runs every `norms_*.R` in the folder, each in an environment of its own and an error in one reported and passed over, so that a missing package or a dropped connection costs that questionnaire and not the rest; `common.R` is the printing the scripts share. A new questionnaire's norms are a new `norms_*.R` and nothing else changes. Each prints the number lines and never the `interpretations` beside them, which are the app's own prose. Nothing on the page reaches for it, and R is not a dependency of anything that runs. |
 | `data/synthetic/` | A second workbench, not part of the page: runs of the test answered by Claude in a sampled persona, written in the exact shape `container()` saves so that an analysis reads them with the same code as a real run. `codebook.js` (bun or node) reads every item out of `content/` the way `app.js` flattens it, so the requests cannot drift from what is asked; `synthesize.py` samples the demographics from the items' own options, has the model write a biography and answer the rest under a JSON schema of the items' own values, passes the attention checks, prunes closed branches, and writes `out/synthetic-<code>.json` — participant code prefixed `synthetic-`, a `synthetic` field naming model, batch, seed and biography, null times, null votes, null stars (`ratings`, one key per level screen). `work/` and `out/` are git-ignored. Its `FIGURE_VOTES` mirrors `feedbackKeys()` in `results.js` and has to move with it. It writes `battery` (null), `source` (`"Synthetic"`), `levels` and `questionnaires` (the whole timeline, written order) the way `container()` does, and splices a `Level_<N>` item into `items[]` after each scored level, answered with the way on that level offers — every fork choice taken as recommended (`screens`, `walked`; `codebook.js` works `beneath` out from `WATER_SHARE` the way `waterLevels` does, for the floor's wording — the one rule this workbench restates rather than reads) — so a synthetic file reads with the same code. Never sent to DataPipe, never pooled with participants; its `README.md` says why. |
-| `data/collected/` | **A third workbench, and the way the answers come back**, in two steps: `download.py` fetches, `preprocess.R` makes tables of what it fetched — and then `overview.qmd` (Quarto, base R) reads those tables back as a page of how long each level takes, the median and range over the runs that finished it, the same for how long its results screen stayed up, and how many runs closed the tab on that screen (a finished level with no `Level_<N>` in a partial) — answering in minutes and the results screen in seconds, in two panels on scales of their own — then a radar per level answered by at least `MIN_RUNS` runs (`radar()`, one figure a level), a box plot along each ray and nothing joining the rays, each item a share of its own scale and as answered, not reversed — every scale item but the demographics, free text and the ICAR's right answers; it turns the words back into numbers **through `data/synthetic/codebook.js`** (so it wants bun at render time) rather than a copy of any labels, reading a bare number as the value where the MINT's drawn labels differ from the codebook's one draw, and says on the page which answers matched no option and which saved keys the codebook no longer has; it works out which level an item was on, for the times, from the `Level_<N>` screens standing between levels in the item order; it wants `preprocess.R --long`, since only the long table has the times an item was shown, and its `overview.html` is git-ignored with the rest. Rendering it inside Dropbox can end on an error removing `overview_files/` (Dropbox holds the folder); the page has been written by then and the empty folder can be deleted. Both folders the first two write, `raw/` and `clean/`, are git-ignored because they hold **real participant data that must never be committed**. **`preprocess.R`** ({jsonlite} and base R, the way `data/norms/make_norms.R` is) reads `raw/` and writes `clean/`: **`data.csv`, one row a participant and everything in it, and nothing else at all** — **a master file**, 719 columns: the run (participant, file, completed, version, testMode, synthetic, battery, source, formatMint, timeStart), the two sequence columns, a `Feedback_<reading>` apiece, a `Rating_<level key>` apiece, four `QC_<level key>_*` apiece (`RT_Mean`, `RT_SD`, `ChecksFailed`, `TimeFinished`), a column per item holding the words that were on screen, and an `<item>_RT` beside each one (a suffix, so an item and its time sort together). **One naming rule across it, and it is `content/`'s own**: what the run says about itself is lowercase (`participant`, `time_start`) and everything that is a *measure* is `Prefix_Subject_Field`, the prefix an acronym in capitals or a word in PascalCase exactly as an item key is written — so `QC_Character_RT_Mean` and `Feedback_BodilyAwareness` sit beside `HEXACO_Sincerity` under one convention and a measure can be told from a run field on sight. Times are milliseconds throughout and no column name says so. Nothing is left out to keep it narrow — an analysis selects from it rather than coming back for a second file, and width costs nothing to anything that is not Excel — and **nothing is worked out that the file does not already say**: no mean reaction time, no share of an instrument completed, no count of failed checks, no item counts, no minutes taken. Each is a line of R over the columns that are there, and which of them an analysis wants is the analysis's business; this reshapes rather than computes, and a file that counts things for you is a file whose counting has to be checked. **`NA` is not the empty string in it**: an item never put on screen is NA, an optional item shown and deliberately left blank is `""`, and the saved file tells those apart — writing NA as empty would make a question nobody was asked look like one somebody declined. **What is not data is said rather than filed**: the complaints go to the terminal where whoever ran the script is looking, since a `checks.csv` that is empty nine times in ten is a file somebody has to open to learn nothing. **Anything counting how much of an instrument somebody gave wants care, which
+| `data/collected/` | **A third workbench, and the way the answers come back**, in two steps: `download.py` fetches, `preprocess.R` makes tables of what it fetched — and then `overview.qmd` (Quarto, base R) reads those tables back as a page of how long each level takes, the median and range over the runs that finished it, the same for how long its results screen stayed up, and how many runs closed the tab on that screen (a finished level with no `Level_<N>` in a partial) — answering in minutes and the results screen in seconds, in two panels on scales of their own — then a radar per level answered by at least `MIN_RUNS` runs (`radar()`, one figure a level), a box plot along each ray and nothing joining the rays, each item a share of its own scale and as answered, not reversed — every scale item but the demographics, free text and the ICAR's right answers; it turns the words back into numbers **through `data/synthetic/codebook.js`** (so it wants bun at render time) rather than a copy of any labels, reading a bare number as the value where the MINT's drawn labels differ from the codebook's one draw, and says on the page which answers matched no option and which saved keys the codebook no longer has; it works out which level an item was on, for the times, from the `Level_<N>` screens standing between levels in the item order; it wants `preprocess.R --long`, since only the long table has the times an item was shown, and its `overview.html` is git-ignored with the rest. Rendering it inside Dropbox can end on an error removing `overview_files/` (Dropbox holds the folder); the page has been written by then and the empty folder can be deleted. Both folders the first two write, `raw/` and `clean/`, are git-ignored because they hold **real participant data that must never be committed**. **`preprocess.R`** ({jsonlite} and base R, the way `data/norms/` is) reads `raw/` and writes `clean/`: **`data.csv`, one row a participant and everything in it, and nothing else at all** — **a master file**, 727 columns: the run (participant, file, completed, version, testMode, synthetic, battery, source, device, touchscreen, screenLayout, screenLayouts, the viewport's and the screen's width and height, formatMint, timeStart), the two sequence columns, a `Feedback_<reading>` apiece, a `Rating_<level key>` apiece, four `QC_<level key>_*` apiece (`RT_Mean`, `RT_SD`, `ChecksFailed`, `TimeFinished`), a column per item holding the words that were on screen, and an `<item>_RT` beside each one (a suffix, so an item and its time sort together). **One naming rule across it, and it is `content/`'s own**: what the run says about itself is lowercase (`participant`, `time_start`) and everything that is a *measure* is `Prefix_Subject_Field`, the prefix an acronym in capitals or a word in PascalCase exactly as an item key is written — so `QC_Character_RT_Mean` and `Feedback_BodilyAwareness` sit beside `HEXACO_Sincerity` under one convention and a measure can be told from a run field on sight. Times are milliseconds throughout and no column name says so. Nothing is left out to keep it narrow — an analysis selects from it rather than coming back for a second file, and width costs nothing to anything that is not Excel — and **nothing is worked out that the file does not already say**: no mean reaction time, no share of an instrument completed, no count of failed checks, no item counts, no minutes taken. Each is a line of R over the columns that are there, and which of them an analysis wants is the analysis's business; this reshapes rather than computes, and a file that counts things for you is a file whose counting has to be checked. **`NA` is not the empty string in it**: an item never put on screen is NA, an optional item shown and deliberately left blank is `""`, and the saved file tells those apart — writing NA as empty would make a question nobody was asked look like one somebody declined. **What is not data is said rather than filed**: the complaints go to the terminal where whoever ran the script is looking, since a `checks.csv` that is empty nine times in ten is a file somebody has to open to learn nothing. **Anything counting how much of an instrument somebody gave wants care, which
 is the other reason there is no column for it.** A partial holds only the items
 that were answered — that is what the staged records are — so a share worked out
 from one is 1 for every instrument it touched, however little was reached: a
@@ -453,7 +453,7 @@ a total of nought is a clear sky and nine or more is cloud on the hill, and no
 invented norm is read. The PHQ-4's norms in `content/` are therefore read by
 nothing; they stay because norms are what put a questionnaire on its level at
 all. Those standings go through `percentile()`, the normal curve, which is
-coarse for floor-skewed scales — the note at the foot of `data/norms/make_norms.R`
+coarse for floor-skewed scales — the note at the foot of `data/norms/norms_hitop.R`
 asks for empirical quantiles instead, and for the engine to learn to read them
 (a `quantiles:` form beside `mean`/`sd`, preferred by `percentile()` when
 present). **That is parked, not done.**
@@ -1114,6 +1114,26 @@ is followed by nothing here and the holder is hidden. Everything that keeps a
 locked panel honest keeps this honest too: no tooltip on a teased point, no
 pointer events in the body, the count where a number would be.
 
+**How long a level takes, on the way to it.** The title line under "Next"
+ends on "about 8 minutes", and a fork card, which has no title line
+otherwise, carries "About 8 minutes" in it (`aboutMinutes` in `app.js`). The
+number is **`minutes` on the level in `content/timeline.js`, written by
+hand from the pilot runs** and not worked out from the items: the third of
+the way up the finished runs' times in `data/collected/overview.qmd`,
+rounded — a little under the median, on purpose, since the figure is there
+to get a level started. It is rewritten when there is more data, and a level
+with no `minutes` says nothing. It belongs to what is asked, not to the
+place, so `swapLevels` crosses it over with the name.
+
+**The countdown.** Under the item, across from "← Previous", the last few
+answers of a scored level are counted down ("4 more answers to unlock this
+level", then "Last answer to unlock this level", in gold; `renderCountdown`,
+`#countdown`) — from `COUNTDOWN` (6) answers left, or a third of the level if
+that is fewer. Only near the end: counted from the start, a long level would
+say how far there is still to go. It names nothing that is in the results,
+so it can lean on no answer, and it counts what `levelProgress` counts, so a
+branch opening can put it up by one.
+
 **The drawn order.** A run of levels wrapped in `shuffle()` in the timeline is
 asked in an order drawn once, when `content/timeline.js` is read, and nothing
 about it is ever offered or chosen — the fork's rearrangement made *for*
@@ -1199,7 +1219,8 @@ passed over stay in the running and are offered again beside what stands
 beyond them, so a person who keeps refusing Where You Stand meets it at every
 choice until it is the last one standing, at the bottom of the rock — each the
 teaser of one level, `renderTeaser` handed the level's *name* as its large
-word, since the level's number is not yet decided, and no title line, its
+word, since the level's number is not yet decided, and how long it takes as
+its title line (see **How long a level takes, on the way to it**), its
 `.result` stripped of border and background so the card is the one box — with
 a "Go this way →" button under it, the cards stretched to one height so the
 buttons line up, and **the one written first on the timeline marked
@@ -1220,8 +1241,8 @@ the person chooses what to do next and *then* the water ends over them, which
 is the right way round: the choice is about what, the crossing about where.
 
 Pressing a card is `takeFork`, and **a choice is a swap of two places**
-(`swapLevels`). **What is asked moves and where it is asked does not**: `name`,
-`blocks` and `written` cross over between the two `PLAN` entries, while the
+(`swapLevels`). **What is asked moves and where it is asked does not**: `key`, `name`,
+`blocks`, `written` and `minutes` cross over between the two `PLAN` entries, while the
 level's own number — and so its depth, its colour on the gauge and whether it
 is under the seabed — stays with the place. The move is then made everywhere
 the order is held at once: the `PLAN` entries, the two contiguous runs of
@@ -1308,11 +1329,11 @@ the test and nothing else. Under it the page sits between two bars: the
 `.sidebar` down the right, which is where the descent is going, and the
 `.shelf` down the left, which is what it has turned up (see **The shelf**).
 The gauge is dressed as a **dive gauge** (`renderSidebar`): the readout of the
-metres, laid over the top of the gauge to the right of the line rather than
-above it, so the line starts at the banner's lower edge with no gap; the
-descent running along the sidebar's left edge, the edge the page sits against,
-graduated with a mark every kilometre (`.sidebar__line::before`, spaced by `--km`, which
-`buildSidebar` writes from `DEEPEST` so the number lives in one place), then
+metres, set in the banner's strip over the gauge, which the banner leaves
+empty, so the line starts at the banner's lower edge with no gap and nothing
+lies over the top of it; the descent running along the sidebar's left edge,
+the edge the page sits against, carrying the fill and the stops and nothing
+else — the landmarks stand out in the middle of the bar (see **Landmarks**) — then
 the Data button at the foot, an inline SVG icon and a word; the Profile
 button is at the head of the shelf. The
 line is divided **equally between the levels**, so a level's stop sits at the
@@ -1504,6 +1525,26 @@ file. **A new figure wants its picture looked at**: `snapshot` copies computed
 styles, which covers nearly everything, and the one thing found that computed
 styles do not say (an auto margin on a grid item) needed a special case.
 
+**Comparing with a friend is not built, and is meant to wait for a server.**
+It is wanted on every results screen, as a way of recruiting by word of
+mouth: somebody's results side by side with a friend's, level by level. Done
+with links alone it goes wrong. A link that starts the friend on the level it
+was sent from (`?start=`) is a run of its own, so a second link from the same
+person for another level is a second run, and one friend answering three
+links is three participants in the deposit — which is the wrong n, and
+nothing in the files can tell it apart. A link also cannot carry a name
+safely (nothing from a link is written on screen), cannot be taken back, and
+puts one person's scores in whatever the friend forwards it to. **The shape
+it should take** is a small server run at Sussex: a light account for each of
+the two, the friend agreeing before anything of theirs is shown, and the
+comparison on a page of each account's own, with a run tied to its account
+so that the same person coming back through another link carries on the one
+run instead of starting a second. That is the account, the consent to be
+shown and the one run per person — three things a link cannot do. It needs
+the ethics application to say so, since it would be the first thing here
+holding who somebody is beside what they answered. Until then the level and
+card links (above) are the way results travel, and they stay one-way.
+
 **Depth.** The run is dressed as a descent: `depth()` turns `descentShare()` —
 how far through the scored levels the run is, not how many items have been ticked off —
 into metres of the Challenger Deep, shown in the gauge's readout and under the
@@ -1514,6 +1555,36 @@ in the results panel's subtitle (`#results-sub`, "Reached at…", or "Locked · 
 a stop's hover card. The level screen itself does not carry it — the curtain
 has just said it, and the screen is the level's name and what it opened. It is a
 reading of progress and nothing else — no answer, score or norm goes near it.
+
+**Landmarks.** What the descent passes on the way down is pinned on the gauge
+(`LANDMARKS` in `app.js`, beside `DEEPEST`): the deepest scuba dive, the
+midnight zone, sperm whales, the Titanic, the hadal zone, the deepest fish
+filmed, Trieste, and under the seabed Hole 504B, the deepest life found in the
+crust and the Moho, which is where `BEDROCK` ends the rock anyway. **The pins are
+always there; the words are not**: a pin is a small diamond, dim until the bead
+has passed it and lit after, and its card (`.sidebar__mark-card`: the depth,
+the name, one line) comes out only on hover or focus — and **once on its own,
+when it is passed**, for `MARK_SHOWN` (4.8 s, `--news`), popping with the next
+item rather than under the water of a level screen (`passing`, read in
+`renderQuestion`) and waiting for a crossing's dark to clear (`popMark`). The
+deepest of several passed at once is the one that pops, and none pops twice
+(`sounded`). They are there to be arrived at between one level's results and
+the next, on no schedule anybody can count, and they say nothing about the
+person. **A pin is placed by `lineAt(metres)`**, the inverse of `metresReached`
+— the water and the rock each laid evenly along the levels they are divided
+between — so it sits where the bead will be when the gauge sounds its depth,
+and a run with no rock has no rock pins. **Every pin stands in one column in
+the middle of the bar, with a dashed lead back to the line** at its depth, so
+the line carries only the fill and the stops, a pin is never under a stop,
+and nothing moves with the window's height. The element is the lead
+(`.sidebar__mark`, from the line to the middle) and only the pin at its end
+(`.sidebar__mark-pin`) takes the pointer — which it can only do because the
+stops' own layer over the whole gauge, `.sidebar__levels`, lets the pointer
+through and only the stops on it take it back. The readout was moved up into the
+banner's strip to make room for the top of the column. On a phone the leads
+drop from the line to pins under the stops and the cards open upwards.
+Nothing about them is saved. The depths and the lines are facts about the
+world and want checking if one is added.
 
 **Beneath the floor.** **Where the seabed falls is a share of the levels and
 not a flag on any of them**: `WATER_SHARE` in `content/timeline.js` is 2/3, so
@@ -1584,7 +1655,15 @@ the file, logged in `CHANGELOG.md`, so an export can always be matched back to
 the code that produced it — then `participant` and `testMode` — which run
 this is and whether it counts — then `battery` — the preset the link named,
 or null (see **Batteries**) — then `source` — where the link was handed out
-(see **Who is taking it**), `"Unknown"` where it named none — then `levels`, the levels of this run in the order walked, each its `key`, its `name` and its block list, which is what makes a `timeLevel<N>` or `qualityControl.<key>` below readable on its own — the key being what the file is written under and the name what the person read, so one can always be turned into the other, and `questionnaires`, the questionnaire keys in the order asked (`RUN`; the items' own `order` is theirs) — then `timeStart`, a `timeLevel<N>` per level —
+(see **Who is taking it**), `"Unknown"` where it named none — then what the run was answered on,
+worked out once at load, a field apiece: `device` — `phone`, `tablet` or
+`computer`, read off the user agent, which is itself never saved, being most of
+a fingerprint — `touchscreen`, whether the pointer is coarse, `screenLayout`,
+`wide` or `narrow` either side of the stylesheet's 760px breakpoint when the
+page loaded, `screenLayouts`, every layout the run was seen in, in order, since
+a phone turned on its side or a window dragged narrower crosses it mid-run, and
+`viewport` and `screen`, each `[width, height]` in CSS pixels (all null in a
+synthetic file) — then `levels`, the levels of this run in the order walked, each its `key`, its `name` and its block list, which is what makes a `timeLevel<N>` or `qualityControl.<key>` below readable on its own — the key being what the file is written under and the name what the person read, so one can always be turned into the other, and `questionnaires`, the questionnaire keys in the order asked (`RUN`; the items' own `order` is theirs) — then `timeStart`, a `timeLevel<N>` per level —
 when that level was last left with nothing outstanding, stamped in `answer()`
 rather than on the level screen, which the last level never shows — `formatMint`,
 `qualityControl`, then `items[]`
@@ -2170,7 +2249,7 @@ it: the way in is the address alone, which the README writes out in full.
   is the difference between forgetting one and leaving one out.
 - **All `norms` in `content/` are invented placeholders**, flagged as such in
   comments, **with two exceptions**, and both are the output of
-  `data/norms/make_norms.R` — which is where they should be re-read from rather than
+  `data/norms/` (`norms_hitop.R`, `norms_mint.R`) — which is where they should be re-read from rather than
   retyped. The HiTOP-BR's in `content/block_hitop.js` are the
   development-sample means and SDs printed in Table 1 of Simms et al. (2026),
   by way of the {hitop} R package — a development sample, not a norming one,

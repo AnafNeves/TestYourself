@@ -13,7 +13,7 @@
                          call it; the ones marked `fork: n` are taken in
                          whatever order the person chooses, `n` offered at a
                          time, and a run of them wrapped in `shuffle()` in one
-                         drawn for them
+                         drawn for them; `minutes`, how long it is said to take
          block           its entries: briefings and questionnaires, in order
            questionnaire its items
 
@@ -294,19 +294,29 @@ const WATER_SHARE = 2 / 3
 // the sake of the test, while a column of a study's data is not — and because
 // a name may hold an ampersand, a hyphen or an article, none of which a column
 // name can keep. Two levels of one key throw in app.js.
+//
+// `minutes` is how long a level is said to take, on the card that offers it
+// and on the taste of it at the foot of the level before. **It is read off
+// the pilot runs and written in by hand**, not worked out from the items: the
+// third of the way up the times of the runs that finished the level
+// (`data/collected/overview.qmd`), rounded to the minute — a little under the
+// median, which is the promise that gets a level started without being one
+// that most people find broken. Rewrite them when there is more data. As of
+// 27 September 2026 they stand on one to five finished runs a level, and
+// How You Think, which nobody had finished, is a guess.
 const TIMELINE = [
-    { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"] },
+    { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"], minutes: 3 },
     shuffle([
-        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 2 },
-        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2 },
-        { key: "MoodHealth", name: "Mood & Health", blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(), fork: 2 },
+        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 2, minutes: 8 },
+        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2, minutes: 3 },
+        { key: "MoodHealth", name: "Mood & Health", blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(), fork: 2, minutes: 8 },
     ]),
-    { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3 },
-    { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3 },
-    { key: "World", name: "The World", blocks: ["primals"], fork: 3 },
-    { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3 },
-    { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3 },
-    { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3 },
+    { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
+    { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
+    { key: "World", name: "The World", blocks: ["primals"], fork: 3, minutes: 6 },
+    { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
+    { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
+    { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
 

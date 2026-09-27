@@ -7,7 +7,7 @@
 #   Rscript data/collected/preprocess.R --long          # the long table as well
 #   Rscript data/collected/preprocess.R --from data/synthetic/out
 #
-# {jsonlite} and nothing else: the rest is base R, the way `make_norms.R` is.
+# {jsonlite} and nothing else: the rest is base R, the way `data/norms/` is.
 # Nothing in the app reaches for this file — this folder is a workbench.
 #
 # TWO SHAPES COME OUT OF THE DEPOSIT, and this reads both.
@@ -260,6 +260,17 @@ participant_rows <- function(run, file, completed) {
     synthetic = !is.null(run$synthetic),
     battery = as.character(run$battery %||% NA),
     source = as.character(run$source %||% NA),
+    # What it was answered on (absent from files before September 2026).
+    # `screen_layouts` is every layout the run was seen in, joined the way the
+    # sequence columns are, so one that crossed the breakpoint says so.
+    device = as.character(run$device %||% NA),
+    touchscreen = as.logical(run$touchscreen %||% NA),
+    screen_layout = as.character(run$screenLayout %||% NA),
+    screen_layouts = if (is.null(run$screenLayouts)) NA_character_ else paste(unlist(run$screenLayouts), collapse = " | "),
+    viewport_width = as.numeric(run$viewport[1] %||% NA),
+    viewport_height = as.numeric(run$viewport[2] %||% NA),
+    screen_width = as.numeric(run$screen[1] %||% NA),
+    screen_height = as.numeric(run$screen[2] %||% NA),
     format_mint = as.character(run$formatMint %||% NA),
     time_start = as.character(run$timeStart %||% NA),
     stringsAsFactors = FALSE

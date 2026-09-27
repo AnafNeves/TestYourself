@@ -114,6 +114,7 @@ Worth going back to for what to add next and how to present it.
 
 // Being funny, dark humor
 // Wordsum: g-factor loaded https://x.com/cremieuxrecueil/status/2098586478443901419?s=20
+// Masculine-Feminine 
 
 // Hormones
 - For females, add questions about menstrual cycle phase and contraceptive use. Also add question about last sexual activity. These questions need to be accompanied by a mention of why we are asking them (and the possibility to skip them). Explaining that our conscious experiences are shaped by our hormonal state which influences cognition and emotion.
@@ -130,8 +131,12 @@ Worth going back to for what to add next and how to present it.
 // Relationship status/satisfaction
 // Dependents
 // Occupation (and current job satisfaction)
+
+// Sexuality
+
 // Sexual orientation (Kinsey scale?)
 // WHO scales have stuff that taps into lots of life domains including sex life satisfaction – quite short I think
+// Kinkiness measures from Aella 
 
 // Self vs. others
 
@@ -172,12 +177,18 @@ Worth going back to for what to add next and how to present it.
 
 // political ideology
 
-// https://taketest.xyz/
 // Words Can Harm Scale (WCHS)
 // Nietzscheanism
 
-Synthetic data
-- https://openrouter.ai/
-- https://github.com/browser-use/browser-use
-- https://pypi.org/project/surveyshield-py/0.2.0/
-- https://survey-shield.com/
+## Inspiration and Resources
+
+- https://taketest.xyz/
+- https://openpsychometrics.org/
+- https://openpsychometrics.org/_rawdata/
+
+
+- Synthetic data
+  - https://openrouter.ai/
+  - https://github.com/browser-use/browser-use
+  - https://pypi.org/project/surveyshield-py/0.2.0/
+  - https://survey-shield.com/

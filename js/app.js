@@ -426,6 +426,53 @@
     const levelTimes = {} // level -> when its last remaining item was answered
     const timeStart = new Date().toISOString()
 
+    // What the run was answered on, since a reaction time on a phone is not one
+    // on a computer and a figure read on a narrow screen is laid out differently.
+    // Coarse on purpose: a kind of device, whether it is touched, the window and
+    // screen in CSS pixels, and never the user agent itself, which is read here
+    // to tell a phone from a tablet and goes no further — a full UA string beside
+    // the rest is most of a fingerprint. `screenLayout` is the stylesheet's own
+    // breakpoint (760px, where the gauge goes to the foot and the shelf to the
+    // top), and `screenLayouts` is every one the run was seen in, in order, since a
+    // phone turned on its side or a window dragged narrower crosses it mid-run.
+    const NARROW = window.matchMedia("(max-width: 760px)")
+    const layoutNow = () => (NARROW.matches ? "narrow" : "wide")
+    const display = {
+        device: deviceKind(),
+        touchscreen: window.matchMedia("(pointer: coarse)").matches,
+        screenLayout: layoutNow(),
+        screenLayouts: [layoutNow()],
+        viewport: [window.innerWidth, window.innerHeight],
+        screen: [window.screen.width, window.screen.height],
+    }
+    // Noted on the breakpoint's own event and again whenever the file is
+    // written, which is every answer, so a crossing the event missed is still
+    // caught by the next one.
+    function noteLayout() {
+        const seen = display.screenLayouts
+        if (seen[seen.length - 1] !== layoutNow()) seen.push(layoutNow())
+    }
+    NARROW.addEventListener("change", noteLayout)
+
+    // Written into the file beside `source`, a field apiece, with the list of
+    // layouts copied so a staged frame is not changed under it afterwards.
+    function displayNow() {
+        noteLayout()
+        return { ...display, screenLayouts: display.screenLayouts.slice() }
+    }
+
+    // A phone, a tablet or a computer. Chromium says whether it is mobile
+    // outright; everything else is read off the user agent, where an iPad
+    // asking for the desktop site calls itself a Mac and is told apart by its
+    // touch points, and an Android tablet is an Android without "Mobile".
+    function deviceKind() {
+        const agent = navigator.userAgent || ""
+        const iPad = /iPad/.test(agent) || (/Macintosh/.test(agent) && navigator.maxTouchPoints > 1)
+        if (iPad || /Tablet|Android(?!.*Mobile)/i.test(agent)) return "tablet"
+        if ((navigator.userAgentData && navigator.userAgentData.mobile) || /Mobi|iPhone|iPod|Android/i.test(agent)) return "phone"
+        return "computer"
+    }
+
     let index = 0
     let screen = "intro" // the screen underneath, which a panel never replaces
     let panel = null // the panel over it, if any
@@ -650,6 +697,7 @@
             testMode: testMode,
             battery: battery,
             source: source,
+            ...displayNow(),
             levels: PLAN.map((entry) => ({ key: entry.key, name: entry.name, blocks: entry.blocks.slice() })),
             questionnaires: RUN.slice(),
             timeStart: timeStart,
@@ -1471,6 +1519,9 @@
         }
 
         $("back").disabled = previousShown(index - 1) === -1
+        renderCountdown(question)
+        if (passing) popMark(passing)
+        passing = null
 
         // The new item is put in place while the old one is still faded out,
         // then let back in: the run reads as one moving thing rather than a
@@ -1485,6 +1536,28 @@
         // the gap to the response it produced stays meaningful.
         if (!log[question.key]) log[question.key] = {}
         log[question.key].timeOnset = new Date().toISOString()
+    }
+
+    // The last few answers before a level opens are counted down under the
+    // item, since people go faster the nearer a reward is and a level of
+    // forty items is a long way to go on a ring at the edge of the page. Only
+    // near the end: counted from the start, a long level would say how far
+    // there is still to go, which is the opposite of the point. It says what
+    // the answers open and never what is in it, so nothing it says can lean
+    // on an answer.
+    const COUNTDOWN = 6 // answers left at most, however long the level
+    const COUNTDOWN_SHARE = 1 / 3 // and no more than this share of it
+
+    function renderCountdown(question) {
+        const note = $("countdown")
+        const progress = levelProgress(question.level)
+        const left = progress.size - progress.answered
+        const counting =
+            scoredLevels.indexOf(question.level) !== -1 && left > 0 && left <= Math.min(COUNTDOWN, Math.ceil(progress.size * COUNTDOWN_SHARE))
+        note.hidden = !counting
+        if (!counting) return
+        note.textContent = left === 1 ? "Last answer to unlock this level" : left + " more answers to unlock this level"
+        note.classList.toggle("survey__countdown--last", left === 1)
     }
 
     /* ---------------------------- the sidebar ----------------------------- */
@@ -1649,6 +1722,15 @@
         return "Level " + level + (name ? " · " + name : "")
     }
 
+    // How long a level is said to take, as the card offering it writes it:
+    // the `minutes` written in the timeline from the pilot runs, or nothing
+    // where a level carries none. It travels with what is asked, not with the
+    // place, so a fork swaps it with the name (`swapLevels`).
+    function aboutMinutes(level) {
+        const minutes = PLAN[level - 1].minutes
+        return minutes ? "About " + minutes + " minute" + (minutes === 1 ? "" : "s") : ""
+    }
+
     // The line is divided equally between the levels, so a level sits at the
     // same point on it however many items it holds: what a long level buys is a
     // slower stretch of water rather than a longer piece of line. A level with
@@ -1700,6 +1782,56 @@
         document.documentElement.style.setProperty("--descent", share.toFixed(4))
     }
 
+    // **What the descent passes on the way down**, pinned on the gauge at the
+    // depth each is at: something to arrive at between one level's results
+    // and the next, and on no schedule anybody can count, since how many
+    // answers lie between two of them depends on the levels they fall in. They
+    // say nothing about the person and so can lean on no answer. Each pops out
+    // beside its pin as it is passed (`popMark`) and is there on hover or
+    // focus after that; the pins are always there. A depth past the floor is
+    // the floor plus that much rock, as the gauge sounds it. The Moho is where
+    // `BEDROCK` already ends the rock: the bottom of the crust.
+    const LANDMARKS = [
+        { at: 332, name: "The deepest scuba dive", line: "Ahmed Gabr, in the Red Sea, in 2014." },
+        { at: 1000, name: "The midnight zone", line: "No sunlight reaches below here." },
+        { at: 2250, name: "Sperm whales", line: "As deep as they dive to hunt for squid." },
+        { at: 3800, name: "The Titanic", line: "Where the wreck has lain since 1912." },
+        { at: 6000, name: "The hadal zone", line: "Below here, only the trenches go on down." },
+        { at: 8336, name: "The deepest fish ever filmed", line: "A snailfish, off Japan, in 2022." },
+        { at: 10916, name: "Trieste", line: "The first people to reach the bottom, in 1960." },
+        { at: DEEPEST + 2111, name: "Hole 504B", line: "The deepest anyone has drilled into the ocean's crust." },
+        { at: DEEPEST + 2466, name: "The deepest life under the seabed", line: "Microbes, found in coal beds off Japan in 2015." },
+        { at: DEEPEST + BEDROCK, name: "The Moho", line: "Where the crust ends and the mantle begins." },
+    ]
+
+    // Where a depth falls on the line, as a share of it: the water and the
+    // rock are each laid evenly along the levels they are divided between,
+    // the way `metresReached` fills them, so a pin sits where the bead will
+    // be when the gauge sounds that depth. Nothing where the run has none of
+    // the water or the rock it would be in.
+    function lineAt(metres) {
+        if (!scoredLevels.length) return null
+        if (metres <= DEEPEST) return waterLevels.length ? ((metres / DEEPEST) * waterLevels.length) / scoredLevels.length : null
+        if (!rockLevels.length) return null
+        return (waterLevels.length + ((metres - DEEPEST) / BEDROCK) * rockLevels.length) / scoredLevels.length
+    }
+
+    const marks = LANDMARKS.filter((mark) => lineAt(mark.at) !== null)
+    const MARK_SHOWN = 4800 // ms a landmark stays out beside its pin on being passed
+    let sounded = 0 // the deepest the gauge has sounded, so a landmark pops out once
+    let passing = null // a landmark just passed, waiting for the next item to be put up
+
+    // Out beside its pin, for long enough to read, and back. Not over the dark
+    // of a crossing, which would swallow it: it waits for that to clear.
+    function popMark(mark) {
+        const pin = $("marks").children[marks.indexOf(mark)]
+        if (!pin) return
+        if (!$("gaze").hidden) return setTimeout(() => popMark(mark), 1000)
+        pin.classList.add("sidebar__mark--news")
+        clearTimeout(pin.shown)
+        pin.shown = setTimeout(() => pin.classList.remove("sidebar__mark--news"), MARK_SHOWN)
+    }
+
     // Handed the walk `renderSidebar` has already made rather than making its
     // own: `depth()` walks every question, and once an answer is enough.
     function renderDepth(soFar) {
@@ -1714,10 +1846,6 @@
     // away the button somebody's keyboard focus is on.
     function buildSidebar() {
         const wrap = $("levels")
-
-        // The kilometre marks down the line: how far apart they are is the
-        // stylesheet's to draw and this file's to know.
-        $("descent-line").style.setProperty("--km", (1000 / DEEPEST) * 100 + "%")
 
         scoredLevels.forEach((level, at) => {
             const button = document.createElement("button")
@@ -1760,6 +1888,25 @@
             button.addEventListener("click", () => (panel === "results" && openLevel === level ? closePanel() : openResults(level)))
             wrap.appendChild(button)
         })
+
+        // The landmarks: a lead out from the line to a pin, and the card that
+        // opens from it.
+        for (const mark of marks) {
+            const at = lineAt(mark.at)
+            const pin = document.createElement("span")
+            pin.className = "sidebar__mark" + (at < 0.2 ? " sidebar__mark--start" : at > 0.8 ? " sidebar__mark--end" : "")
+            pin.style.setProperty("--at", at * 100 + "%")
+            pin.tabIndex = 0
+            pin.setAttribute("aria-label", sounding(mark.at) + ": " + mark.name + ". " + mark.line)
+            pin.innerHTML =
+                '<span class="sidebar__mark-pin" aria-hidden="true"></span>' +
+                '<span class="sidebar__mark-card" aria-hidden="true">' +
+                '<span class="sidebar__mark-depth"></span><b class="sidebar__mark-name"></b><span class="sidebar__mark-line"></span></span>'
+            pin.querySelector(".sidebar__mark-depth").textContent = sounding(mark.at)
+            pin.querySelector(".sidebar__mark-name").textContent = mark.name
+            pin.querySelector(".sidebar__mark-line").textContent = mark.line
+            $("marks").appendChild(pin)
+        }
     }
 
     // What a stop says about its level: the name on its card, and its label
@@ -1784,6 +1931,17 @@
 
         // How far along the line the fill reaches, whichever way it runs.
         $("descent-fill").style.setProperty("--reach", soFar.share * 100 + "%")
+
+        // The landmarks passed are lit, and the deepest of any passed with
+        // this answer waits to pop out with the next item (`renderQuestion`).
+        // A branch closing can take the gauge back up a little; what has once
+        // popped out does not do it again.
+        marks.forEach((mark, at) => $("marks").children[at].classList.toggle("sidebar__mark--passed", mark.at <= soFar.metres))
+        if (soFar.metres > sounded) {
+            const fresh = marks.filter((mark) => mark.at > sounded && mark.at <= soFar.metres)
+            if (fresh.length) passing = fresh[fresh.length - 1]
+            sounded = soFar.metres
+        }
 
         // The first level not yet finished is the one being answered.
         let current = null
@@ -2170,7 +2328,7 @@
         $("level-fork").hidden = !fork
         $("level-continue").hidden = !!fork
         if (fork) renderFork(fork, screen)
-        else if (next) results.renderTeaser($("level-next"), next, levelTitle(next))
+        else if (next) results.renderTeaser($("level-next"), next, [levelTitle(next), aboutMinutes(next).toLowerCase()].filter(Boolean).join(" · "))
         // From the floor, the way on is down through it rather than on.
         $("level-continue").textContent = level === floorLevel ? "Go beneath the floor →" : "Continue the test →"
 
@@ -2225,7 +2383,7 @@
 
             const taste = document.createElement("div")
             taste.className = "level__next"
-            results.renderTeaser(taste, side, "", PLAN[side - 1].name)
+            results.renderTeaser(taste, side, aboutMinutes(side), PLAN[side - 1].name)
             taste.hidden = false // a level with no figure still has its name to show
             path.appendChild(taste)
 
@@ -2258,7 +2416,7 @@
 
         // The key travels with what is asked, the way the name and the blocks
         // do: it is the level's identity in the saved file, not the place's.
-        for (const field of ["key", "name", "blocks", "written"]) {
+        for (const field of ["key", "name", "blocks", "written", "minutes"]) {
             const held = PLAN[low - 1][field]
             PLAN[low - 1][field] = PLAN[high - 1][field]
             PLAN[high - 1][field] = held

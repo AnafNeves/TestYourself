@@ -569,6 +569,9 @@ def write_file(book, persona, given, bio, provenance):
     # walks: no battery, every level and questionnaire as written.
     file["battery"] = None
     file["source"] = "Synthetic"  # the app writes a string here always, "Unknown" where the link named none
+    # Answered on no screen at all.
+    for field in ("device", "touchscreen", "screenLayout", "screenLayouts", "viewport", "screen"):
+        file[field] = None
     file["levels"] = [{"key": level["key"], "name": level["name"], "blocks": level["blocks"]} for level in book["levels"]]
     file["questionnaires"] = list(book["run"])
     file["timeStart"] = now
