@@ -3,10 +3,9 @@
 // arriving in the order they happen to be written. None of them is a sixth
 // item on the FIPI, which would put it on a chart it does not belong on.
 //
-// A block of its own since September 2026, split out of block_fast.js with
-// block_fipi.js. Being two blocks rather than one changes nothing about the
-// order: a questionnaire is the unit of shuffling, and the two were already
-// two questionnaires.
+// A block apart from block_fipi.js. Being two blocks rather than one changes
+// nothing about the order: a questionnaire is the unit of shuffling, and the
+// two are two questionnaires either way.
 //
 // If one of these ever earns norms it wants a questionnaire of its own back,
 // so that its results carry its own name.
@@ -34,8 +33,7 @@ defineBlock("singles", [
             // Lightly reframed to mention "physical" and "bodily". The one single
             // with a dimension besides Life Satisfaction: the Health face on
             // level 3 reads it (results.js, `healthFace`), against a norm
-            // written there, since the SSS-8 that used to feed that face is
-            // commented out. No norms here, so it earns no row of its own.
+            // written there. No norms here, so it earns no row of its own.
             {
                 key: "SRH_GeneralHealth",
                 dimension: "General Health",
@@ -123,24 +121,21 @@ defineBlock("singles", [
                 text: "I am confident that I can perform effectively on many different tasks",
             },
 
-            // Aesthetic seeking: custom, not validated (September 2026). How
-            // far somebody values beauty and actively seeks it out — the
-            // aesthete — which the HEX-ACO-18 touches only in passing (one
-            // Curiosity item names a novel, a song or a painting). **Valuing
-            // and seeking rather than being moved**, on purpose: nearly
-            // everybody says beauty moves them, which is the socially
-            // desirable answer and separates nobody, whereas going out of
-            // one's way for it costs something, so it is where people differ.
-            // It replaced "I am deeply moved by beautiful things" (adapted from
-            // AReA item 13, Schlotz et al., 2021) for that reason; nearest in
-            // spirit is now AReA item 1, the one behavioural item of its
-            // Aesthetic Appreciation factor ("I visit museums or go to
-            // musical/dance performances"), widened from the arts to beauty
-            // anywhere. **Two clauses in one item, knowingly** (the author's
-            // call): valuing beauty and going out of one's way for it are
-            // meant here as one disposition, the effort being how the valuing
-            // shows, so the conflation is the construct and not a slip. On the
-            // singles' 1-7. No norms, so it earns no row.
+            // Aesthetic seeking: custom, not validated. How far somebody values
+            // beauty and actively seeks it out — the aesthete — which the
+            // HEX-ACO-18 touches only in passing (one Curiosity item names a
+            // novel, a song or a painting). **Valuing and seeking rather than
+            // being moved**, on purpose: nearly everybody says beauty moves
+            // them, which is the socially desirable answer and separates
+            // nobody, whereas going out of one's way for it costs something,
+            // so it is where people differ. Nearest in spirit is AReA item 1
+            // (Schlotz et al., 2021), the one behavioural item of its Aesthetic
+            // Appreciation factor ("I visit museums or go to musical/dance
+            // performances"), widened from the arts to beauty anywhere. **Two
+            // clauses in one item, knowingly**: valuing beauty and going out
+            // of one's way for it are meant here as one disposition, the effort
+            // being how the valuing shows, so the conflation is the construct
+            // and not a slip. On the singles' 1-7. No norms, so it earns no row.
             {
                 key: "Aesthetics_Beauty",
                 instructions: "To what extent do you agree with this statement",

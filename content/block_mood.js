@@ -30,20 +30,19 @@ defineBlock("mood", [
                 { value: 2, text: "More than half the days" },
                 { value: 3, text: "Nearly every day" },
             ],
-            // One row, weakest on the left, like the numbered scales; it stood
-            // on end until September 2026.
+            // One row, weakest on the left, like the numbered scales.
             columns: 5,
             color: "#7c5cff",
             hovercolors: ["#22c55e", "#ef4444"],
         },
 
         // PLACEHOLDER norms, invented. Not from any published sample. Nothing
-        // reads them since September 2026: the climb (js/figures/climb.js)
-        // draws the fortnight's weather from the PHQ-4 total against the
-        // questionnaire's own bands, not against a norm, and the questionnaire
-        // is read as one figure, so these earn no row and no axis. They stay
-        // because norms are what put a questionnaire on its level's results at
-        // all (`dimensionsOf`). No `interpretations`: no row ever reads one.
+        // reads them: the climb (js/figures/climb.js) draws the fortnight's
+        // weather from the PHQ-4 total against the questionnaire's own bands,
+        // not against a norm, and the questionnaire is read as one figure, so
+        // these earn no row and no axis. They stay because norms are what put
+        // a questionnaire on its level's results at all (`dimensionsOf`). No
+        // `interpretations`: no row ever reads one.
         norms: {
             Anxiety: { mean: 1.0, sd: 0.9 },
             Depression: { mean: 0.9, sd: 0.9 },
@@ -73,13 +72,11 @@ defineBlock("mood", [
         ],
     },
 
-    // What is left of the questionnaire that held the CDS-2 and then the
-    // PCL-2: the sleep single item alone. It was keyed `Dissociation` until
-    // September 2026; the questionnaire key is saved nowhere, so nothing had
-    // to line up. The shared 5-option format stays as its default so that
-    // either commented-out scale would come back on it as written — an
-    // average across items answered on different scales would not mean
-    // anything — while the SQS carries a format of its own.
+    // The sleep single item, in the questionnaire that also holds the
+    // commented-out CDS-2 and PCL-2. The shared 5-option format stays as its
+    // default so that either commented-out scale would come back on it as
+    // written — an average across items answered on different scales would
+    // not mean anything — while the SQS carries a format of its own.
     {
         key: "sleep",
         name: "Sleep",
@@ -129,14 +126,14 @@ defineBlock("mood", [
 
         items: [
             // CDS-2 ================================================================
-            // COMMENTED OUT (September 2026): two of the HiTOP-BR items asked on
-            // this level ("I felt like I was outside of my body", "I felt that
-            // things around me were not real") are the same content over twelve
-            // months, so the two-week window was all these added. Kept whole so
-            // they can be put back by uncommenting; they would rejoin the Stress
-            // dimension as written — though the stem written into each of them
-            // wants moving up into the questionnaire's `instructions`, the way
-            // the PHQ-4's was, so that the box holds the statement alone.
+            // COMMENTED OUT: two of the HiTOP-BR items asked on this level ("I
+            // felt like I was outside of my body", "I felt that things around me
+            // were not real") are the same content over twelve months, so the
+            // two-week window is all these would add. Kept whole so they can be
+            // put back by uncommenting; they would join the Stress dimension as
+            // written — though the stem written into each of them wants moving
+            // up into the questionnaire's `instructions`, as the PHQ-4's is, so
+            // that the box holds the statement alone.
             // // The 2-item version of the Cambridge Depersonalisation Scale
             // // (Michal et al., 2011). The two items found to discriminate best
             // // between patients with and without clinically significant
@@ -154,15 +151,13 @@ defineBlock("mood", [
 
             // PCL-2 ================================================================
             // A 2-item abbreviation of the PTSD Checklist (Bliese et al., 2008).
-            // COMMENTED OUT (September 2026): its first item is HiTOP-BR item 9
-            // ("My mind was flooded with troubling images of a bad experience")
-            // over two weeks instead of twelve months, the same duplication the
-            // CDS-2 was cut for, and "Stress" misnamed what it measures, which
-            // is trauma intrusion. It was the Stress dimension, the middle face
-            // of Mood & Health and an axis on the whole-run web; all three went
-            // with it, and the Stress face in js/figures/faces.js waits for it.
-            // Kept whole, with its norms above, so it can be put back by
-            // uncommenting both.
+            // COMMENTED OUT: its first item is HiTOP-BR item 9 ("My mind was
+            // flooded with troubling images of a bad experience") over two weeks
+            // instead of twelve months, the same duplication as the CDS-2, and
+            // "Stress" misnames what it measures, which is trauma intrusion. It
+            // would be the Stress dimension, which the Stress face in
+            // js/figures/faces.js waits for. Kept whole, with its norms above,
+            // so it can be put back by uncommenting both.
             // {
             //     key: "PCL2_Trauma_1",
             //     dimension: "Stress",

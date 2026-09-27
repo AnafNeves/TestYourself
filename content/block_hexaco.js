@@ -26,13 +26,11 @@ defineBlock("hexaco", [
     // the whole run: an unmarked "Extraversion" here would be averaged in
     // with the FIPI's on level 1, on a scale it does not share.
     //
-    // COMMENTED OUT (September 2026): asked once alongside the HEX-ACO-18,
-    // then dropped in favour of it. Five of its six scales re-measure the
-    // FIPI's Big Five, and its items sit on the maladaptive poles the HiTOP-BR
-    // below already asks about, sometimes almost word for word. The HEXACO
-    // covers more ground that nothing else on the run does. Kept here whole so
-    // it can be put back by uncommenting; it would want its name back in
-    // CHARTS in app.js and on the Includes list.
+    // COMMENTED OUT in favour of the HEX-ACO-18: five of its six scales
+    // re-measure the FIPI's Big Five, and its items sit on the maladaptive
+    // poles the HiTOP-BR already asks about, sometimes almost word for word.
+    // Kept here whole so it can be put back by uncommenting; it would want
+    // its name back in CHARTS in app.js and its row in ROWS in docs/build_slides.py.
 
     // {
     //     key: "ipip6",
@@ -165,12 +163,12 @@ defineBlock("hexaco", [
     // are reverse-keyed. Item keys name the facet, and the comment beside
     // each item gives its HEXACO-100 number.
     //
-    // THE DOMAINS CARRY PLAIN NAMES (September 2026), for two reasons at once.
-    // A dimension is one name across the whole run, and Extraversion,
-    // Agreeableness, Conscientiousness and Openness are already the FIPI's
-    // names on level 1, on a scale this does not share — so the four that
-    // collide used to carry a "(HEXACO)" tag, which on a chart for the public
-    // read as jargon. And the HEXACO's versions are not the Big Five's
+    // THE DOMAINS CARRY PLAIN NAMES, for two reasons at once. A dimension is
+    // one name across the whole run, and Extraversion, Agreeableness,
+    // Conscientiousness and Openness are already the FIPI's names on level 1,
+    // on a scale this does not share — so the four that collide would need a
+    // tag, which on a chart for the public reads as jargon. And the HEXACO's
+    // versions are not the Big Five's
     // constructs anyway: its Agreeableness is patience, forgiveness and
     // gentleness, its Openness is curiosity, aesthetics and unconventionality,
     // its Emotionality is fear, worry and dependence rather than the reverse
@@ -200,11 +198,11 @@ defineBlock("hexaco", [
             color: "#c026d3",
         },
 
-        // THE FULL PORTRAIT IS FED BACK HERE (September 2026): all six domains,
-        // as a spider chart with a row apiece, and all six take axes on the
-        // whole-run web. The FIPI on level 1 is the two-row sketch — Extraversion
-        // and Emotional Stability — that this fills in; its other three norms
-        // are commented out there rather than here.
+        // THE FULL PORTRAIT IS FED BACK HERE: all six domains, as a spider
+        // chart with a row apiece, and all six take axes on the whole-run web.
+        // The FIPI on level 1 is the two-row sketch — Extraversion and
+        // Emotional Stability — that this fills in; its other three norms are
+        // commented out there rather than here.
         // PLACEHOLDER norms, invented. Not from any published sample.
         norms: {
             "Honesty-Humility": {
@@ -398,11 +396,10 @@ defineBlock("hexaco", [
             // "applies completely"; here they take the HEXACO's 5-point
             // agreement scale, which is the price of blending in.
             //
-            // NOT SCORED: no `dimension` on any of the six (September 2026;
-            // they were two, PQ+ and NQ−, which the engine averaged for
-            // nobody). Nothing on the page reads a social-desirability score,
-            // and a computed score is never saved, so the dimensions did
-            // nothing but count as scored. The keys say the facet, and the
+            // NOT SCORED: no `dimension` on any of the six. Nothing on the
+            // page reads a social-desirability score, and a computed score is
+            // never saved, so a dimension would do nothing but count as
+            // scored. The keys say the facet, and the
             // KSE-G total is taken at analysis time as the mean of the six
             // with the three Negative items reversed, so that a higher score
             // is a more flattering self-presentation. Fed back nowhere on
@@ -439,11 +436,11 @@ defineBlock("hexaco", [
             // yes/no questions written to catch defensiveness and impression
             // management at almost no cost in time, here turned into "I…"
             // statements on the HEXACO's agreement scale so they could be dealt
-            // in beside the KSE-G. COMMENTED OUT (September 2026): its fourth
-            // item is the KSE-G's first NQ− item almost word for word, and the
-            // KSE-G alone covers the ground; consistency indices come from
-            // elsewhere (the reversed HEXACO and MINT items). Kept so it can be
-            // put back by uncommenting.
+            // in beside the KSE-G. COMMENTED OUT: its fourth item is the
+            // KSE-G's first NQ− item almost word for word, and the KSE-G alone
+            // covers the ground; consistency indices come from elsewhere (the
+            // reversed HEXACO and MINT items). Kept so it can be put back by
+            // uncommenting.
             // {
             //     key: "BSDS_1",
             //     dimension: "Social Desirability (BSDS)",

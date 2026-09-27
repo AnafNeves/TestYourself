@@ -13,12 +13,10 @@ defineBlock("archetypes", [
     // three-item scales after the twelve-archetype framework of Carol S.
     // Pearson and Hugh Marr's Pearson–Marr Archetype Indicator (PMAI). It is
     // an open paraphrase of that framework, not a copy of the instrument: the
-    // statements are NOT the PMAI's own, and were written from the open,
-    // public descriptions of the twelve archetypes, first for the
-    // Neuropsychological Tarot prototype and revised here over three rounds of
-    // review (September 2026). The OSAI-PM is to be validated independently of
-    // the original instrument, on its own data; until then it is unvalidated,
-    // and nothing here is a PMAI score.
+    // statements are NOT the PMAI's own, and are written from the open,
+    // public descriptions of the twelve archetypes. The OSAI-PM is to be
+    // validated independently of the original instrument, on its own data;
+    // until then it is unvalidated, and nothing here is a PMAI score.
     //
     // HOW THE ITEMS ARE WRITTEN — the rules every statement below follows, so
     // that a review can be checked against them rather than against taste:
@@ -30,15 +28,13 @@ defineBlock("archetypes", [
     //     patch") is allowed.
     //   - Each scale's three items cover THREE DIFFERENT FACETS of the
     //     archetype, named in the comment above it. Two items saying the same
-    //     thing in different words inflate alpha and narrow the construct,
-    //     and that is what every round of review has caught most often.
+    //     thing in different words inflate alpha and narrow the construct.
     //   - Each scale carries ONE BEHAVIOURAL item (what the person does) and
     //     ONE POLARIZING item — a statement a person of the opposite archetype
     //     can comfortably disagree with. The wheel reads the twelve against
     //     each other, so an item everyone agrees with flattens it rather than
     //     making it fairer. A polarizing item is not softened to make it more
-    //     agreeable; that is the edit reviewers most often propose and the
-    //     one most often declined.
+    //     agreeable.
     //   - No shadow items. Each archetype has a pitfall (the Caregiver's
     //     martyrdom, the Sage's cold detachment), but at three items a scale
     //     cannot carry gift and shadow at once; a statement whose social
@@ -73,9 +69,9 @@ defineBlock("archetypes", [
             // simplicity. Wants to stay safe and believes things will work out;
             // fears abandonment and doing wrong; its shadow is denial and
             // naivety. Facets: faith that things work out (1), loyalty (2),
-            // trust in people (3). The loyalty item is there because three
-            // optimism items were one item thrice; it is fidelity rather than
-            // safety, since wanting to be safe is the Realist's ground.
+            // trust in people (3). The loyalty item keeps the scale from being
+            // one optimism item thrice; it is fidelity rather than safety,
+            // since wanting to be safe is the Realist's ground.
             {
                 key: "Archetype_Idealist_1",
                 dimension: "Idealist",
@@ -148,11 +144,10 @@ defineBlock("archetypes", [
             // is self-destruction and wrecking for its own sake. THE STORY IS
             // THE DESTROYER'S, NOT THE REBEL'S: the name on screen says
             // "Revolutionary" because "Destroyer" reads as an insult, but the
-            // items are about endings, not about rules — a rule-breaking item
-            // used to sit here and pulled the scale towards a different
-            // archetype (Pearson's Outlaw), so it went. Facets: dismantling
-            // (1, behavioural), tearing down over patching (2, polarizing),
-            // accepting endings (3).
+            // items are about endings, not about rules — rule-breaking would
+            // pull the scale towards a different archetype (Pearson's Outlaw).
+            // Facets: dismantling (1, behavioural), tearing down over
+            // patching (2, polarizing), accepting endings (3).
             {
                 key: "Archetype_Revolutionary_1",
                 dimension: "Revolutionary",
@@ -177,9 +172,8 @@ defineBlock("archetypes", [
             // IMPLAUSIBILITY IS THE CONSTRUCT: softened to "changes how I
             // experience a situation" it becomes something every reader
             // agrees with and stops telling a Magician from anyone else),
-            // inner work as method (2, behavioural — a win-win mediator item
-            // used to sit here and belonged to the Caregiver or the Idealist
-            // as much as to anyone), the self-image as catalyst (3).
+            // inner work as method (2, behavioural), the self-image as
+            // catalyst (3).
             {
                 key: "Archetype_Magician_1",
                 dimension: "Magician",
@@ -203,8 +197,7 @@ defineBlock("archetypes", [
             // Facets: courage (1, behavioural), grit (2), the will to prevail
             // (3, polarizing). Prevailing rather than protecting, since
             // protecting shades into the Caregiver and winning is what the
-            // Warrior most fears failing at; and not "standing up for what is
-            // right when it is difficult", which nobody disagrees with.
+            // Warrior most fears failing at.
             {
                 key: "Archetype_Warrior_1",
                 dimension: "Warrior",
@@ -229,10 +222,8 @@ defineBlock("archetypes", [
             // being let down; its shadow is cynicism and victimhood. Facets:
             // taking life as it comes (1, polarizing — it is the Idealist's
             // opposite), interdependence (2, the Orphan's core: knowing one
-            // cannot go it alone — an "unpretentious and down-to-earth" item
-            // used to sit here and measured modesty, which is nobody's
-            // archetype in particular), kinship with those who have struggled
-            // (3). Written without class language.
+            // cannot go it alone), kinship with those who have struggled (3).
+            // Written without class language.
             {
                 key: "Archetype_Realist_1",
                 dimension: "Realist",
@@ -256,8 +247,7 @@ defineBlock("archetypes", [
             // humour as coping (1, behavioural), bringing play to others (2),
             // irreverence (3, polarizing — nothing is sacred). Irreverence
             // rather than living in the moment, which leaks into the Seeker
-            // and the Lover; and not "finding humour" or "lightening things
-            // up" a second time, which is what items 1 and 2 already say.
+            // and the Lover.
             {
                 key: "Archetype_Jester_1",
                 dimension: "Jester",
@@ -281,8 +271,8 @@ defineBlock("archetypes", [
             // item: connection (1), passion (2, behavioural — giving oneself
             // wholly), beauty (3). Item 1 says "someone or something" because
             // the Lover is union with whatever is loved, not romance alone;
-            // items 1 and 2 used to both say that connection is where meaning
-            // lies, so item 2 is now devotion and nothing else.
+            // item 2 is devotion and nothing else, so that it does not repeat
+            // item 1.
             {
                 key: "Archetype_Lover_1",
                 dimension: "Lover",
@@ -306,9 +296,9 @@ defineBlock("archetypes", [
             // of enduring value; fears mediocrity and inauthenticity; its
             // shadow is perfectionism and creating for its own sake. Facets:
             // aliveness in inventing (1), the compulsion to make (2,
-            // behavioural — MAKING, not taste: "drawn to original creations"
-            // sat here and described an audience, not a creator), the wish to
-            // leave something that lasts (3, polarizing).
+            // behavioural — MAKING, not taste, which would describe an
+            // audience rather than a creator), the wish to leave something
+            // that lasts (3, polarizing).
             {
                 key: "Archetype_Creator_1",
                 dimension: "Creator",
@@ -330,8 +320,7 @@ defineBlock("archetypes", [
             // realm; fears chaos and being overthrown; its shadow is tyranny
             // and rigidity. Facets: being in charge (1, polarizing — kept
             // blunt on purpose), bringing order to chaos (2, behavioural),
-            // accountability for one's realm (3 — a "making sure things are
-            // run properly" item sat here and was item 2 again).
+            // accountability for one's realm (3).
             {
                 key: "Archetype_Ruler_1",
                 dimension: "Ruler",
@@ -353,10 +342,9 @@ defineBlock("archetypes", [
             // selfishness and ingratitude; its shadow is martyrdom, enabling
             // and smothering. Facets: fulfilment in caring (1), felt
             // responsibility for others' suffering (2, polarizing),
-            // responding to need before it is voiced (3, behavioural). Item 3
-            // replaced "I readily put other people's needs before my own",
-            // which is the most socially desirable sentence in the inventory
-            // and measures the shadow (self-sacrifice) as much as the gift.
+            // responding to need before it is voiced (3, behavioural). Nothing
+            // here puts others' needs before one's own, which would measure
+            // the shadow (self-sacrifice) as much as the gift.
             {
                 key: "Archetype_Caregiver_1",
                 dimension: "Caregiver",

@@ -1,8 +1,7 @@
-// The HiTOP-BR, a block of its own so that it moves as a piece: asked at the
-// end of level 3, after the mood and health questionnaires, since its
-// briefing widens the frame from the last few weeks to the last year and has
-// to follow them. It lived in `block_hexaco.js` — then `block_personality.js`
-// — until September 2026.
+// The HiTOP-BR, a block of its own so that it moves as a piece: asked last on
+// its level, after the mood and health questionnaires, since its briefing
+// widens the frame from the last few weeks to the last year and has to follow
+// them.
 defineBlock("hitop", [
     {
         type: "briefing",
@@ -27,12 +26,11 @@ defineBlock("hitop", [
     // data-raw/hitopbr_items.csv): 45 statements about the last twelve months
     // on a 4-point scale, no reversed items, scored as the mean of each of six
     // spectra. Item keys follow the package's own item numbers under the
-    // app's prefix, HITOP_01 to HITOP_45 (HBR_01 to HBR_45 until September
-    // 2026), so a saved file goes into score_hitopbr() once the columns are
-    // renamed HBR_nn, with the items in instrument order; their membership
-    // below is the package's
-    // (which corrected item 36 to Internalizing after the development
-    // workbook). Two more scales cut across the six — the Externalizing
+    // app's prefix, HITOP_01 to HITOP_45, so a saved file goes into
+    // score_hitopbr() once the columns are renamed HBR_nn, with the items in
+    // instrument order; their membership below is the package's (which
+    // corrects item 36 to Internalizing against the development workbook).
+    // Two more scales cut across the six — the Externalizing
     // superspectrum (items 1, 13, 15, 16, 25, 32, 34, 35, 40, 45) and the
     // p-factor (1, 6, 11, 14, 22, 23, 25, 28, 31, 32, 35, 37) — and an item
     // here carries one dimension, so both are left to analysis time, the way
@@ -44,14 +42,14 @@ defineBlock("hitop", [
     {
         key: "hitopbr",
         name: "Symptoms & Maladaptive Traits",
-        // Read back as the climb (js/figures/climb.js, September 2026): three
-        // of the six spectra — Emotional Intensity, Solitude and
-        // Bodily Complaints — each drive one thing about a hill, with the
-        // PHQ-4's fortnight as the weather over it. No rows, no chart: the six
-        // earned a spider chart and a row each once, and read as verdicts. The
-        // other three are asked, scored and saved and read nowhere. `profile:
+        // Read back as the climb (js/figures/climb.js): three of the six
+        // spectra — Emotional Intensity, Solitude and Bodily Complaints — each
+        // drive one thing about a hill, with the PHQ-4's fortnight as the
+        // weather over it. No rows, no chart: a spider chart and a row per
+        // spectrum read as verdicts. The other three are asked, scored and
+        // saved and read nowhere. `profile:
         // false` keeps all six off the whole-run web and card, where on one
-        // polygon with Openness and Bodily Awareness they would read as more of
+        // polygon with Curiosity and Bodily Awareness they would read as more of
         // the same kind of thing, which they are not.
         profile: false,
         instructions:
@@ -65,8 +63,7 @@ defineBlock("hitop", [
                 { value: 3, text: "Moderately" },
                 { value: 4, text: "A lot" },
             ],
-            // One row, like the PHQ-4 before it; it stood on end until
-            // September 2026.
+            // One row, like the PHQ-4.
             columns: 4,
             color: "#be123c",
             hovercolors: ["#22c55e", "#ef4444"],
@@ -84,8 +81,8 @@ defineBlock("hitop", [
         // TO DO: read them through empirical quantiles instead — see the note
         // at the foot of data/norms/make_norms.R. The interpretations are ours.
         //
-        // THE SPECTRA ARE RENAMED FOR THE PUBLIC (September 2026). The HiTOP's
-        // own names are clinical jargon, and two of them ("Thought Disorder",
+        // THE SPECTRA CARRY PLAIN NAMES FOR THE PUBLIC. The HiTOP's own names
+        // are clinical jargon, and two of them ("Thought Disorder",
         // "Antagonism") read as verdicts when handed back to the person who
         // answered. The dimensions here carry plainer names, and the mapping
         // is one-to-one so nothing about the scoring changes — the item keys

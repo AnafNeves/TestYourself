@@ -9,9 +9,9 @@
    1997). DISABLED because it puts the question to everybody without asking
    first whether there is a job to answer it about. Waking it takes an
    employment item to hang a `showIf` on, this block uncommented in a file of
-   its own, and its name written into a level of the timeline — and note that
-   an escape option cannot simply be added instead, since whatever is chosen
-   would feed a number into the score.
+   its own, and its name written into a level of the timeline. An escape option
+   (`custom: true`) is not a substitute: choosing it holds the dimension
+   unfinished, so the item would never earn a result.
    ========================================================================== */
 
 // defineBlock("gjs", [

@@ -16,9 +16,7 @@
 // the way every other scale's keys here do, and Clifton's own label for the
 // item (`sd1`, `am4`; an `x` on the end is his mark for a reverse-scored item)
 // rides beside each in a comment, so a saved file maps onto his published
-// scoring code with one renaming step. The keys were his labels themselves,
-// under a version prefix (`PI18_ed1`) and then under `PI_`, until September
-// 2026.
+// scoring code with one renaming step.
 defineBlock("primals", [
     {
         type: "briefing",
@@ -41,13 +39,12 @@ defineBlock("primals", [
     // primal, overall Good world belief, is not a fourth set of items but a
     // *composite* of these ones — all six Safe items, all seven Enticing
     // items, and two of the five Alive items (`PI_Alive_1` and `PI_Alive_4`,
-    // Clifton's `am1` and `am4`) — and an item
-    // in this engine carries one dimension. Rather than ask anything twice or
-    // teach the engine a second way to score, Good is left to analysis time:
-    // every item it needs is in the saved file, with Clifton's label beside
-    // each key here, so his published code computes it after a rename. What is read back on screen is
-    // the three dimensions under Good, which is also exactly the three axes a
-    // spider chart wants.
+    // Clifton's `am1` and `am4`) — and an item in this engine carries one
+    // dimension. Rather than ask anything twice or teach the engine a second
+    // way to score, Good is left to analysis time: every item it needs is in
+    // the saved file, with Clifton's label beside each key here, so his
+    // published code computes it after a rename. What is read back on screen
+    // is the three dimensions under Good.
     //
     // No attention check is dealt in among these eighteen: the short form's
     // validated order is worth keeping intact, and the check the inventory
@@ -189,7 +186,7 @@ defineBlock("primals", [
         // changeable is not more or less of anything good, and on a polygon
         // where every other axis runs from less to more of something a person
         // would want, they would read as more of the same kind of thing, which
-        // they are not. The chart on this level is where they are read.
+        // they are not.
         profile: false,
         instructions:
             "Not the world we wish we lived in, but <b>the actual world as it is now</b>. When in doubt, go with " +

@@ -17,15 +17,14 @@ defineBlock("health", [
     // written in, so that the feedback says *where* the week has been felt
     // rather than only how much; each is averaged like every other dimension.
 
-    // COMMENTED OUT (September 2026): the HiTOP-BR, now asked on this same
-    // level, covers bodily complaints over the last twelve months, and the
-    // Health face reads the self-rated health single item from level 1
-    // instead. What is lost is the one-week, system-by-system picture (gut,
+    // COMMENTED OUT: the HiTOP-BR, asked on this same level, covers bodily
+    // complaints over the last twelve months, and the Health face reads the
+    // self-rated health single item from level 1 instead. What is lost is the one-week, system-by-system picture (gut,
     // chest, fatigue, sleep), which the SSS-8 only gives as the whole eight
     // with its norms — a subset would keep the items and lose the meaning.
     // Kept whole so it can be put back by uncommenting; it would want
     // "sss8" back in MOOD_HEALTH_OF in results.js, a Health face reading its
-    // four domains again, and its line back on the Includes list.
+    // four domains again, and its row back in ROWS in docs/build_slides.py.
     // {
     //     key: "sss8",
     //     name: "Somatic Symptoms",

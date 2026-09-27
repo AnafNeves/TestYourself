@@ -211,9 +211,8 @@ if (nrow(table)) {
 knitr::kable(shown, align = "lrrrrrrr")
 ```
 
-## How long against how liked
+## Ratings
 
-Each level's median answering time (as above, breaks left out) against the median of the stars its results were given, for the levels that have both. The number beside a level's name is how many runs rated it.
 
 ```{r}
 #| label: liked

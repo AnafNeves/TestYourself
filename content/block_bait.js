@@ -49,7 +49,7 @@ defineBlock("bait", [
         // PLACEHOLDER norms, invented. Not from any published sample.
         // No `interpretations` on purpose: these dimensions are read back as
         // an archetype (ARCHETYPES, in results.js), not as rows — but every
-        // mean *and* sd here is now load-bearing, since that is what the
+        // mean *and* sd here is load-bearing, since that is what the
         // answers are turned into z scores by before being placed.
         norms: {
             "AI Enthusiasm": { mean: 3.89, sd: 1.4 },
@@ -61,8 +61,9 @@ defineBlock("bait", [
             // The three singles are asked first, before the shuffled
             // statements: what somebody says they know, understand and use
             // frames how the rest reads. BAIT_Understanding is a key of its
-            // own rather than the old BAIT_UnderstandingAI, because it asks a
-            // narrower thing on a different scale and must not stack onto it.
+            // own rather than the earlier samples' BAIT_UnderstandingAI,
+            // because it asks a narrower thing on a different scale and must
+            // not stack onto it.
             {
                 key: "BAIT_Knowledge",
                 shuffle: false,

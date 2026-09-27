@@ -1,18 +1,17 @@
-// Reasoning — the last scored level, and the one level that asks what a
-// person can do rather than what they are like. Sixteen short problems, each
-// with one right answer, and nothing about them is a rating.
+// Reasoning — the one level that asks what a person can do rather than what
+// they are like. Sixteen short problems, each with one right answer, and
+// nothing about them is a rating.
 //
 // Stems, options and their order are verbatim from Appendix A of the paper's
-// supplementary materials — with one change of wording: the rotation stem's
-// "the cube labeled X" is "the following cube", since the cube is shown on
-// its own here, without the letter the published figure labels it with
-// (literature/Condon_Revelle_2014_ICAR_supplement_
-// SampleTest.pdf, September 2026), the pictures in assets/icar/ are cut out
-// of the eight figures of the same appendix (the figures, and the script that
-// cuts them, are in assets/icar/source/), and the answer key is the one the {psych}
-// package documents beside these items (`iq.keys`, in ?iqitems). A key that
-// ever turns out wrong is one `correct:` hash to replace — `answerKey` in
-// timeline.js says how to make one.
+// supplementary materials (literature/Condon_Revelle_2014_ICAR_supplement_
+// SampleTest.pdf) — with one change of wording: the rotation stem's "the cube
+// labeled X" is "the following cube", since the cube is shown on its own
+// here, without the letter the published figure labels it with. The pictures
+// in assets/icar/ are cut out of the eight figures of the same appendix (the
+// figures, and the script that cuts them, are in assets/icar/source/), and
+// the answer key is the one the {psych} package documents beside these items
+// (`iq.keys`, in ?iqitems). A key that ever turns out wrong is one `correct:`
+// hash to replace — `answerKey` in timeline.js says how to make one.
 defineBlock("icar", [
     {
         type: "briefing",
@@ -46,13 +45,12 @@ defineBlock("icar", [
     // THE NORMS BELOW ARE INVENTED PLACEHOLDERS, like every other set in
     // `content/` but the HiTOP-BR's and the MINT's, and they are here for one
     // reason: the whole-run profile web draws the average person from a mean
-    // on every axis, and four axes without one left a gap in that ring where
-    // the reasoning's four fell (September 2026). They put the four on the
-    // web beside everything else instead. **The level itself still reads no
-    // standing off them** — `renderReasoning` takes the section whole, so
-    // there is no row, no percentile and no interpretation here, and the
-    // compass goes on comparing the four kinds with each other and with
-    // nobody. The real SAPA norms exist and are deliberately not used: a
+    // on every axis, and four axes without one would leave a gap in that ring
+    // where the reasoning's four fall. **The level itself reads no standing
+    // off them** — `renderReasoning` takes the section whole, so there is no
+    // row, no percentile and no interpretation here, and the compass compares
+    // the four kinds with each other and with nobody. The real SAPA norms
+    // exist and are deliberately not used: a
     // percentile on reasoning is the one thing this test does not hand back
     // on its own level.
     //
@@ -73,8 +71,8 @@ defineBlock("icar", [
     // under it — the letter being what the file records. Two of a rotation
     // item's eight candidates are written rather than drawn ("None of the
     // cubes could be a rotation", "I do not know the solution"): those are
-    // plain labelled options, saved as their words where the letters D and
-    // H stood until September 2026, on the same values.
+    // plain labelled options, saved as their words, on the values of the
+    // published D and H.
     //
     // No attention check: a right-answer test has no straight line to catch,
     // and a check written as a giveaway item would be one more thing to get

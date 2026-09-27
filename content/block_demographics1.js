@@ -37,9 +37,8 @@ function birthDays() {
 }
 
 // Every demographic item, in this block and the two after it, is keyed
-// `Demographics_…` (September 2026; the keys were bare before), so a saved
-// file sorts them together and nothing of a questionnaire's own can collide
-// with them. The questionnaire keys stay lower-case `demographics1`…`3`.
+// `Demographics_…`, so a saved file sorts them together and nothing of a
+// questionnaire's own can collide with them. The questionnaire keys stay lower-case `demographics1`…`3`.
 defineBlock("demographics1", [
     {
         // No dimensions, no scoring, no results.
@@ -90,10 +89,9 @@ defineBlock("demographics1", [
                     columns: 3,
                 },
             },
-            // The day itself, a button a day laid out like a calendar (until
-            // September 2026 it was only which side of that month's zodiac
-            // cusp the day fell). The star sign on the level-1 results is read
-            // from the month and this together. **The day is an identifier
+            // The day itself, a button a day laid out like a calendar. The
+            // star sign on the level-1 results is read from the month and
+            // this together. **The day is an identifier
             // and is never released**: with the month and the age beside it,
             // it is most of a date of birth. It stays in the raw files and
             // before any data are made public it is dropped, or grouped into

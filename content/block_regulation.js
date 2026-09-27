@@ -58,9 +58,9 @@ defineBlock("regulation", [
     // Four dimensions, one a pair, under plain names — Inattention,
     // Absent-Mindedness, Mind Wandering, Self-Control — the first three
     // running towards more of a problem and the fourth towards more of a
-    // virtue. Read back, with the two questionnaires below, as the heads
-    // (js/figures/heads.js): Self-Control is the bulb, the other three the
-    // knot on the cord up to it. No rows and no chart of its own.
+    // virtue. Read back, with the two questionnaires below, as the Mind &
+    // Heart chart (js/figures/heads.js): Self-Control is Restraint, the other
+    // three are averaged into Distractibility. No rows and no chart of its own.
     {
         key: "control",
         name: "Attention & Self-Control",
@@ -249,14 +249,14 @@ defineBlock("regulation", [
     // Hooley, 2008), two of each of its three facets — sensitivity (how
     // easily emotion is set off), arousal/intensity (how strongly it comes)
     // and persistence (how long it stays) — verbatim, on the scale's own 0-4
-    // "like me" scale, with the ends the author asked for as anchors. Not a
-    // published short form: six items chosen for the three facets, so the
-    // three dimensions are two-item proxies for them. The facets carry
-    // "Emotional" in front because a dimension is one name across the run,
-    // and "Sensitivity" and "Intensity" are close to names other levels use
-    // (the MINT's Bodily Sensitivity, the HiTOP-BR's Emotional Intensity).
-    // Read back as the heart of the heads figure — the mean reach of the
-    // three is how big it is — and as nothing else: no rows, no chart.
+    // "like me" scale, with its two ends as anchors. Not a published short
+    // form: six items chosen for the three facets, so the three dimensions
+    // are two-item proxies for them. The facets carry "Emotional" in front
+    // because a dimension is one name across the run, and "Sensitivity" and
+    // "Intensity" are close to names other levels use (the MINT's Bodily
+    // Sensitivity, the HiTOP-BR's Emotional Intensity). Read back as the
+    // Sensitivity bar of the Mind & Heart chart — the mean reach of the three
+    // — and as nothing else: no rows, no chart.
     {
         key: "ers",
         name: "Emotional Reactivity",
@@ -342,9 +342,9 @@ defineBlock("regulation", [
     // adaptive, and the two composites are left to analysis time.
     //
     // Nine dimensions running one way — how often the strategy is used. Read
-    // back only through the heads figure, where the four maladaptive ones are
-    // the knot on the cord down to the heart and the five adaptive ones are
-    // read by nothing; no rows, no chart. The dimensions carry the CERQ's own
+    // back only through the Mind & Heart chart, where the four maladaptive
+    // ones are averaged into Brooding and the five adaptive ones are read by
+    // nothing; no rows, no chart. The dimensions carry the CERQ's own
     // strategy names, in the app's spelling (Catastrophising); the keys keep
     // the author's (Catastrophizing, Perspective, RefocusPlanning).
     {

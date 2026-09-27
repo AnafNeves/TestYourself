@@ -25,9 +25,8 @@
 // live in" and several more say so in their own words: "should government do
 // more" means something different in Sweden and in the United States, and the
 // person is the one who knows which they mean. It is written into the item
-// rather than over it as an instruction (September 2026): an instruction is
-// italic and easy to read past, and a statement is only answerable with its
-// country in it.
+// rather than over it as an instruction: an instruction is italic and easy to
+// read past, and a statement is only answerable with its country in it.
 //
 // **These are political opinions, and are data of that kind** — calling them
 // views or opinions on screen does not change what they are for the purposes
@@ -50,28 +49,24 @@
 // self-placement is asked first, before any statement can lean on it; the
 // CMQ straight after it, being the one answered on a slider; then every
 // statement of the level in **one** questionnaire, `views`, so that they are
-// shuffled in among one another (September 2026). They were five
-// questionnaires until then — the BSA, equal outcomes, human nature, the
-// climate and the animals, beauty — and a questionnaire is the unit of
-// shuffling, so each arrived as a run of its own: four statements about
-// equality of outcomes in a row say what they are measuring, and the ones
-// after it are answered knowing. Dealt in among thirty others, an item is
-// just an item. Each scale is still its own dimension with its own norms,
-// and the comments below keep each one's provenance together, so nothing is
-// lost by the merge but the runs.
+// shuffled in among one another. A questionnaire is the unit of shuffling, so
+// a scale asked as a questionnaire of its own arrives as a run: four
+// statements about equality of outcomes in a row say what they are
+// measuring, and the ones after it are answered knowing. Dealt in among
+// thirty others, an item is just an item. Each scale is still its own
+// dimension with its own norms, and the comments below keep each one's
+// provenance together.
 //
-// **Every item here may be adapted, and many are** (September 2026, the
-// author's call): wording that is unclear, idealistic, loaded or a double
-// negative is rewritten rather than kept for the sake of a published scale,
-// and validating the result is part of the project. Each adapted item says,
-// in a comment beside it, what it was adapted from and why; its key keeps
-// the source's prefix, so the saved file still says which scale it came out
-// of, and none of them is to be pooled with the source's data as the same
-// item.
+// **Every item here may be adapted, and many are**: wording that is unclear,
+// idealistic, loaded or a double negative is rewritten rather than kept for
+// the sake of a published scale, and validating the result is part of the
+// project. Each adapted item says, in a comment beside it, what it was
+// adapted from and why, and none of them is to be pooled with the source's
+// data as the same item.
 //
-// **Every key on the level starts `Opinion_`** (September 2026), so that the
-// whole level can be picked out of a saved file by its prefix, the way the
-// three demographics questionnaires are by `Demographics_`. This bends the
+// **Every key on the level starts `Opinion_`**, so that the whole level can
+// be picked out of a saved file by its prefix, the way the three
+// demographics questionnaires are by `Demographics_`. This bends the
 // rule that a key's prefix is the instrument: most of what is asked here is
 // custom, and the level is its instrument. The second segment is the scale
 // the item belongs to — `Opinion_LeftRight_`, `Opinion_LibAuth_`,
@@ -83,22 +78,19 @@
 // (`Opinion_Parity_Diversity`, `Opinion_Planet_Nuclear`,
 // `Opinion_Animals_Diet`). **Where an item comes from a published scale is
 // said in the comment beside it, not in its key** — the BSA and CMQ items
-// were adapted until the source's name in the key promised more than the
-// item kept. The one exception is `Opinion_ESS_LeftRight`, which is the
+// are adapted, and the source's name in the key would promise more than the
+// item keeps. The one exception is `Opinion_ESS_LeftRight`, which is the
 // ESS's item verbatim and whose key says so.
-//
 //
 // Read back together as one figure (js/figures/stance.js): the two
 // BSA-derived scales as a plane, the other seven dimensions as spectra under
-// it. All
-// are `profile: false` — nine more axes would crowd the whole-run web, and a
-// person's politics has no business on a card made to be shared.
+// it. All are `profile: false` — nine more axes would crowd the whole-run
+// web, and a person's politics has no business on a card made to be shared.
 //
-// **No attention check** (September 2026). The level had one, dealt in among
-// the BSA statements, and among statements about politics an instruction to
-// press "Disagree" stood out more than anywhere else in the run — the one
-// place a participant is most likely to wonder what the study is checking
-// for. The other levels' checks, the response times and the closing
+// **No attention check.** Among statements about politics an instruction to
+// press "Disagree" would stand out more than anywhere else in the run — the
+// one place a participant is most likely to wonder what the study is
+// checking for. The other levels' checks, the response times and the closing
 // seriousness item are enough.
 defineBlock("opinions", [
     {
@@ -151,8 +143,8 @@ defineBlock("opinions", [
     // percentage; divide by ten to set it beside the eleven-step
     // administrations.
     //
-    // **Three of the five items** (September 2026), the three with the
-    // highest corrected item-total correlations in the original validation
+    // **Three of the five items**, the three with the highest corrected
+    // item-total correlations in the original validation
     // (Table 1; English / German / Turkish): 5 "secret organizations" (.74 /
     // .73 / .57), 4 "events… secret activities" (.70 / .72 / .65) and 1
     // "important things… never informed about" (.62 / .63 / .48). Left out:
@@ -161,43 +153,31 @@ defineBlock("opinions", [
     // closely monitor all citizens" (.62 / .60 / .37), which Swami et al.
     // (2017, PLOS ONE, 12(2), e0172617) single out as a belief that may be
     // simply factual rather than conspiracist — and whose ground the Order
-    // item on surveillance now covers as an opinion. Swami et al. also found
-    // the five-item CMQ's one-factor fit poor, with correlated errors
-    // between items 1, 2 and 3; dropping two of those three is the cheap
-    // half of that remedy. Item 2 was also what made the scale a stand-in
-    // for distrust of those in charge, which it now is only loosely.
+    // item on surveillance covers as an opinion. Swami et al. also found the
+    // five-item CMQ's one-factor fit poor, with correlated errors between
+    // items 1, 2 and 3; dropping two of those three is the cheap half of that
+    // remedy. Item 2 is also what would make the scale a stand-in for
+    // distrust of those in charge, which without it it is only loosely.
     //
-    // In the English version's wording except the fourth, reworded:
-    // verbatim "I think that events which superficially seem
-    // to lack a connection are often the result of secret activities",
-    // which read as stilted and hard to parse. No examples were added to it: any named
-    // event would ask about that event's own conspiracy theory rather than
-    // the general disposition the scale is for.
-    //
-    // **Verified against the English items in Bruder et al. (2013, Table 1)
-    // on 23 September 2026**: items 1 and 5 were verbatim, stem included,
-    // until adapted below; item 4 is the reworded one, as said above; the
-    // endpoints were the paper's ("certainly not", "certain"), and the
-    // item-total correlations quoted above are its. The paper's instruction is "please use the respective
-    // rating scale to indicate how likely it is in your opinion that the
-    // statement is true"; the one-line stem over the slider says the same
-    // thing shorter.
-    //
-    // **Adapted since** (23 September 2026, after a participant's report):
-    // the stem and the ends did not agree. "How likely is it that this is
-    // true?" asks for a probability, while "I think that…" at the head of
-    // each item asked whether the person agrees, and "certainly not" against
-    // "certain" are not two ends of one thing. So the "I think that" is
-    // gone from all three — what is judged is the claim, and the stem
-    // already says it is the person's judgement — and the ends are
-    // "Certainly false" and "Certainly true", the two poles of the question
-    // asked. The paper's own instruction ("how likely it is in your opinion
-    // that the statement is true") shows the likelihood reading is the one
-    // meant. None of the three is now the published item, and none is
-    // pooled with CMQ data as though it were — which is why their keys no
-    // longer carry the CMQ's name or numbers (they were `Opinion_CMQ_1`,
-    // `_4` and `_5` until 23 September 2026). Which CMQ item each came from
-    // is written beside it.
+    // **Adapted, not verbatim.** The quoted source wordings beside each item
+    // are exact, checked against the English items in Bruder et al. (2013,
+    // Table 1), as are the item-total correlations above. "I think that" is
+    // taken off all three: the stem, "How likely is it that this is true?",
+    // asks for a probability, while an item opening "I think that…" asks
+    // whether the person agrees — what is judged is the claim, and the stem
+    // already says it is the person's judgement. The fourth is also reworded,
+    // its published wording being stilted and hard to parse; no examples are
+    // added to it, since any named event would ask about that event's own
+    // conspiracy theory rather than the general disposition the scale is for.
+    // The ends are "Certainly false" and "Certainly true", the two poles of
+    // the question asked, where the paper's "certainly not" against "certain"
+    // are not two ends of one thing. The paper's instruction, "please use the
+    // respective rating scale to indicate how likely it is in your opinion
+    // that the statement is true", shows the likelihood reading is the one
+    // meant; the stem over the slider says the same thing shorter. None of
+    // the three is the published item and none is pooled with CMQ data as
+    // though it were, which is why their keys do not carry the CMQ's name or
+    // numbers. Which CMQ item each came from is written beside it.
     //
     // One dimension under a plain name, Suspicion. Read back as one of the
     // spectra.
@@ -307,54 +287,39 @@ defineBlock("opinions", [
             // survey has carried every year since 1986 (Evans, Heath & Lalljee,
             // 1996, British Journal of Sociology, 47(1), 93-112), on the
             // survey's own five labels. The left-right scale has five items
-            // and the libertarian-authoritarian six; the ones kept started as
-            // those that travel outside Britain (the management item, the
+            // and the libertarian-authoritarian six; those drawn on are the
+            // ones that travel outside Britain (the management item, the
             // death penalty and censorship left out, "British" dropped from
             // "traditional British values"). As published, every item is
             // keyed the same way, which leaves both open to acquiescence; one
             // item a side is reversed.
             //
-            // **Adapted, not verbatim** (September 2026): each item quotes its
-            // source and says why it changed. The keys name the scale and what
-            // the item asks (`Opinion_LeftRight_`, `Opinion_LibAuth_`), whether
-            // or not it came from the BSA; which BSA item each came from, if
-            // any, is said in the comment beside it. (They carried `BSA_` and
-            // the BSA's item numbers until 23 September 2026.)
+            // **Adapted, not verbatim**: each item quotes its source and says
+            // why it changed. The keys name the scale and what the item asks
+            // (`Opinion_LeftRight_`, `Opinion_LibAuth_`), whether or not it
+            // came from the BSA; which BSA item each came from, if any, is
+            // said in the comment beside it.
             //
-            // **Source wordings verified on 23 September 2026** against the
-            // scales as the BSA and the Scottish Social Attitudes survey
-            // publish them (gov.scot, SSA 2023, Annex A): every quotation
-            // below is exact. The check found one thing wrong — "The law
-            // should always be obeyed…" is the libertarian-authoritarian
-            // scale's item **5**, item 4 being "Schools should teach
-            // children to obey authority", and it was keyed `_4`; renamed
-            // `_5` the same day, before any run was saved under it, and
-            // `Opinion_LibAuth_Obedience` since. The
-            // BSA's order, for the record — left-right: redistribute, big
-            // business, fair share, one law, management; libertarian-
-            // authoritarian: traditional values, stiffer sentences, death
-            // penalty, obey authority, law obeyed, censorship. Both on
-            // "agree strongly" to "disagree strongly", the five labels used
-            // here.
+            // The quoted source wordings are exact, checked against the scales
+            // as the BSA and the Scottish Social Attitudes survey publish them
+            // (gov.scot, SSA 2023, Annex A). The BSA's order — left-right:
+            // redistribute, big business, fair share, one law, management;
+            // libertarian-authoritarian: traditional values, stiffer
+            // sentences, death penalty, obey authority, law obeyed,
+            // censorship. Both on "agree strongly" to "disagree strongly", the
+            // five labels used here.
             //
             // Sharing (agreeing that wealth should be shared out) and Order
             // (agreeing that rules, the law and settled ways should be upheld)
-            // are the plane's two axes. **Three items a side** since September
-            // 2026: the BSA's "Big business benefits owners at the expense of
-            // workers" went from Sharing as a second perceived-unfairness item
-            // beside "fair share", the more loaded of the two; and the free
-            // speech item written for Order ("People should be allowed to
-            // spread, teach and research ideas I find abhorrent, even, for
-            // instance, that some people's lives are worth less than others'")
-            // went because it was the item least likely to load with the other
-            // four — free speech for abhorrent views cuts across left and right
-            // where the rest of the scale does not, and in the present climate
-            // leans the other way — and was the longest item on the level,
-            // reversed, with an example that would have carried the response.
-            // Order has four items and Sharing three, one of each reversed.
+            // are the plane's two axes. The BSA's "Big business benefits
+            // owners at the expense of workers" is left out of Sharing, being a
+            // second perceived-unfairness item beside "fair share" and the more
+            // loaded of the two. Order has four items and Sharing three, one of
+            // each reversed.
 
-            // BSA left-right item 1: "Government should redistribute income from the better off
-            // to those who are less well off". As published it can be agreed
+            // BSA left-right item 1: "Government should redistribute income
+            // from the better off to those who are less well off". As
+            // published it can be agreed
             // with as an ideal by somebody who thinks their country already
             // does too much of it; what divides people is whether it should do
             // more than it does now.
@@ -382,21 +347,14 @@ defineBlock("opinions", [
             },
             // In place of the BSA's libertarian-authoritarian item 1, "Young
             // people today don't have enough respect for traditional values",
-            // and reversed: agreeing is the
-            // freedom end. As published it is close to a claim of fact —
-            // somebody may agree that respect has declined and be glad of it.
-            // A normative rewrite with examples ("Society is better off when
-            // people hold on to traditional values, such as family, marriage
-            // and good manners") stood here until September 2026, and had a
-            // ceiling: nearly everybody endorses family and good manners, so
-            // marriage carried the item alone. A version setting tradition
-            // against "each living as they please" was tried and dropped for
-            // pulling in personal freedom as a second thing to react to. Now
-            // the person's own life against their country's tradition, which
-            // is the trade-off the scale is about — and the one reversed item
-            // Order has, so it carries the acquiescence check for the side.
-            // The item names the country itself, so it does not open on "In
-            // the country I live in" as the other Sharing and Order items do.
+            // and reversed: agreeing is the freedom end. As published it is
+            // close to a claim of fact — somebody may agree that respect has
+            // declined and be glad of it. This sets the person's own life
+            // against their country's tradition, which is the trade-off the
+            // scale is about — and is the one reversed item Order has, so it
+            // carries the acquiescence check for the side. The item names the
+            // country itself, so it does not open on "In the country I live
+            // in" as the other Sharing and Order items do.
             {
                 key: "Opinion_LibAuth_Tradition",
                 dimension: "Order",
@@ -410,17 +368,18 @@ defineBlock("opinions", [
                 dimension: "Order",
                 text: "In the country I live in, people who break the law should be given stiffer sentences",
             },
-            // BSA libertarian-authoritarian item 5: "…even if a particular law is wrong". Wrong by whose
-            // lights is the whole question, so it is the person's own.
+            // BSA libertarian-authoritarian item 5: "…even if a particular law
+            // is wrong". Wrong by whose lights is the whole question, so it is
+            // the person's own.
             {
                 key: "Opinion_LibAuth_Obedience",
                 dimension: "Order",
                 text: "In the country I live in, the law should always be obeyed, even if I think a particular law is wrong",
             },
             // Not the BSA's, in place of its libertarian-authoritarian item 4,
-            // "Schools should teach children to obey authority", which reads as either unobjectionable (children do
-            // what the teacher says) or sinister (blind obedience) depending on
-            // the reader. Order against freedom as it is argued now: security
+            // "Schools should teach children to obey authority", which reads as
+            // either unobjectionable (children do what the teacher says) or
+            // sinister (blind obedience) depending on the reader. Order against freedom as it is argued now: security
             // against privacy, a trade-off with no decent end.
             {
                 key: "Opinion_LibAuth_Surveillance",
@@ -429,11 +388,11 @@ defineBlock("opinions", [
             },
 
             // Parity ==========================================================
-            // Custom, not validated (September 2026), in place of the four
-            // anti-egalitarianism items of the SDO7(s) (Ho et al., 2015). Those
-            // asked about "group equality" in the abstract, two of them as
-            // negations that read as double negatives, and "group equality"
-            // could be taken as equal rights, which nearly everybody endorses.
+            // Custom, not validated, rather than the four anti-egalitarianism
+            // items of the SDO7(s) (Ho et al., 2015). Those ask about "group
+            // equality" in the abstract, two of them as negations that read as
+            // double negatives, and "group equality" can be taken as equal
+            // rights, which nearly everybody endorses.
             // What actually divides people is **equality of outcomes against
             // equality of opportunity** — the opposition the recent scales of
             // "critical social justice" or "woke" attitudes circle round —
@@ -467,11 +426,9 @@ defineBlock("opinions", [
             // Diversity of views against diversity of people, as a trade-off.
             // Custom and **not scored** (no dimension, a scale of its own): it
             // is not yet known whether it lines up with Parity, and it is kept
-            // to find out. It asked "even if they all come from similar
-            // backgrounds" against "even if they all think alike" until
-            // September 2026, and the second clause made the views end the
-            // obvious one; now each end is stated plainly and the trade-off
-            // left to the question.
+            // to find out. Each end is stated plainly, with no clause making
+            // either the obvious one, and the trade-off is left to the
+            // question.
             {
                 key: "Opinion_Parity_Diversity",
                 text: "When choosing the members of a body such as a parliament, a company board or a panel of experts, which matters more to you: that they bring a range of different views, or that they come from a range of different backgrounds?",
@@ -493,42 +450,21 @@ defineBlock("opinions", [
             //                their genes. Higher is more in favour. (Published
             //                neighbours: the Pew human-enhancement items,
             //                2016.) **Four items, one theme apiece, two each
-            //                way** (September 2026; it was seven): oneself
-            //                enhanced, immortality, the principle and
-            //                selection. Three went — "Parents should be
-            //                allowed to use genetic technology to give their
-            //                children better health and abilities" (children
-            //                are covered by the selection item, and "health"
-            //                is the end nearly everybody accepts); "If tests
-            //                during pregnancy show that the child would have a
-            //                serious genetic condition, it is right to end the
-            //                pregnancy" (an abortion item, driven by
-            //                religiosity and disability-rights views rather
-            //                than by anything transhumanist — the highest
-            //                validity risk on the level); and "People choosing
-            //                a sperm or egg donor should be free to pick the
-            //                one with the best genes for health, intelligence
-            //                or looks" (a third children item, triple-barrelled,
-            //                and "looks" would have carried it).
+            //                way**: oneself enhanced, immortality, the
+            //                principle and selection.
             //   Heredity     hereditarian against environmental beliefs about
             //                where differences between individuals come from —
             //                deliberately not between groups. Higher is more
             //                hereditarian. (Published neighbour: Keller's
             //                Belief in Genetic Determinism scale, 2005.) Three
-            //                items, one reversed (September 2026; it was four):
-            //                "With the right upbringing and education, almost
-            //                anyone could become almost anything" went as
-            //                blank-slate absolutism that overlapped the
-            //                intelligence item and picked up growth mindset.
+            //                items, one reversed.
             {
                 key: "Opinion_Enhancement_1",
                 dimension: "Enhancement",
                 text: "If it were safe, I would take a treatment that made me more intelligent",
             },
-            // "Living far beyond a natural lifespan is not something people
-            // should aim for" until September 2026: a reversed item built on a
-            // negation, which is the classic misread, and a hedge on the
-            // timescale. Now the goal itself, asked straight, and positive.
+            // The goal itself, asked straight and positively: a reversed item
+            // built on a negation is the classic misread.
             {
                 key: "Opinion_Enhancement_2",
                 dimension: "Enhancement",
@@ -540,12 +476,9 @@ defineBlock("opinions", [
                 reverse: true,
                 text: "There is something wrong with using technology to improve on human nature",
             },
-            // "Choosing which children are born according to their genes is
-            // wrong, whatever the reason" until September 2026: "whatever the
-            // reason" made it absolute, and most people disagreed with it.
-            // The two clauses now take the safety and the inequality
-            // objections off the table, so what is left to disagree with is
-            // the bioconservative principle itself.
+            // The two clauses take the safety and the inequality objections
+            // off the table, so what is left to disagree with is the
+            // bioconservative principle itself.
             {
                 key: "Opinion_Enhancement_4",
                 dimension: "Enhancement",
@@ -566,20 +499,16 @@ defineBlock("opinions", [
             },
 
             // Planet and Animals ==============================================
-            // Custom, not validated (September 2026): questions a society is
-            // arguing about that left and right answer badly.
+            // Custom, not validated: questions a society is arguing about that
+            // left and right answer badly.
             //
             //   Planet   the climate weighed against its costs: higher puts the
             //            climate first. Asked as trade-offs, not as whether the
-            //            climate matters, which nearly everybody agrees with —
-            //            which is why "The dangers of climate change have been
-            //            exaggerated" went in September 2026: a claim of fact
-            //            rather than a trade-off (the same reason the animal
-            //            consciousness item went), and saturated with
-            //            left-right, so it repeated the plane rather than
-            //            adding to the spectrum. A reversed trade-off, the
-            //            mirror of the first item, stands in its place. Four
-            //            items, two reversed. Its far end is where
+            //            climate matters, which nearly everybody agrees with,
+            //            and not as claims of fact, which are saturated with
+            //            left-right and would repeat the plane rather than add
+            //            to the spectrum. Four items, two reversed, the third
+            //            the mirror of the first. Its far end is where
             //            **degrowth** sits — the movement for deliberately
             //            shrinking rich economies for the planet's sake, a real
             //            position with its own literature — and the first item
@@ -590,22 +519,16 @@ defineBlock("opinions", [
             //   Animals  the moral standing of animals: whether what we owe
             //            them should limit what we do to them. Higher gives
             //            them more. Three items, one positive and two
-            //            reversed: "Animals such as pigs and cows are
-            //            conscious…" went in September 2026, being a claim of
-            //            fact rather than a trade-off, and a fourth, if it is
+            //            reversed, none a claim of fact; a fourth, if it is
             //            wanted, should be on the giving-more side.
             //
-            // `Opinion_Planet_Nuclear` carries **no dimension**: a place where people
-            // who care about the environment disagree with one another (the
-            // waste against the emissions). A second such probe, the turbines
-            // against a beautiful landscape, went in September 2026: read back
-            // to nobody, and a beauty-against-utility trade-off that would
-            // have cross-loaded on Beauty under a Planet key. `Opinion_Animals_Diet` is
-            // a behaviour, asked on its own options, written last and held
-            // there (`shuffle: false`) so that it comes after the statements
-            // rather than in among them; it stays as the one known-groups
-            // check the Animals scale has. Both are saved and read back to
-            // nobody.
+            // `Opinion_Planet_Nuclear` carries **no dimension**: a place where
+            // people who care about the environment disagree with one another
+            // (the waste against the emissions). `Opinion_Animals_Diet` is a
+            // behaviour, asked on its own options, written last and held there
+            // (`shuffle: false`) so that it comes after the statements rather
+            // than in among them; it is the one known-groups check the Animals
+            // scale has. Both are saved and read back to nobody.
             {
                 key: "Opinion_Planet_1",
                 dimension: "Planet",
@@ -633,8 +556,6 @@ defineBlock("opinions", [
                 dimension: "Animals",
                 text: "It is wrong to kill animals for food when people can live healthily without meat",
             },
-            // "…if it could save human lives" until September 2026, which made
-            // it a question nobody but the most committed says no to.
             {
                 key: "Opinion_Animals_2",
                 dimension: "Animals",
@@ -653,22 +574,15 @@ defineBlock("opinions", [
             },
 
             // Beauty ==========================================================
-            // Custom, not validated (September 2026): how much beauty should
-            // count when it competes with the other things a thing is for — its
-            // cost and its use. A value, not the disposition of seeking beauty
+            // Custom, not validated: how much beauty should count when it
+            // competes with the other things a thing is for — its cost and its
+            // use. A value, not the disposition of seeking beauty
             // out (that is `Aesthetics_Beauty` on level 1). Published
             // neighbours: the aesthetic value of the Allport-Vernon-Lindzey
             // Study of Values, and "a world of beauty" among Schwartz's values.
             // Chosen so that **neither end is the decent answer**: nothing sets
             // beauty against helping people, which would measure who wants to
-            // look kind. Three items, one reversed (September 2026; it was
-            // four): "A work of art matters more for what it says than for how
-            // beautiful it is" went as a question of art criticism — meaning
-            // against beauty — unlikely to move with the cost-and-use
-            // trade-offs the other three ask, and "matters" was ambiguous.
-            // (The second asked whether the cathedrals and palaces of the past
-            // were worth what they cost, until it was judged too culturally
-            // particular.)
+            // look kind. Three items, one reversed.
             {
                 key: "Opinion_Beauty_1",
                 dimension: "Beauty",

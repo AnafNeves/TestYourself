@@ -293,8 +293,7 @@ const WATER_SHARE = 2 / 3
 // things because the name is participant-facing prose and free to change for
 // the sake of the test, while a column of a study's data is not — and because
 // a name may hold an ampersand, a hyphen or an article, none of which a column
-// name can keep. Two levels of one key throw in app.js, the way two of one
-// name used to.
+// name can keep. Two levels of one key throw in app.js.
 const TIMELINE = [
     { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"] },
     shuffle([
