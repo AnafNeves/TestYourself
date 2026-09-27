@@ -1942,25 +1942,58 @@
 
 /* ---------------------------- the AI archetype --------------------------- */
 
-/* The BAIT's whole reading is one figure: the robot, which of the three
-   archetypes the answers came nearest, and the share of people answering
-   the same way. */
-.archetype {
+/* The BAIT's whole reading, on the sea's pattern: a title, the robot the
+   answers draw at the width of the card, which archetype they came nearest,
+   what the robot is made of, the three archetypes drawn small, one question,
+   and then a few answers set beside everybody else's — each piece arriving a
+   beat after the one above it. */
+.robotview {
+    display: grid;
+    margin: 4px 0;
+}
+
+.robotview__head {
+    margin: 0 0 18px;
+    text-align: center;
+    animation: rise 0.8s var(--ease) both;
+}
+
+.robotview__title {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--gold-pale);
+    text-shadow: 0 0 40px rgba(217, 164, 65, 0.35);
+}
+
+.robotview__stage {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    animation: fade 1s var(--ease) 0.15s both;
+}
+
+.robot {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.95);
+}
+
+.robotview__verdict {
     display: grid;
     justify-items: center;
     gap: 4px;
-    margin: 4px 0;
+    margin-top: 26px;
     text-align: center;
-}
-
-.archetype__emoji {
-    margin: 0;
-    font-size: 64px;
-    line-height: 1.15;
+    animation: rise 0.8s var(--ease) 0.4s both;
 }
 
 .archetype__lead {
-    margin: 8px 0 0;
+    margin: 0;
     font-size: 14px;
     color: var(--muted);
 }
@@ -1983,13 +2016,397 @@
 }
 
 /* The general reading of the archetype, in the same voice as every other
-   prediction — and the votes on it sit directly under it. */
+   prediction. */
 .archetype__told {
     margin: 6px 0 0;
     max-width: 52ch;
     font-size: 14px;
     font-style: italic;
     color: var(--muted);
+}
+
+/* The two axes the robot is drawn on, straight under it and as wide as it:
+   a name, a line between its two words with the person marked on it, and
+   what each does to the robot said on hovering it. */
+.robotview__keys {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto 0;
+    padding: 0;
+    list-style: none;
+    animation: rise 0.8s var(--ease) 0.25s both;
+}
+
+.robotview__key {
+    padding: 10px 14px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: help;
+    transition: border-color 0.2s;
+}
+
+.robotview__key:hover,
+.robotview__key:focus-visible {
+    border-color: color-mix(in srgb, var(--key) 60%, transparent);
+    outline: none;
+}
+
+.robotview__key b {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+/* The line runs from nothing of the thing to all of it, and the person is
+   a gold point on it. */
+.robotview__track {
+    position: relative;
+    display: block;
+    height: 4px;
+    margin: 0 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), color-mix(in srgb, var(--key) 70%, transparent));
+}
+
+.robotview__track i {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 3px rgba(11, 19, 34, 0.9), 0 0 14px -1px rgba(217, 164, 65, 0.8);
+    transform: translate(-50%, -50%);
+    animation: fade 0.6s var(--ease) 0.7s both;
+}
+
+.robotview__ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.robotview__aside {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* The four corners of the plane, each drawn as a robot, the person's own
+   ringed in gold: the two axes written along the top and down the side. */
+.robotview__others {
+    width: 100%;
+    max-width: 520px;
+    margin: 28px auto 0;
+    animation: rise 0.8s var(--ease) 0.55s both;
+}
+
+.robotview__grid {
+    display: grid;
+    grid-template-columns: auto repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: 8px 14px;
+    margin-top: 10px;
+}
+
+.robotview__axis {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--muted);
+}
+
+.robotview__axis--side {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    align-self: start;
+    margin-top: 30%;
+}
+
+.robotview__type {
+    margin: 0;
+    opacity: 0.72;
+}
+
+.robotview__type .robot {
+    box-shadow: 0 0 0 1px var(--line);
+}
+
+.robotview__type--you {
+    opacity: 1;
+}
+
+.robotview__type--you .robot {
+    box-shadow: 0 0 0 2px var(--gold), 0 0 28px -6px rgba(217, 164, 65, 0.6);
+}
+
+.robotview__type figcaption {
+    margin-top: 9px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted);
+}
+
+.robotview__type figcaption b,
+.robotview__type figcaption span {
+    display: block;
+}
+
+.robotview__type figcaption b {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.robotview__type--you figcaption b {
+    color: var(--gold-pale);
+}
+
+.robotview__vote {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    margin-top: 26px;
+    animation: rise 0.8s var(--ease) 0.7s both;
+}
+
+.robotview__ask {
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text);
+}
+
+/* The robot is still but for a blink, the light on its antenna, the wave
+   and the sparks round a warm one — held at their first frame under a seal. */
+.robot__eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: robot-blink 5.5s infinite;
+}
+
+.robot__beacon {
+    animation: robot-beacon 2.4s ease-in-out infinite alternate;
+}
+
+.robot__spark {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: robot-twinkle 2.2s ease-in-out var(--beat, 0s) infinite alternate;
+}
+
+.robot__wave {
+    transform-box: view-box;
+    transform-origin: 300px 318px;
+    animation: robot-wave 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes robot-blink {
+    0%,
+    93%,
+    100% {
+        transform: scaleY(1);
+    }
+    96% {
+        transform: scaleY(0.1);
+    }
+}
+
+@keyframes robot-beacon {
+    from {
+        opacity: 0.45;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes robot-twinkle {
+    from {
+        opacity: 0.2;
+        transform: scale(0.6);
+    }
+    to {
+        opacity: 0.95;
+        transform: scale(1);
+    }
+}
+
+@keyframes robot-wave {
+    from {
+        transform: rotate(-6deg);
+    }
+    to {
+        transform: rotate(6deg);
+    }
+}
+
+/* You and the crowd: a card a statement, the spread of everybody's answers
+   under it as seven columns with the person's own in gold, and one line. */
+.crowd {
+    width: 100%;
+    max-width: 660px;
+    margin: 36px auto 0;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+    animation: rise 0.8s var(--ease) 0.85s both;
+}
+
+.crowd .robotview__aside {
+    margin-bottom: 12px;
+}
+
+.crowd__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.crowd__card {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto auto;
+    padding: 14px 14px 13px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.crowd__card--rare {
+    border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+    background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+
+.crowd__tag {
+    margin: 0 0 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.crowd__card--rare .crowd__tag {
+    color: var(--gold-pale);
+}
+
+.crowd__statement {
+    margin: 0 0 14px;
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.35;
+    color: var(--text);
+}
+
+.crowd__chart {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    align-items: end;
+    gap: 3px;
+    height: 62px;
+    padding-top: 16px;
+}
+
+.crowd__column {
+    position: relative;
+    height: var(--tall);
+    min-height: 2px;
+    border-radius: 3px 3px 1px 1px;
+    background: rgba(255, 255, 255, 0.14);
+    transform-origin: bottom;
+    animation: crowd-rise 0.7s var(--ease) calc(1s + var(--beat, 0ms)) both;
+}
+
+.crowd__column--you {
+    background: var(--gold);
+    box-shadow: 0 0 14px -2px rgba(217, 164, 65, 0.7);
+}
+
+.crowd__you {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -3px);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-pale);
+}
+
+.crowd__ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 10.5px;
+    color: var(--muted);
+}
+
+/* Two lines' room whatever it says, so the charts of three cards side by
+   side stand on one line. */
+.crowd__told {
+    min-height: 2.9em;
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    font-weight: 600;
+    color: var(--text);
+}
+
+@keyframes crowd-rise {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}
+
+@media (max-width: 560px) {
+    .robotview__keys,
+    .crowd__cards {
+        grid-template-columns: 1fr;
+    }
+
+    .robotview__grid {
+        gap: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .robot__eye,
+    .robot__beacon,
+    .robot__spark,
+    .robot__wave,
+    .crowd__column,
+    .robotview__head,
+    .robotview__stage,
+    .robotview__verdict,
+    .robotview__keys,
+    .robotview__track i,
+    .robotview__others,
+    .robotview__vote,
+    .crowd {
+        animation: none;
+    }
 }
 
 /* --------------------------- the archetype wheel -------------------------- */

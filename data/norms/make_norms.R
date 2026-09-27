@@ -7,6 +7,8 @@
 # their own in this folder, `norms_<questionnaire>.R`, which says where its
 # numbers come from and which block file they go into:
 #
+#   norms_bait.R    THE BAIT (`content/block_bait.js`), from the raw answers
+#                   of the eight studies of its pooled validation
 #   norms_hitop.R   THE HiTOP-BR (`content/block_hitop.js`), from the {hitop}
 #                   package's development-sample statistics
 #   norms_mint.R    THE MINT (`content/block_mint.js`), from the raw answers of

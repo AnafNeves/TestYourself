@@ -44,17 +44,22 @@ defineBlock("bait", [
             color: "#06b6d4",
         },
 
-        // The Enthusiasm mean is real — 3.89, computed in FictionEro and used
-        // as the population reference in every study since. The rest are
-        // PLACEHOLDER norms, invented. Not from any published sample.
+        // Real norms, out of `data/norms/norms_bait.R`: the pooled answers of
+        // 1,202 people across the five studies that asked these items on these
+        // seven circles (FakeFace2, FictionEro2, FakeArt, FakeFace3, FakeChat,
+        // July 2024 to April 2026), those who failed the attention check left
+        // out. A convenience sample of online studies rather than a norming
+        // one, and attitudes to AI moved a long way across it — the two most
+        // recent samples are far less enthusiastic and far more apprehensive
+        // than the rest. Re-read them from the script rather than retyping.
         // No `interpretations` on purpose: these dimensions are read back as
-        // an archetype (ARCHETYPES, in results.js), not as rows — but every
-        // mean *and* sd here is load-bearing, since that is what the
-        // answers are turned into z scores by before being placed.
+        // the robot and an archetype (`js/figures/archetype.js`), not as rows
+        // — but every mean *and* sd here is load-bearing, since that is what
+        // the answers are turned into standings and z scores by.
         norms: {
-            "AI Enthusiasm": { mean: 3.89, sd: 1.4 },
-            "AI Apprehension": { mean: 3.2, sd: 1.4 },
-            "AI Realism": { mean: 4.3, sd: 1.0 },
+            "AI Enthusiasm": { mean: 3.53, sd: 1.56 },
+            "AI Apprehension": { mean: 4.11, sd: 1.61 },
+            "AI Realism": { mean: 4.05, sd: 1.08 },
         },
 
         items: [
