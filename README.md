@@ -146,6 +146,8 @@ Worth going back to for what to add next and how to present it.
 // Public/private self-consciousness
 // Shame/disgust
 // Social connection
+// Suggestibility
+// PCS?
 
 // Wellbeing/emotions
 
@@ -185,7 +187,8 @@ Worth going back to for what to add next and how to present it.
 - https://taketest.xyz/
 - https://openpsychometrics.org/
 - https://openpsychometrics.org/_rawdata/
-
+- https://aella.lol/
+- https://chaosfactor.xyz/
 
 - Synthetic data
   - https://openrouter.ai/

@@ -50,6 +50,8 @@
 #                  Rating_*      one a level: the stars its results were given
 #                  QC_*          four a level: RT_Mean, RT_SD, ChecksFailed,
 #                                TimeFinished
+#                  Level_<N>_*   three a fork choice: Offered (keys in the
+#                                order the cards stood), Recommended, Chosen
 #                  <item key>    one a question, holding the words that were
 #                                on screen
 #                  <item key>_RT one a question, holding what that answer took
@@ -338,6 +340,25 @@ when_v <- function(texts) {
   out
 }
 
+# Each fork choice as it was put to the person — the `choice` on the entry in
+# `levels` of the level whose screen it was made on, null where the way on was
+# one button and absent from files before September 2026: the levels offered as
+# keys in the order their cards stood, the one recommended and the one taken.
+choice_rows <- function(run) {
+  levels <- run$levels %||% list()
+  made <- which(vapply(levels, function(one) is.list(one$choice), logical(1)))
+  if (length(made) == 0) return(NULL)
+  held <- lapply(levels[made], function(one) one$choice)
+  data.frame(
+    participant = as.character(run$participant %||% NA),
+    screen = paste0("Level_", made),
+    offered = vapply(held, function(one) as_cell(one$offered), character(1)),
+    recommended = vapply(held, function(one) as.character(one$recommended %||% NA), character(1)),
+    chosen = vapply(held, function(one) as.character(one$chosen %||% NA), character(1)),
+    stringsAsFactors = FALSE
+  )
+}
+
 named_rows <- function(run, field, name_column, value_column) {
   held <- run[[field]] %||% list()
   if (length(held) == 0) return(NULL)
@@ -444,6 +465,7 @@ levels_table <- bind(lapply(runs, function(one) level_rows(one$run, one$file)))
 responses <- bind(lapply(runs, function(one) response_rows(one$run, one$file)))
 feedback <- bind(lapply(runs, function(one) named_rows(one$run, "feedback", "reading", "vote")))
 ratings <- bind(lapply(runs, function(one) named_rows(one$run, "ratings", "level", "stars")))
+choices <- bind(lapply(runs, function(one) choice_rows(one$run)))
 
 if (is.null(participants)) stop("Nothing to write.", call. = FALSE)
 
@@ -551,6 +573,23 @@ if (!is.null(levels_table)) {
     # it is named for what it is rather than `time_left`, which read as time
     # remaining.
     wide[[paste0(stem, "TimeFinished")]] <- rows$time_finished[at]
+  }
+}
+
+# The fork choices, three columns a level screen that offered one, named for
+# the screen the way its own column is: `Level_4_Offered` (keys, " | ", in the
+# order the cards stood), `Level_4_Recommended` and `Level_4_Chosen`. The
+# screen's own `Level_4` already holds what was taken, in the words on the
+# card; these hold it as a key, beside what it was taken from. A number here
+# is a place in one person's run, as it is in `Level_4` — which level was on
+# offer is in the cells, not the name.
+if (!is.null(choices)) {
+  numbered <- unique(choices$screen)
+  numbered <- numbered[order(suppressWarnings(as.numeric(sub("^Level_", "", numbered))))]
+  for (screen in numbered) {
+    for (field in c("offered", "recommended", "chosen")) {
+      wide <- c(wide, spread_suffix(choices, "screen", field, screen, paste0("_", tools::toTitleCase(field))))
+    }
   }
 }
 

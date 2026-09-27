@@ -72,3 +72,8 @@ data/collected/overview_files/
 # assets/theories/source/cut.py whenever one is missing. What it cuts them into
 # is committed.
 assets/theories/source/*.jpg
+
+# The MNI152 template the MINT's brain is cut from: fourteen megabytes, fetched
+# again from TemplateFlow by assets/mint/source/cut.py whenever it is missing.
+# What it cuts, assets/mint/brain.jpg, is committed.
+assets/mint/source/*.nii.gz

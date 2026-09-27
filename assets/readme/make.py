@@ -7,11 +7,17 @@ with stand-in scores, so what is photographed is the visitor's page — the
 level's own figures, drawn by the page itself, without the votes. It serves
 the folder on a port of its own and needs Playwright (`pip install
 playwright`) with Edge or Chrome, and Pillow, for the JPEG.
+
+Name levels by their `key` to photograph only those, when one figure has
+changed and the rest have not:
+
+    python assets/readme/make.py BrainBody AIExpertise
 """
 
 import functools
 import http.server
 import io
+import sys
 import threading
 from pathlib import Path
 
@@ -93,7 +99,11 @@ def main():
         page = browser.new_page(viewport={"width": WIDTH, "height": 900}, device_scale_factor=2)
         page.goto(base)
         levels = page.evaluate("TIMELINE.map((one) => one.key)")
-        for key in levels:
+        wanted = sys.argv[1:]
+        unknown = [key for key in wanted if key not in levels]
+        if unknown:
+            raise SystemExit("no level is keyed " + ", ".join(unknown) + "; the keys are " + ", ".join(levels))
+        for key in wanted or levels:
             scores = page.evaluate(STAND_INS, [key, *BANDS.get(key, BAND)])
             if not scores:
                 continue  # a level with nothing scored opens no results

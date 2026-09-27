@@ -639,17 +639,6 @@
     font-weight: 600;
 }
 
-/* The same pair, held inside the figure that made the prediction, directly
-   under the words it is about. The figure brings its own spacing. */
-.soma__votes .votes {
-    margin-top: 0;
-}
-
-.soma__votes .vote {
-    font-size: 11px;
-    padding: 2px 11px;
-}
-
 /* ---------------------- what the level itself was worth ------------------ */
 
 /* Asked once under everything a level opened, in its panel as on its screen:
@@ -809,8 +798,6 @@
 
 /* ------------------------ interoception, as a body ----------------------- */
 
-/* The head, the chest, and the cord that carries what one says to the other.
-   Each ring is filled to where the score sits on its own scale. */
 .soma,
 .sea,
 .climb {
@@ -1299,18 +1286,242 @@
     }
 }
 
-.soma__track,
-.soma__cord {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.08);
-    stroke-width: 7;
-    stroke-linecap: round;
+/* The inside of a body, drawn from the MINT: a slice of brain glowing over
+   the insula, nerves out of its brainstem, and the organs they reach. The
+   drawing takes the left half of the card and the three readings the right, a
+   dashed lead from each reading to its part of the drawing (measured by
+   soma.js once both are laid out); on a phone the readings stand under it
+   and the leads go. */
+.soma__stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0 20px;
+    align-items: center;
 }
 
-/* The face's ring is the same ring an organ fills, so it is drawn by the
-   same rule. */
-.soma__ring,
-.soma__signal,
+/* Locked, the drawing alone, at the width a figure is usually given. */
+.soma__stage--locked {
+    display: block;
+}
+
+.soma__figure {
+    max-width: none;
+}
+
+.soma__stage--locked .soma__figure {
+    max-width: 320px;
+}
+
+/* The windpipe, the lines drawn into an organ, the gut and the nerves are
+   all strokes; an organ's own shape carries its fill as an attribute. */
+.soma__tube,
+.soma__nerves {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* The glow over each insula breathes a little. */
+.soma__glow {
+    animation: soma-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes soma-breathe {
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* A signal is a dash run up its nerve, from the organ to the brainstem:
+   the path is 100 long, so the dash is placed by share. */
+.soma__signal {
+    fill: none;
+    stroke: #f4fff6;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-dasharray: 3 200;
+    animation: soma-signal var(--beat) linear var(--phase) infinite;
+}
+
+@keyframes soma-signal {
+    0% {
+        stroke-dashoffset: -97;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0;
+    }
+}
+
+.soma__leads {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.soma__lead {
+    fill: none;
+    stroke: #56628a;
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+}
+
+.soma__knot {
+    fill: #cfd6e6;
+}
+
+.soma__readings {
+    display: grid;
+    gap: 14px;
+}
+
+.soma__reading {
+    padding: 12px 14px 13px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(5, 9, 20, 0.55);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.soma__name {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.soma__standing {
+    margin: 2px 0 8px;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.soma__standing strong {
+    font-size: 16px;
+}
+
+/* The crowd the standing is read against: a column for each half point of
+   the scale, as tall as the share of people there, shaded in the reading's
+   colours as far as the person reaches (soma.js sets each column's shade)
+   and dim beyond, with the person as a gold line. It says on hover what its part of the drawing is, so it takes a
+   pointer and a focus ring of its own. */
+.soma__crowd {
+    position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    align-items: end;
+    gap: 2px;
+    height: 46px;
+    margin: 24px 0 12px;
+    cursor: help;
+    outline-offset: 5px;
+}
+
+.soma__column {
+    position: relative;
+    height: var(--tall);
+    min-height: 2px;
+    overflow: hidden;
+    border-radius: 3px 3px 1px 1px;
+    background: rgba(255, 255, 255, 0.1);
+    transform-origin: bottom;
+    animation: crowd-rise 0.7s var(--ease) calc(0.4s + var(--beat, 0ms)) both;
+}
+
+.soma__column i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    transition: filter 0.2s;
+}
+
+.soma__crowd:hover .soma__column i,
+.soma__crowd:focus-visible .soma__column i {
+    filter: brightness(1.25);
+}
+
+.soma__you {
+    position: absolute;
+    top: -4px;
+    bottom: -3px;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgba(217, 164, 65, 0.8);
+}
+
+.soma__you span {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -2px);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-pale);
+}
+
+.soma__told {
+    margin: 0 0 4px;
+}
+
+/* Each reading's number in the colours of its part of the drawing: the
+   glow's gold, the nerves' green to red, the organs' blue to pink. */
+.soma__reading--glow strong {
+    color: #ffd66b;
+}
+
+.soma__reading--nerve strong,
+.soma__reading--vivid strong {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.soma__reading--nerve strong {
+    background-image: linear-gradient(90deg, #34e39a, #d6e04a 45%, #ff9a3c 75%, #ff4d6d);
+}
+
+.soma__reading--vivid strong {
+    background-image: linear-gradient(90deg, #38bdf8, #a78bfa 55%, #f472b6);
+}
+
+@media (max-width: 640px) {
+    .soma__stage {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .soma__figure {
+        max-width: 340px;
+    }
+
+    .soma__leads {
+        display: none;
+    }
+
+    .soma__readings {
+        margin-top: 12px;
+    }
+}
+
+/* The ring a face fills, and the average person's tick on it. */
 .face__ring {
     fill: none;
     stroke: var(--chart);
@@ -1320,66 +1531,10 @@
     animation: fade 0.6s ease both;
 }
 
-.soma__organ {
-    cursor: pointer;
-}
-
-.soma__icon {
-    fill: color-mix(in srgb, var(--chart) 24%, transparent);
-    stroke: var(--chart);
-    stroke-width: 2;
-    stroke-linejoin: round;
-}
-
-.soma__fold {
-    fill: none;
-    stroke: var(--chart);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    opacity: 0.6;
-}
-
-/* The rungs are what make the cord a nerve rather than a wire. */
-.soma__rung {
-    stroke: rgba(255, 255, 255, 0.16);
-    stroke-width: 2;
-    stroke-linecap: round;
-}
-
-/* Where the average person sits — on an organ's ring and cord, and on a
-   face's ring, ticked the same way. */
-.soma__mean,
 .face__mean {
     stroke: var(--mean);
     stroke-width: 2.5;
     stroke-linecap: round;
-}
-
-.soma__name {
-    fill: var(--muted);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-}
-
-/* Where it stands, in one sentence at one size. */
-.soma__reading {
-    fill: #e6ebf7;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-/* And what tends to follow from standing there. */
-.soma__told {
-    fill: var(--muted);
-    font-size: 12.5px;
-    font-style: italic;
-}
-
-.soma__unit {
-    fill: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
 }
 
 /* -------------------------- a reading, as a face ------------------------- */
@@ -3671,6 +3826,8 @@
     }
 
     /* The water holds still, and the section is all there at once. */
+    .soma__glow,
+    .soma__column,
     .sea__drift,
     .sea__creature,
     .sea__mote,
@@ -3714,6 +3871,11 @@
     .stance__beyond,
     .stance__mark {
         animation: none;
+    }
+
+    /* A signal frozen would be a dash stuck at the brainstem. */
+    .soma__signal {
+        display: none;
     }
 
     .curtain--out .curtain__splash,

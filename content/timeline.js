@@ -218,7 +218,8 @@ function shuffle(arr) {
 // **Where the seabed falls is not written on any level.** `WATER_SHARE` below
 // is a share of the scored levels: the first two thirds are swum down and the
 // rest are cut through the rock underneath (app.js, `BEDROCK`, `waterLevels`),
-// the water darkening into rock behind them and the gauge sounding "seabed +".
+// the water darkening into rock behind them and the gauge sounding on past the
+// Challenger Deep, still in metres from the surface.
 // Leaving the last level in the water goes through the crossing line, the way
 // the quote closes over the way in. It is a share and not a flag so that the
 // break holds its place however many levels a battery asks and wherever the
@@ -253,15 +254,19 @@ function shuffle(arr) {
 // chosen is visible in the shape of the list rather than written as a word on
 // every line.
 //
-// **The two go together on the core**, and on purpose. A fork offers the
+// **The two go together on both forks**, and on purpose. A fork offers the
 // levels in the order they are written — the first `n` first, the rest as
 // places come free — so the level written last among three at `fork: 2` can
 // never be met first, and whichever is written first is recommended to
-// everybody. The core is asked of everybody and wants counterbalancing, so
-// its order is drawn and *then* forked: which two are offered first, and
-// which of them is recommended, falls differently for every person. Take the
-// `shuffle()` away and the core is still a fork, with the same pair always
-// offered first and the same level always recommended.
+// everybody. So each fork's order is drawn and *then* chosen from: which are
+// offered first, and which of them is recommended, falls differently for
+// every person. On the core that is counterbalancing, since it is asked of
+// everybody. On the rest it is what lets a level's pull on its card be told
+// from the recommendation's (`data/collected/overview.qmd`, **Choices**):
+// written in a fixed order, the first level would be recommended every time
+// it was offered and the last never. Take a `shuffle()` away and that fork is
+// still a fork, with the same levels always offered first and the same one
+// always recommended.
 //
 // Both follow one rule: what is asked moves between places and where it is
 // asked does not, so a level's number, its depth, its colour and which side
@@ -311,12 +316,14 @@ const TIMELINE = [
         { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2, minutes: 3 },
         { key: "MoodHealth", name: "Mood & Health", blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(), fork: 2, minutes: 8 },
     ]),
-    { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
-    { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
-    { key: "World", name: "The World", blocks: ["primals"], fork: 3, minutes: 6 },
-    { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
-    { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
-    { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
+    shuffle([
+        { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
+        { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
+        { key: "World", name: "The World", blocks: ["primals"], fork: 3, minutes: 6 },
+        { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
+        { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
+        { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
+    ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
 

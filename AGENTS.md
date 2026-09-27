@@ -36,16 +36,16 @@ A change usually needs one file out of one of them.
 showcase of stand-in figures the landing page cycles (`renderShowcase`), and
 `renderBadge(level)`, which crops one figure to a square for the shelf (see
 **The shelf**). Reads scores; records nothing but the agree/disagree `feedback` on a prediction and the stars a level's results are given (`starRating`, see **What the level was worth**) — and, at the moment it is built, the full set of keys that feedback can be filed under (`feedbackKeys`). |
-| `js/figures/*.js` | **The figures a level closes on, one file each**, every one a factory `makeX(shared)` called from `makeResults` and handed `shared` — the helpers above and nothing else — and returning what `renderResults` needs to place it: the questionnaire it stands in for, its feedback key, and its render function. Two of them also return a `badge()`, being the two whose section is not a drawing there is anything to crop (see **The shelf**). `soma.js` (the MINT's body), `climb.js` (the last year as a hill), `theories.js` (the star sign and the temperament), `archetype.js` (the AI archetype), `wheel.js` (the twelve archetypes), `sea.js` (the world), `reasoning.js` (the four kinds of reasoning as a compass), `heads.js` (Mind & Heart as four bars under a bulb and a heart), `stance.js` (Where You Stand as a plane and four spectra); `faces.js` (Mood & Health as faces) is on disk but has no tag and is not loaded. A figure reads scores only through `shared`; nothing in `content/`, `app.js` or another figure file is reachable from one, and the data a figure is read with (the twelve signs, the three archetypes, the wheel's colours and readings) lives in its own file, since it is how the figure is drawn and not anything asked. |
+| `js/figures/*.js` | **The figures a level closes on, one file each**, every one a factory `makeX(shared)` called from `makeResults` and handed `shared` — the helpers above and nothing else — and returning what `renderResults` needs to place it: the questionnaire it stands in for, its feedback key, and its render function. Two of them also return a `badge()`, being the two whose section is not a drawing there is anything to crop (see **The shelf**). `soma.js` (the MINT as a brain, its nerves and the organs they reach), `climb.js` (the last year as a hill), `theories.js` (the star sign and the temperament), `archetype.js` (the AI archetype), `wheel.js` (the twelve archetypes), `sea.js` (the world), `reasoning.js` (the four kinds of reasoning as a compass), `heads.js` (Mind & Heart as four bars under a bulb and a heart), `stance.js` (Where You Stand as a plane and four spectra); `faces.js` (Mood & Health as faces) is on disk but has no tag and is not loaded. A figure reads scores only through `shared`; nothing in `content/`, `app.js` or another figure file is reachable from one, and the data a figure is read with (the twelve signs, the three archetypes, the wheel's colours and readings) lives in its own file, since it is how the figure is drawn and not anything asked. |
 | `css/style.css` | The shell: tokens on `:root`, the water, the banner, the sidebar the descent runs down (a dive gauge — down the right on a wide screen, along the foot on a phone) and the shelf the badges collect on (down the left, along the top under the banner on a phone), screens, panels, buttons, the survey, particles. Also the animations the other two sheets share (`fade`, `rise`). |
 | `css/intro.css` | The landing screen only: hero, the case for doing this and the Jung line under it, consent form, and the Nietzsche quote on the way in. |
 | `css/results.css` | The water that breaks on a finished level, the level screen, results sections, charts, the interoception body, bars, the profile, card. |
 | `js/vendor/datapipe-client.js` | **The one file on the page that is not ours**: DataPipe's client, pinned and kept here rather than fetched from a CDN, which is how the answers go out — as they are given and again whole at the end. Nothing reads it at load; `app.js` asks for it by name (`window.DataPipe`) when the test begins, and does without it if it is not there. See **Where it goes**, which says what it does, why it is vendored, which version this is and how to update it. Nothing else belongs in `vendor/`, and nothing of ours does. |
 | `index.html` | Static skeleton, and the load order above. Screens and panels are markup; everything inside them is filled in by the scripts via `$(id)`. The favicon is an inline SVG data URI in the head — the A of the name over the hero's wheel on the dark blue of the water, the petals stronger than on the page so that they hold at sixteen pixels and the A a drawn path, since a favicon cannot count on a serif to set it in. The preview card in `assets/preview/` carries no mark. |
-| `assets/` | The logos on the hero and the consent form, referenced from `index.html`, and `assets/icar/` — the pictures of the reasoning level's matrix and rotation items, a problem and its candidates apiece, cut out of the eight published figures by `assets/icar/source/cut.py` (which sits beside the figures it cuts, and is run by hand when they change), referenced from `content/block_icar.js` as `<img>` in the items' own `text` and as `image:` on their options, which is the one place a script reaches for a file. No stylesheet does. And `assets/theories/`, **the four old pictures level 1's two old theories are drawn with**: `sky.jpg`, Dürer's map of the northern sky with the twelve zodiac figures round the ecliptic (1515, the National Gallery of Art's CC0 scan), cut to a disc round its pole, and `signs/<sign>.jpg`, the twelve out of a hand-coloured sixteenth-century German woodcut of the zodiac, for the star card; `woodcut.jpg`, Thurneysser's woodcut of the four humours (*Quinta Essentia*, 1574), and `faces/<temperament>.jpg`, one head apiece out of Lavater's plate of the four temperaments, toned to an old page, for the temperament. The two drawn as masks (`sky.jpg`, `woodcut.jpg`) are inverted, white ink on black. All four are public domain, off Wikimedia Commons, and cut by `assets/theories/source/cut.py`, which **fetches any original it does not find** into `source/` — the originals are sixteen megabytes and git-ignored, the cuts committed — and finds what it cuts rather than taking positions by hand: the woodcut's frame and cross, Lavater's four ovals, the sky's pole (where its twelve lines of longitude meet) and ecliptic (the ring of heaviest ink round it), the zodiac sheet's gutters. It prints what the page needs back (`CROSS`, `SKY_RING`) for `theories.js`. The one thing read by eye is where each zodiac figure stands on Dürer's ring (`sky` on each of `SIGNS`). Referenced from `js/figures/theories.js`, the second place a script reaches for a file. And `assets/preview/`, **the picture a shared link unfurls into**: `card.jpg`, 1200×630, named by the `og:image` in `index.html`'s head (with a `?v=` on the end, raised whenever the picture changes, since WhatsApp, Facebook and the rest cache a preview by its address and would otherwise go on showing the old one) beside the other Open Graph and `twitter:card` tags, and photographed out of `card.html` (the hero redrawn at that size, wheel and all, its look restated rather than imported, so a change to the hero is copied across by hand) by `make.py` (Edge or Chrome headless, then Pillow for the JPEG, since the 400 KB PNG is over what WhatsApp will show) — run by hand when `card.html` changes, and commit both. Crawlers run no script, so **every link unfurls the same**, whatever its `?start=`, `?level=` or `?card=` says: a preview per level would want a server. **There is no `og:url`, on purpose**: Facebook treats it as the address being shared, which would take `?source=` and `?start=` off every link shared there. The image's address is absolute, so it names the deployed site and shows nothing until that is pushed. And `assets/readme/`, **the pictures in README.md's table of levels**: one JPEG a scored level, named by its `key` in lower case, each the level's results as a shared level link opens them (`?card=1&level=`) at stand-in scores, photographed by `make.py` (Playwright with Edge, then Pillow; it serves the folder on a port of its own), cut off and faded at 1000 pixels tall. Run it by hand when a figure changes and commit the pictures with it. The stand-ins are hashed from each dimension's name, so a rerun draws the same pictures; `BANDS` gives Mood & Health a lower band, since a reach off the middle of the HiTOP-BR is a standing near its top. The links under the pictures start the run on each level with `?start=` and the level's first block. |
-| `data/norms/` | A workbench, not part of the page: **one script a questionnaire**, `norms_<questionnaire>.R`, each printing, ready to paste, a set of norms in the app that is *not* invented, and each runnable on its own — `norms_hitop.R`, the HiTOP-BR's development-sample means and SDs out of the {hitop} R package, and `norms_mint.R`, the MINT's worked out from the raw answers of the studies that have asked it, pulled from their repositories and scored the way `content/block_mint.js` scores them, and `norms_bait.R`, the BAIT's out of the eight studies of its pooled validation (read from that repository's local data cache, fetched from each study's own repository where a file is missing), pooling the five asked on the app's seven circles and showing the three slider studies beside them — and printing, besides the paste lines, every item's distribution, the dimensions' quantiles and how they go with sex, age, knowledge and usage, and the two blocks the robot in `js/figures/archetype.js` holds (its Menace axis's SD with the share of people in each of its four corners, and the spread of answers every crowd card is set against). `make_norms.R` runs every `norms_*.R` in the folder, each in an environment of its own and an error in one reported and passed over, so that a missing package or a dropped connection costs that questionnaire and not the rest; `common.R` is the printing the scripts share. A new questionnaire's norms are a new `norms_*.R` and nothing else changes. Each prints the number lines and never the `interpretations` beside them, which are the app's own prose. Nothing on the page reaches for it, and R is not a dependency of anything that runs. |
-| `data/synthetic/` | A second workbench, not part of the page: runs of the test answered by Claude in a sampled persona, written in the exact shape `container()` saves so that an analysis reads them with the same code as a real run. `codebook.js` (bun or node) reads every item out of `content/` the way `app.js` flattens it, so the requests cannot drift from what is asked; `synthesize.py` samples the demographics from the items' own options, has the model write a biography and answer the rest under a JSON schema of the items' own values, passes the attention checks, prunes closed branches, and writes `out/synthetic-<code>.json` — participant code prefixed `synthetic-`, a `synthetic` field naming model, batch, seed and biography, null times, null votes, null stars (`ratings`, one key per level screen). `work/` and `out/` are git-ignored. Its `FIGURE_VOTES` mirrors `feedbackKeys()` in `results.js` and has to move with it. It writes `battery` (null), `source` (`"Synthetic"`), `levels` and `questionnaires` (the whole timeline, written order) the way `container()` does, and splices a `Level_<N>` item into `items[]` after each scored level, answered with the way on that level offers — every fork choice taken as recommended (`screens`, `walked`; `codebook.js` works `beneath` out from `WATER_SHARE` the way `waterLevels` does, for the floor's wording — the one rule this workbench restates rather than reads) — so a synthetic file reads with the same code. Never sent to DataPipe, never pooled with participants; its `README.md` says why. |
-| `data/collected/` | **A third workbench, and the way the answers come back**, in two steps: `download.py` fetches, `preprocess.R` makes tables of what it fetched — and then `overview.qmd` (Quarto, base R) reads those tables back as a page of how long each level takes, the median and range over the runs that finished it, the same for how long its results screen stayed up, and how many runs closed the tab on that screen (a finished level with no `Level_<N>` in a partial) — answering in minutes and the results screen in seconds, in two panels on scales of their own — then a radar per level answered by at least `MIN_RUNS` runs (`radar()`, one figure a level), a box plot along each ray and nothing joining the rays, each item a share of its own scale and as answered, not reversed — every scale item but the demographics, free text and the ICAR's right answers; it turns the words back into numbers **through `data/synthetic/codebook.js`** (so it wants bun at render time) rather than a copy of any labels, reading a bare number as the value where the MINT's drawn labels differ from the codebook's one draw, and says on the page which answers matched no option and which saved keys the codebook no longer has; it works out which level an item was on, for the times, from the `Level_<N>` screens standing between levels in the item order; it wants `preprocess.R --long`, since only the long table has the times an item was shown, and its `overview.html` is git-ignored with the rest. Rendering it inside Dropbox can end on an error removing `overview_files/` (Dropbox holds the folder); the page has been written by then and the empty folder can be deleted. Both folders the first two write, `raw/` and `clean/`, are git-ignored because they hold **real participant data that must never be committed**. **`preprocess.R`** ({jsonlite} and base R, the way `data/norms/` is) reads `raw/` and writes `clean/`: **`data.csv`, one row a participant and everything in it, and nothing else at all** — **a master file**, 727 columns: the run (participant, file, completed, version, testMode, synthetic, battery, source, device, touchscreen, screenLayout, screenLayouts, the viewport's and the screen's width and height, formatMint, timeStart), the two sequence columns, a `Feedback_<reading>` apiece, a `Rating_<level key>` apiece, four `QC_<level key>_*` apiece (`RT_Mean`, `RT_SD`, `ChecksFailed`, `TimeFinished`), a column per item holding the words that were on screen, and an `<item>_RT` beside each one (a suffix, so an item and its time sort together). **One naming rule across it, and it is `content/`'s own**: what the run says about itself is lowercase (`participant`, `time_start`) and everything that is a *measure* is `Prefix_Subject_Field`, the prefix an acronym in capitals or a word in PascalCase exactly as an item key is written — so `QC_Character_RT_Mean` and `Feedback_BodilyAwareness` sit beside `HEXACO_Sincerity` under one convention and a measure can be told from a run field on sight. Times are milliseconds throughout and no column name says so. Nothing is left out to keep it narrow — an analysis selects from it rather than coming back for a second file, and width costs nothing to anything that is not Excel — and **nothing is worked out that the file does not already say**: no mean reaction time, no share of an instrument completed, no count of failed checks, no item counts, no minutes taken. Each is a line of R over the columns that are there, and which of them an analysis wants is the analysis's business; this reshapes rather than computes, and a file that counts things for you is a file whose counting has to be checked. **`NA` is not the empty string in it**: an item never put on screen is NA, an optional item shown and deliberately left blank is `""`, and the saved file tells those apart — writing NA as empty would make a question nobody was asked look like one somebody declined. **What is not data is said rather than filed**: the complaints go to the terminal where whoever ran the script is looking, since a `checks.csv` that is empty nine times in ten is a file somebody has to open to learn nothing. **Anything counting how much of an instrument somebody gave wants care, which
+| `assets/` | The logos on the hero and the consent form, referenced from `index.html`, and `assets/icar/` — the pictures of the reasoning level's matrix and rotation items, a problem and its candidates apiece, cut out of the eight published figures by `assets/icar/source/cut.py` (which sits beside the figures it cuts, and is run by hand when they change), referenced from `content/block_icar.js` as `<img>` in the items' own `text` and as `image:` on their options, which is the one place a script reaches for a file. No stylesheet does. And `assets/theories/`, **the four old pictures level 1's two old theories are drawn with**: `sky.jpg`, Dürer's map of the northern sky with the twelve zodiac figures round the ecliptic (1515, the National Gallery of Art's CC0 scan), cut to a disc round its pole, and `signs/<sign>.jpg`, the twelve out of a hand-coloured sixteenth-century German woodcut of the zodiac, for the star card; `woodcut.jpg`, Thurneysser's woodcut of the four humours (*Quinta Essentia*, 1574), and `faces/<temperament>.jpg`, one head apiece out of Lavater's plate of the four temperaments, toned to an old page, for the temperament. The two drawn as masks (`sky.jpg`, `woodcut.jpg`) are inverted, white ink on black. All four are public domain, off Wikimedia Commons, and cut by `assets/theories/source/cut.py`, which **fetches any original it does not find** into `source/` — the originals are sixteen megabytes and git-ignored, the cuts committed — and finds what it cuts rather than taking positions by hand: the woodcut's frame and cross, Lavater's four ovals, the sky's pole (where its twelve lines of longitude meet) and ecliptic (the ring of heaviest ink round it), the zodiac sheet's gutters. It prints what the page needs back (`CROSS`, `SKY_RING`) for `theories.js`. The one thing read by eye is where each zodiac figure stands on Dürer's ring (`sky` on each of `SIGNS`). Referenced from `js/figures/theories.js`, the second place a script reaches for a file. And `assets/mint/`, **the brain the MINT's level is drawn with**: `brain.png`, one frontal slice of the MNI152 template at y = −24 mm, which passes through the back of the insula and down the brainstem, the brain alone with the template's brain mask as its alpha — transparent round it rather than black, so it sits on the dark however it is drawn, blurred when locked or copied into an image, where blending a black ground away could not be relied on. Cut by `assets/mint/source/cut.py`, which reads the NIfTI with numpy alone, **fetches the template and its mask from TemplateFlow if they are missing** (fourteen megabytes, git-ignored; the cut committed), and prints what `soma.js` needs back (`ASPECT`, `INSULA`, `STEM`). The template's licence asks for the McConnell Brain Imaging Centre's copyright notice in all copies: it is written out in the script, and **nothing on screen credits it, on purpose** — the credit belongs wherever the picture is described in print. Referenced from `js/figures/soma.js`, the third place a script reaches for a file. And `assets/preview/`, **the picture a shared link unfurls into**: `card.jpg`, 1200×630, named by the `og:image` in `index.html`'s head (with a `?v=` on the end, raised whenever the picture changes, since WhatsApp, Facebook and the rest cache a preview by its address and would otherwise go on showing the old one) beside the other Open Graph and `twitter:card` tags, and photographed out of `card.html` (the hero redrawn at that size, wheel and all, its look restated rather than imported, so a change to the hero is copied across by hand) by `make.py` (Edge or Chrome headless, then Pillow for the JPEG, since the 400 KB PNG is over what WhatsApp will show) — run by hand when `card.html` changes, and commit both. Crawlers run no script, so **every link unfurls the same**, whatever its `?start=`, `?level=` or `?card=` says: a preview per level would want a server. **There is no `og:url`, on purpose**: Facebook treats it as the address being shared, which would take `?source=` and `?start=` off every link shared there. The image's address is absolute, so it names the deployed site and shows nothing until that is pushed. And `assets/readme/`, **the pictures in README.md's table of levels**: one JPEG a scored level, named by its `key` in lower case, each the level's results as a shared level link opens them (`?card=1&level=`) at stand-in scores, photographed by `make.py` (Playwright with Edge, then Pillow; it serves the folder on a port of its own), cut off and faded at 1000 pixels tall. Run it by hand when a figure changes and commit the pictures with it; naming levels by their `key` (`python assets/readme/make.py BrainBody AIExpertise`) photographs only those. The stand-ins are hashed from each dimension's name, so a rerun draws the same pictures; `BANDS` gives Mood & Health a lower band, since a reach off the middle of the HiTOP-BR is a standing near its top. The links under the pictures start the run on each level with `?start=` and the level's first block. |
+| `data/norms/` | A workbench, not part of the page: **one script a questionnaire**, `norms_<questionnaire>.R`, each printing, ready to paste, a set of norms in the app that is *not* invented, and each runnable on its own — `norms_hitop.R`, the HiTOP-BR's development-sample means and SDs out of the {hitop} R package, and `norms_mint.R`, the MINT's worked out from the raw answers of the studies that have asked it, pulled from their repositories and scored the way `content/block_mint.js` scores them — each with its `distribution` as well, the share of people in each half point of the scale (`distribution_of` in `common.R`, which any script can print a norm's distribution with), and `norms_bait.R`, the BAIT's out of the eight studies of its pooled validation (read from that repository's local data cache, fetched from each study's own repository where a file is missing), pooling the five asked on the app's seven circles and showing the three slider studies beside them — and printing, besides the paste lines, every item's distribution, the dimensions' quantiles and how they go with sex, age, knowledge and usage, and the two blocks the robot in `js/figures/archetype.js` holds (its Menace axis's SD with the share of people in each of its four corners, and the spread of answers every crowd card is set against). `make_norms.R` runs every `norms_*.R` in the folder, each in an environment of its own and an error in one reported and passed over, so that a missing package or a dropped connection costs that questionnaire and not the rest; `common.R` is the printing the scripts share. A new questionnaire's norms are a new `norms_*.R` and nothing else changes. Each prints the number lines and never the `interpretations` beside them, which are the app's own prose. Nothing on the page reaches for it, and R is not a dependency of anything that runs. |
+| `data/synthetic/` | A second workbench, not part of the page: runs of the test answered by Claude in a sampled persona, written in the exact shape `container()` saves so that an analysis reads them with the same code as a real run. `codebook.js` (bun or node) reads every item out of `content/` the way `app.js` flattens it, so the requests cannot drift from what is asked; `synthesize.py` samples the demographics from the items' own options, has the model write a biography and answer the rest under a JSON schema of the items' own values, passes the attention checks, prunes closed branches, and writes `out/synthetic-<code>.json` — participant code prefixed `synthetic-`, a `synthetic` field naming model, batch, seed and biography, null times, null votes, null stars (`ratings`, one key per level screen). `work/` and `out/` are git-ignored. Its `FIGURE_VOTES` mirrors `feedbackKeys()` in `results.js` and has to move with it. It writes `battery` (null), `source` (`"Synthetic"`), `levels` (each `choice` taken as recommended, the cards in written order, `fork_choices`) and `questionnaires` (the whole timeline, written order) the way `container()` does, and splices a `Level_<N>` item into `items[]` after each scored level, answered with the way on that level offers — every fork choice taken as recommended (`screens`, `walked`; `codebook.js` works `beneath` out from `WATER_SHARE` the way `waterLevels` does, for the floor's wording — the one rule this workbench restates rather than reads) — so a synthetic file reads with the same code. Never sent to DataPipe, never pooled with participants; its `README.md` says why. |
+| `data/collected/` | **A third workbench, and the way the answers come back**, in two steps: `download.py` fetches, `preprocess.R` makes tables of what it fetched — and then `overview.qmd` (Quarto, base R) reads those tables back as a page of how long each level takes, the median and range over the runs that finished it, the same for how long its results screen stayed up, and how many runs closed the tab on that screen (a finished level with no `Level_<N>` in a partial) — answering in minutes and the results screen in seconds, in two panels on scales of their own — then **Choices** — every fork choice (new files through `Level_<N>_Offered`, older ones through the words of `Level_<N>`, read back to keys through the codebook's level names, with where the cards stood and the recommendation unknown): how often the recommended card and each position is taken against chance, each level's times offered, taken and its *lift* over chance, a head-to-head table, a conditional logit (`fit_choices`, base R `optim` with a light ridge) separating each level's blind strength from the recommendation's pull once `MIN_CHOICES` choices say which card was recommended, and that strength against the level's mean stars, whose residuals are how far a level's results out- or under-perform its card — then a radar per level answered by at least `MIN_RUNS` runs (`radar()`, one figure a level), a box plot along each ray and nothing joining the rays, each item a share of its own scale and as answered, not reversed — every scale item but the demographics, free text and the ICAR's right answers; it turns the words back into numbers **through `data/synthetic/codebook.js`** (so it wants bun at render time) rather than a copy of any labels, reading a bare number as the value where the MINT's drawn labels differ from the codebook's one draw, and says on the page which answers matched no option and which saved keys the codebook no longer has; it works out which level an item was on, for the times, from the `Level_<N>` screens standing between levels in the item order; it wants `preprocess.R --long`, since only the long table has the times an item was shown, and its `overview.html` is git-ignored with the rest. Rendering it inside Dropbox can end on an error removing `overview_files/` (Dropbox holds the folder); the page has been written by then and the empty folder can be deleted. Both folders the first two write, `raw/` and `clean/`, are git-ignored because they hold **real participant data that must never be committed**. **`preprocess.R`** ({jsonlite} and base R, the way `data/norms/` is) reads `raw/` and writes `clean/`: **`data.csv`, one row a participant and everything in it, and nothing else at all** — **a master file**, 727 columns: the run (participant, file, completed, version, testMode, synthetic, battery, source, device, touchscreen, screenLayout, screenLayouts, the viewport's and the screen's width and height, formatMint, timeStart), the two sequence columns, a `Feedback_<reading>` apiece, a `Rating_<level key>` apiece, three `Level_<N>_*` a fork choice (`Offered`, the keys in the order the cards stood, `Recommended`, `Chosen`), four `QC_<level key>_*` apiece (`RT_Mean`, `RT_SD`, `ChecksFailed`, `TimeFinished`), a column per item holding the words that were on screen, and an `<item>_RT` beside each one (a suffix, so an item and its time sort together). **One naming rule across it, and it is `content/`'s own**: what the run says about itself is lowercase (`participant`, `time_start`) and everything that is a *measure* is `Prefix_Subject_Field`, the prefix an acronym in capitals or a word in PascalCase exactly as an item key is written — so `QC_Character_RT_Mean` and `Feedback_BodilyAwareness` sit beside `HEXACO_Sincerity` under one convention and a measure can be told from a run field on sight. Times are milliseconds throughout and no column name says so. Nothing is left out to keep it narrow — an analysis selects from it rather than coming back for a second file, and width costs nothing to anything that is not Excel — and **nothing is worked out that the file does not already say**: no mean reaction time, no share of an instrument completed, no count of failed checks, no item counts, no minutes taken. Each is a line of R over the columns that are there, and which of them an analysis wants is the analysis's business; this reshapes rather than computes, and a file that counts things for you is a file whose counting has to be checked. **`NA` is not the empty string in it**: an item never put on screen is NA, an optional item shown and deliberately left blank is `""`, and the saved file tells those apart — writing NA as empty would make a question nobody was asked look like one somebody declined. **What is not data is said rather than filed**: the complaints go to the terminal where whoever ran the script is looking, since a `checks.csv` that is empty nine times in ten is a file somebody has to open to learn nothing. **Anything counting how much of an instrument somebody gave wants care, which
 is the other reason there is no column for it.** A partial holds only the items
 that were answered — that is what the staged records are — so a share worked out
 from one is 1 for every instrument it touched, however little was reached: a
@@ -356,7 +356,16 @@ how the MINT's deficit items add up to Clarity. An option marked `custom: true`
 out of the scale's bounds and `counted()` treats choosing it as the item being
 unanswered, so an escape answer holds its dimension unfinished rather than
 feeding an arbitrary code into the average. `norms` (mean/sd) turn a score
-into a percentile; the tercile it lands in picks the `interpretations` text.
+into a percentile; the tercile it lands in picks the `interpretations` text. A
+norm may also carry its **`distribution`** — `{ from, step, shares }`, the
+share of the norming sample in each bin of the scale — and `percentile()` then
+reads the standing off the people themselves, a bin's people taken as spread
+evenly across it, rather than off a normal curve through the mean and SD. The
+MINT's three carry one (Bodily Awareness is piled up between 4 and 5.5 with a
+long tail below, which a normal curve misplaces), printed by
+`data/norms/norms_mint.R`; everything else is read off the curve. Anything
+showing a standing goes through `percentile()`, so a figure drawing the
+distribution and the words beside it cannot disagree.
 **Norms are also what put a dimension on a results screen at all**:
 `dimensionsOf` leaves out any dimension without them, so it takes no row, no
 point on its questionnaire's chart, and — if that is all of that
@@ -407,19 +416,52 @@ out of it by `assets/icar/source/cut.py`, which finds the table rules and
 the gaps rather than taking pixel positions by hand, so a figure replaced
 in `source/` is recut by running it.
 
-**Figures.** Most questionnaires get a spider chart (`CHARTS`). The MINT gets a
-body instead (`drawSoma`): bodily awareness in the head, bodily sensitivity in
-the chest, each a ring filled to where the score sits on its own scale with a
-tick where the average person sits, and bodily clarity the cord between them.
-The body is the *whole* of that section — it carries the name, the standing
-("lower than 63% of people", one sentence at one size) and the interpretation
-beside each organ, so `renderResults` gives it no rows underneath — including
-the agree/disagree, which sits directly under each interpretation inside the
-figure, in a `<foreignObject>` holding the same `voteButtons` every other
-prediction gets and writing to the same `feedback`. SVG text
-does not wrap, so `lines()` breaks the interpretation itself, and the holder
-gets `.result__chart--wide` for the room to read it. It draws from `teaseValue`
-when the level is locked, like every other figure.
+**Figures.** Most questionnaires get a spider chart (`CHARTS`). The MINT gets
+the inside of a body instead (`renderSoma`, `drawSoma`, in
+`js/figures/soma.js`): one drawing and three readings beside it, and no title
+over them. The drawing is a real slice of brain (`assets/mint/brain.png`, see
+the `assets/` row) with the insula glowing on it, nerves out of its brainstem
+into the lungs, the heart, the stomach and the gut, and those organs drawn as
+themselves — no outline of a body round them, the organs being enough to read
+as one. Each dimension does one thing to it, a **reach along its own scale**
+(the sea's rule, so the drawing and the bar under it cannot disagree):
+
+| | |
+|---|---|
+| **Bodily Clarity** | the glow over each insula, from a small faint spot to a large bright bloom |
+| **Bodily Sensitivity** | the nerves: how many there are (8 to 90, `NERVES`), how far into their organs they reach and how finely they branch at the end, shaded green where they leave the brainstem to red where they reach the body, with signals running up a few of them |
+| **Bodily Awareness** | how vivid the organs are, from grey shapes to full colour with a glow round them |
+
+The readings are **HTML, in a column of their own** (`.soma__readings`, the
+drawing taking the left half of the card), top to bottom in the order their
+parts of the drawing are: the dimension's name, the standing ("Lower than 88%
+of people", the number in its part's colours), **the crowd that standing is
+read against** (`crowd`, `.soma__crowd`: a column for each half point of the
+scale as tall as the share of the norming sample there, out of the norm's
+`distribution`, shaded in its part's colours as far as the person reaches —
+the column they are in shaded part of the way — and dim beyond, so **the
+shaded part of the crowd is the share the words give**, with the person a gold
+line and no average drawn, the crowd's own shape saying where most people are;
+the BAIT's crowd cards are its model), the
+interpretation, and the same `voteButtons` every prediction gets, filing to the
+same `BodilyAwareness`, `BodilySensitivity` and `BodilyClarity`. A norm with
+no distribution would be drawn as one column the width of the scale, which is
+a bar. **What the part of the drawing stands for is on the crowd, on hover or
+focus** (the shared tooltip; `READINGS` holds the words), not written out,
+since the interpretation is what the reading is for. A dashed lead joins each reading to its part of the drawing
+(`.soma__leads`); the readings' heights are the interpretations' and nothing
+fixed, so the leads are **measured once both columns are laid out**, from
+layout offsets rather than the screen (a panel growing out of its badge is
+scaled), and measured again by a `ResizeObserver` whenever the stage changes
+size. Below 640px the readings stand under the drawing and the leads go. The
+signals are a dash moved along each nerve by the stylesheet (`soma__signal`,
+`pathLength` 100) rather than SMIL, so that a sealed card holds them like every
+other loop; under reduced motion they are hidden, since a frozen dash would be
+stuck at the brainstem. Everything scattered is placed from one seeded
+generator and every gradient and filter is addressed off a counter (`drawn`),
+the sea's two rules. Locked, the drawing alone, from `teaseValue`, blurred by
+the ordinary `.result__chart svg` rule; the showcase takes the drawing alone
+too, and the badge the brain (`BADGE`, drawn `still`).
 
 **The climb.** The PHQ-4 and the HiTOP-BR read as one section rather than
 two — "The Last Year" — and as a picture rather than rows (`renderClimb`,
@@ -454,9 +496,11 @@ invented norm is read. The PHQ-4's norms in `content/` are therefore read by
 nothing; they stay because norms are what put a questionnaire on its level at
 all. Those standings go through `percentile()`, the normal curve, which is
 coarse for floor-skewed scales — the note at the foot of `data/norms/norms_hitop.R`
-asks for empirical quantiles instead, and for the engine to learn to read them
-(a `quantiles:` form beside `mean`/`sd`, preferred by `percentile()` when
-present). **That is parked, not done.**
+asks for empirical quantiles instead. **The engine can now read them**: a norm's
+`distribution` (see **Scoring**) is preferred by `percentile()` when present,
+and the MINT's carry one. What is **not done** is printing the HiTOP-BR's —
+the package's development sample would have to be binned the way
+`distribution_of` in `data/norms/common.R` bins the MINT's.
 
 The section is a title ("Challenges"), the person's own hill at the width of
 the card (`.climbview__stage`), then one line saying what it was drawn from
@@ -598,8 +642,8 @@ the standing written beside it, and for the same reason. The water moves, a
 little — creatures sway on the spot (`sea__drift`, a wrapper, since a CSS
 transform on the creature would replace the attribute transform placing it),
 motes drift, the torch breathes, coral leans — each to a beat and phase the
-script writes in from the seeded generator, and these are one of the **two places a
-results card loops** (the other is the ring beating out of the point on **Where you stand**): `.result--sealed` holds them at their first frame until
+script writes in from the seeded generator, and these are one of the **three places a
+results card loops** (the others are the ring beating out of the point on **Where you stand** and the MINT's signals and glow): `.result--sealed` holds them at their first frame until
 the level opens, which is fine, since a still sea is what a sealed card should
 show. The sway is a few pixels about the place the answers put a creature and
 changes nothing the picture says.
@@ -1098,7 +1142,7 @@ not of anything on it.
 
 **The taste of the next level.** The way on carries, above its button, a
 blurred preview of the level it leads to (`renderTeaser`, into `#level-next`):
-"Next" large, "Level 2 · Brain-Body Axis" small under it, and the figures that
+"Next" large, "Brain-Body Axis · about 8 minutes" small under it (the name without its number, "Next" having said where it falls), and the figures that
 level will open — the same locked rendering a stop's panel shows, drawn from
 `teaseValue`, with the `.rows`, the `.taste` note and the panel's "Locked"
 badge taken out afterwards, and in their place one badge over the middle of
@@ -1137,7 +1181,8 @@ branch opening can put it up by one.
 **The drawn order.** A run of levels wrapped in `shuffle()` in the timeline is
 asked in an order drawn once, when `content/timeline.js` is read, and nothing
 about it is ever offered or chosen — the fork's rearrangement made *for*
-somebody rather than *by* them. Currently that is the three levels after
+somebody rather than *by* them. Currently that is both forks — the six after
+the core, below, and first the three levels after
 General: Brain-Body Axis, AI Expertise & Usage and Mood & Health, so the MINT,
 the BAIT and the HiTOP-BR are met second, third and fourth. They are the
 mandatory core of the study the app is being run for (see
@@ -1152,6 +1197,18 @@ recommended to everybody, and most people take what is recommended. Drawn and
 then forked, which two are offered first and which of them is recommended
 falls differently for every person, and the person does the rest. Taking the
 `shuffle()` away leaves a fork that always offers the same pair first.
+
+**The six after the core are drawn too** (Character to Where You Stand, under
+their `fork: 3`), for a reason of the analysis rather than of counterbalancing.
+Written in a fixed order, the first of them would be recommended every time it
+was offered and the last never, and would also be offered first and last
+respectively, so how much a level pulls on its card could not be told apart
+from how much the "Recommended next" mark does — which is what the **Choices**
+section of `data/collected/overview.qmd` is for. Drawn, every level is
+recommended to some people and not to others, offered early to some and late
+to others, and the fork's `choice` on each level (see **Saved data**) says
+which it was. What was drawn is not itself saved; the recommendation and the
+cards offered, which are what it decides, are.
 
 **It is the same `shuffle()` that puts two blocks of a level in a random
 order**, one list up, which is why `TIMELINE` ends `.flat()` and why nothing on
@@ -1173,7 +1230,7 @@ order is the representative of all of them.
 run's order is the participant's, and **`n` is how many are offered at each
 choice**. There are two forks, and they cover **everything after General**:
 the core, levels 2 to 4, is `fork: 2` (over a drawn order, see **The drawn
-order**), and the rest, levels 5 to 10, is `fork: 3`. Level 1 is not their
+order**), and the rest, levels 5 to 10, is `fork: 3`, over a drawn order too. Level 1 is not their
 business — the test has to open somewhere. Where the seabed falls is not a
 property of any level (see **Beneath the floor**), so which of the six are met
 in the rock is partly the person's own doing.
@@ -1223,8 +1280,8 @@ word, since the level's number is not yet decided, and how long it takes as
 its title line (see **How long a level takes, on the way to it**), its
 `.result` stripped of border and background so the card is the one box — with
 a "Go this way →" button under it, the cards stretched to one height so the
-buttons line up, and **the one written first on the timeline marked
-"Recommended next"** with a thin gold line round it
+buttons line up, and **the one standing first on the timeline marked
+"Recommended next"** (first in the drawn order, both forks being drawn) with a thin gold line round it
 (`.level__path--recommended`), the default order made visible and nothing
 louder; `#level-continue` is hidden while the fork is up, and the spray at the
 end of `openSections` comes out of whichever buttons are showing. It is there
@@ -1270,9 +1327,15 @@ a fork standing at level 1 — there is nothing before it to be offered from, so
 `at` starts at 1 and that place is taken as written. **A choice is saved as the
 level screen's own answer** (see **The level screen is an item**, below): it is
 one of the two things a way on can be, and is written onto the item of the
-level it was made on rather than into a record of its own. Which card stood where is
-not recorded: the shuffle is drawn afresh each
-time and nothing reads it back. `levels` and `questionnaires`
+level it was made on rather than into a record of its own. **What it was chosen
+from is saved beside it, as the `choice` on that level's entry in `levels`** (see
+**Saved data**; null on a level whose way on was one button): the levels offered as keys **in the order
+their cards stood** (left to right, or top to bottom where they stack — the
+shuffle is drawn afresh each time, so this is the only place it survives), the
+one marked "Recommended next" and the one taken. It is read once, as the cards
+are laid out (`renderFork`), since the swap a choice makes changes what every
+place holds, and it is what the pull of the recommendation and of a card's
+place is measured from (`overview.qmd`, **Choices**). `levels` and `questionnaires`
 say the order that was actually walked (see **Saved data**), which is what a
 level number is read against — and the choices replay from it, given the
 written timeline, so the responses are a convenience and a check rather than
@@ -1282,7 +1345,7 @@ the only record.
 `renderResults` and of `renderTeaser`: when a level (or a teaser) holds one
 `.result` only, it gets `.result--lone` and its name across the top is hidden,
 since the level screen's `#level-name`, the panel's title and the teaser's
-"Level N · Name" line have already said what it is. A level of two or more
+name line have already said what it is. A level of two or more
 sections keeps a name on each, because there the names are what tell them
 apart. Every level is one section (the PHQ-4 and HiTOP-BR are one
 climb, and the `regulation` block's three are one chart), so the rule is idle until a second
@@ -1418,7 +1481,7 @@ height there rather than its width.
 **What a badge shows is a crop, not a thumbnail** (`crop` and `renderBadge` in
 `results.js`): a square of the figure's *own coordinates*, redrawn into the
 badge at full sharpness, so it is a detail of the person's own drawing — the
-ring round the head, the pool the torch throws, the hub of the wheel — rather
+glow in the brain, the pool the torch throws, the hub of the wheel — rather
 than the whole figure shrunk to 74 pixels, which is a smudge. `renderBadge`
 follows the same dispatch `renderResults` does, at the size of a token: the
 first of the level's questionnaires to name a figure is what the level looks
@@ -1426,9 +1489,9 @@ like, and the drawing is pulled back out of the section that figure builds,
 the way `renderShowcase` does it. The crop numbers are written against the
 constants the figure file draws with, so **a figure that moves its own
 geometry moves its badge off the interesting part** — which reads as a badge full of the words that sit
-beside it. The soma is the one whose crop is *found* rather than written: its
-figure is as deep as the readings beside it need, so the head is taken off the
-first ring on the drawing.
+beside it. The soma's is written too, as `BADGE` in its own file: the brain and
+the glow over it, drawn `still`, since signals running up the nerves are
+nothing a badge that size can show.
 
 Two levels have no drawing to crop and hand back an **emblem** instead, a
 `.shelf__badge-emblem` built in their own file: the BAIT's robot
@@ -1515,7 +1578,9 @@ level's dimensions and numbers inside their scales. The visitor's page is
 `screen-card` again, the level's own `renderResults` drawn through `visit` (see
 **The seam**) with the stars and the share taken out and every vote and every
 `*__ask` line hidden (`.visit__results`): the same figures, readings included,
-worded to "you", which the note above them explains. **The image** is the
+worded to "you", which the note above them explains, and "Take the test
+yourself" under them starts the visitor's own run on that level (`?start=`,
+see **Where it was handed out**). **The image** is the
 level's results as they stand, through `snapshot()` (`js/snapshot.js`), with
 the same things left out (`NOT_SHOWN`), on the card's dark with the test's name
 and the level's over it and the way to take it under it (`levelPicture`). It
@@ -1544,6 +1609,60 @@ shown and the one run per person — three things a link cannot do. It needs
 the ethics application to say so, since it would be the first thing here
 holding who somebody is beside what they answered. Until then the level and
 card links (above) are the way results travel, and they stay one-way.
+
+**Accounts are not built either, and are the same server.** None of this is a
+short-term plan; it is written down so that whatever is built first does not
+close the door on the rest. Three uses, in the order they could come:
+
+- **Carrying on later.** A run is held in memory alone, and at thirty or forty
+  minutes it is long enough to want leaving and coming back to, on the same
+  device or another. This is the first use and the one the rest hang off.
+- **The lab's other tasks on the same account.** The Reality Bending Lab has
+  other experiments and games — DoggoNogo among them — that somebody could do
+  from the same place, their data linked to the same person's run here by one
+  id rather than matched up afterwards. That makes the account a lab platform
+  rather than this test's, and it should be designed as one from the start: an
+  account that belongs to the platform, a run per task that belongs to the
+  account, and nothing about any one task in the account itself.
+- **Far off, and a different project: people seeing each other.** Signing in,
+  adding a profile picture, and agreeing to be shown to — and to see — other
+  profiles that come out "close" or "compatible" on what was measured. A more
+  commercial use of the platform than a study. It would want an ethics
+  application of its own, a whole different one, since it puts who somebody is
+  in front of strangers beside what they answered, and nothing above should be
+  built as though it were coming.
+
+**What carrying on would take**, as far as it has been thought through. The
+server is the easy part; the engine is not. A resumed run has to be *the same
+run*, and four things are drawn afresh on every load — the core's order
+(`shuffle()` in `content/timeline.js`, at script load), `formatMint`, the order
+of the items inside each questionnaire and the fork cards — so every draw would
+come off one generator seeded from a seed saved with the run, and what is saved
+shrinks to the seed, the answers as values, the fork choices, where the run had
+got to and the times. The seed has to be known before `timeline.js` runs, so
+signing in comes before a reload. The points to save at already exist: they are
+where DataPipe stages (`answer`, `completeLevel`, `leaveLevel`, `noted`).
+**DataPipe stays the research record** and the server only holds what the
+person needs to carry on — provided `participant` and `timeStart` (which is in
+`FILENAME`) survive the gap, a partial and its finished file line up the way
+`data/collected/` already expects. Saving to `localStorage` first would be
+carrying on on the same device with no server at all, and is the same save and
+restore the server would want, so none of it is thrown away. For the server,
+authentication is not something to write by hand: a managed backend in a UK or
+EU region (Supabase: Postgres, sign-in and row-level security, one `runs`
+table, a policy that each account reads and writes its own rows) or, if the
+data must stay on Sussex's machines, PocketBase on a university VM. Its client
+would be the page's second dependency, and wants the three things the first
+has (see **Conventions**). **The ethics are the long part**: an account makes
+the answers pseudonymous rather than anonymous, on a page holding Article 9
+data (diagnoses, political opinions), so it wants a DPIA with the DPO and an
+amendment — and the consent form's "cannot be taken back once given" stops
+being true, since an account's data can be deleted and then has to be
+deletable. The least identifying way in is a **resume key** — a long random
+secret shown once, kept as a link or in a password manager — rather than an
+email, which keeps no identity on the server at all; an email is easier for
+people and is an identity. The profiles would need an identity anyway, which
+is one more reason they are a different project.
 
 **Depth.** The run is dressed as a descent: `depth()` turns `descentShare()` —
 how far through the scored levels the run is, not how many items have been ticked off —
@@ -1600,9 +1719,10 @@ beneath go on into `BEDROCK` metres of rock (7,000, about the thickness of the
 oceanic crust), shared the same way. `waterLevels` and `rockLevels` are the two
 halves of `scoredLevels`, `beneath(level)` asks which half a number is in, and
 `floorLevel` (the last level in the water, whose way on goes through it) is the
-join; `levelDepth` and `metresReached` read them, and `sounding()` writes a depth past the floor
-as "seabed + 2,400 m" (or "+2,400 m" in its `short` form, which is what the
-gauge's readout has room for). Four things follow from the one share and
+join; `levelDepth` and `metresReached` read them. `sounding()` writes every
+depth as metres from the surface, the rock's included ("13,434 m", never
+"seabed + 2,400 m"), so the gauge, a stop's card and the curtain count on one
+scale and a level further down never carries a smaller number. Four things follow from the one share and
 nothing is written twice: the water column behind the page ends in a line of
 silt and rock warming towards the mantle at `--floor`, which `app.js` works out
 from where the seabed actually falls in this run and writes onto the root —
@@ -1612,7 +1732,7 @@ picture cannot drift from the arithmetic (`body::before`, `style.css`; the
 window shows 100/420 of the column at a time and the silt rises into the bottom
 of it halfway through the last water level); the
 curtain on finishing the floor level says "· the floor" and on finishing a
-level beneath says "into the rock"; the way on from the floor reads "Go
+level beneath says "· in the rock"; the way on from the floor reads "Go
 beneath the floor" instead of "Continue the test"; and pressing it goes
 through **the crossing** — `gaze()` again, the layer that closes over the way
 in, handed `CROSSING` ("The water ends here. / The descent does not.", the
@@ -1663,7 +1783,7 @@ a fingerprint — `touchscreen`, whether the pointer is coarse, `screenLayout`,
 page loaded, `screenLayouts`, every layout the run was seen in, in order, since
 a phone turned on its side or a window dragged narrower crosses it mid-run, and
 `viewport` and `screen`, each `[width, height]` in CSS pixels (all null in a
-synthetic file) — then `levels`, the levels of this run in the order walked, each its `key`, its `name` and its block list, which is what makes a `timeLevel<N>` or `qualityControl.<key>` below readable on its own — the key being what the file is written under and the name what the person read, so one can always be turned into the other, and `questionnaires`, the questionnaire keys in the order asked (`RUN`; the items' own `order` is theirs) — then `timeStart`, a `timeLevel<N>` per level —
+synthetic file) — then `levels`, the levels of this run in the order walked, each its `key`, its `name`, its block list and its `choice` — the fork choice made on its screen, or null (see **The fork**; absent from files before September 2026) — which is what makes a `timeLevel<N>` or `qualityControl.<key>` below readable on its own — the key being what the file is written under and the name what the person read, so one can always be turned into the other, and `questionnaires`, the questionnaire keys in the order asked (`RUN`; the items' own `order` is theirs) — then `timeStart`, a `timeLevel<N>` per level —
 when that level was last left with nothing outstanding, stamped in `answer()`
 rather than on the level screen, which the last level never shows — `formatMint`,
 `qualityControl`, then `items[]`
@@ -1935,7 +2055,11 @@ repository's front page says so, and every link a participant shares (the
 card, a level) carries `?source=shared`, so that a run begun from somebody
 else's results says so too. The source is read once, when the page loads,
 which is why "Take the test yourself" can put the address back to bare
-without losing it.
+without losing it — off a shared card. Off a shared *level* it reloads the
+page instead, keeping `source` and whatever else the link carried but the
+scores, with `?start=` naming that level's first block, so that the visitor
+meets the level they were sent first: the run's order is settled from the
+link at load (`PLAN`) and cannot be rearranged under a page already built.
 
 **Batteries.** A study need not ask the whole run. Which blocks a run asks is
 resolved once, at the top of `app.js`, from the link and nothing else, and
@@ -2256,8 +2380,8 @@ it: the way in is the address alone, which the README writes out in full.
   and skewed towards its floor, which the comment beside them says; the script
   stops rather than guess if the package renames a scale, since the six carry
   plain names in `content/` and the mapping lives in both files at once. The
-  MINT's in `content/block_mint.js` are the pooled answers of 1,683 people
-  across the four studies that have asked those 33 items —
+  MINT's in `content/block_mint.js` are the pooled answers of 1,684 people
+  across the four studies that have asked those 33 items, distributions and all —
   a convenience sample of online studies rather than a population, which the
   comment beside them says too. Never
   present the rest as real, and keep the flags when editing. The
@@ -2337,7 +2461,7 @@ it: the way in is the address alone, which the README writes out in full.
   levels are numbered by their place in it, so level 3 of one study is not
   level 3 of another — and **the order of levels 2 to 10 is drawn or chosen**:
   the core fork puts its three among places 2 to 4, over a drawn order, and the
-  second fork its six in whatever order the person picked, so what is level 5
+  second fork its six among places 5 to 10, again over a drawn order, so what is level 5
   for one participant is level 10 for the next in the same study — and levels 8
   to 10 are beneath the seabed while 1 to 7 are in the water, so the same
   questionnaire is met in the water by one person and in the rock by another. `levels` in the saved file is the key —
@@ -2484,9 +2608,10 @@ it: the way in is the address alone, which the README writes out in full.
 - **`.result--sealed *` pauses every animation in a sealed card**, on purpose.
   A looping animation put inside a results card is therefore frozen until the
   level opens — which is fine for anything that runs once on arrival, and for
-  the sea's sway, drift and lean (`sea__*` in `results.css`) and the pulse round
-  the point on the opinions plane (`stance__pulse`), the two loops a card
-  carries: a still sea behind a seal is what is wanted.
+  the sea's sway, drift and lean (`sea__*` in `results.css`), the pulse round
+  the point on the opinions plane (`stance__pulse`) and the MINT's signals and
+  glow (`soma__signal`, `soma__glow`), the loops a card carries: a still sea
+  behind a seal is what is wanted.
 - **A locked figure is blurred by a rule that names it.** The one in
   `results.css` catches `.result--locked .result__chart svg`, which is every
   figure but two: `heads.js` draws its chart in HTML, so

@@ -691,13 +691,7 @@ function makeResults(engine) {
             if (name === sea.SEA) {
                 body.appendChild(sea.renderSea(locked))
             } else if (name === soma.SOMA) {
-                const chart = figureHolder(
-                    locked ? "Blurred preview of your " + label.toLowerCase() + ", still locked" : "Your interoception: awareness in the head, sensitivity in the chest, clarity between them",
-                    "result__chart--wide",
-                    locked,
-                )
-                soma.drawSoma(chart.figure, locked)
-                body.appendChild(chart.holder)
+                body.appendChild(soma.renderSoma(locked))
             } else if (name === theories.OLD_THEORIES_OF) {
                 // Two cards already; a card round the pair would be a box in a box.
                 opened.section.classList.add("result--bare")
@@ -1470,15 +1464,12 @@ function makeResults(engine) {
             // The pool the torch throws, which is the lit part of the sea and
             // the part the creature is in.
             if (name === sea.SEA) return crop(figureIn(sea.renderSea(false)), 180, 155, 130)
-            // The head's ring, found on the drawing rather than worked out:
-            // the body is as deep as the readings beside it need, so where
-            // its organs fall is not a share of anything fixed.
+            // The brain and the glow over it, without the signals running up
+            // the nerves, which a badge is too small to watch.
             if (name === soma.SOMA) {
                 const figure = document.createElementNS(SVG, "svg")
-                soma.drawSoma(figure, false)
-                const ring = figure.querySelector("circle")
-                if (!ring) continue
-                return crop(figure, Number(ring.getAttribute("cx")), Number(ring.getAttribute("cy")), 2 * (Number(ring.getAttribute("r")) + 16))
+                soma.drawSoma(figure, false, true)
+                return crop(figure, soma.BADGE[0], soma.BADGE[1], soma.BADGE[2])
             }
             // The star sign, which is the one reading in the app that is
             // already a single mark — and the temperament plane where there

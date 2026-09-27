@@ -480,6 +480,42 @@ def feedback_keys(book):
     return keys
 
 
+def fork_offers(book):
+    """Every fork choice of the written order, as (the level it decides, the
+    levels offered for it, written order).
+
+    A fork is a run of levels one after another with the same `fork`, the
+    number being how many are offered at once — `FORKS` in app.js. A choice
+    is made on the screen of the level *before* the one it decides, and the
+    last level of a run is what is left rather than a choice.
+    """
+    runs = []
+    for level in book["levels"]:
+        if not level["fork"]:
+            continue
+        last = runs[-1] if runs else None
+        if last and last[-1]["fork"] == level["fork"] and last[-1]["level"] == level["level"] - 1:
+            last.append(level)
+        else:
+            runs.append([level])
+    return [(group[at]["level"], group[at : at + group[at]["fork"]]) for group in runs for at in range(len(group) - 1)]
+
+
+def fork_choices(book):
+    """Level number -> the `choice` on that level's entry in `levels`, as
+    `container()` writes it, for each level whose screen offers one. Laid out
+    on no page, the cards stand in the order written, and the first of them is
+    both the one recommended and the one taken."""
+    return {
+        level - 1: {
+            "offered": [one["key"] for one in offered],
+            "recommended": offered[0]["key"],
+            "chosen": offered[0]["key"],
+        }
+        for level, offered in fork_offers(book)
+    }
+
+
 def screens(book):
     """One item per level screen, keyed by the level it showed.
 
@@ -503,22 +539,7 @@ def screens(book):
     rock = [level["level"] for level in book["levels"] if level["level"] in scored and level["beneath"]]
     floor = water[-1] if water and rock else None
 
-    # A fork is a run of levels one after another with the same `fork`, the
-    # number being how many are offered at once — `FORKS` in app.js. A choice
-    # is made on the screen of the level *before* the one it decides.
-    runs = []
-    for level in book["levels"]:
-        if not level["fork"]:
-            continue
-        last = runs[-1] if runs else None
-        if last and last[-1]["fork"] == level["fork"] and last[-1]["level"] == level["level"] - 1:
-            last.append(level)
-        else:
-            runs.append([level])
-    taken = {}
-    for group in runs:
-        for at in range(len(group) - 1):
-            taken[group[at]["level"] - 1] = [one["name"] for one in group[at : at + group[at]["fork"]]]
+    taken = {level - 1: [one["name"] for one in offered] for level, offered in fork_offers(book)}
 
     return {
         level["level"]: {
@@ -572,7 +593,11 @@ def write_file(book, persona, given, bio, provenance):
     # Answered on no screen at all.
     for field in ("device", "touchscreen", "screenLayout", "screenLayouts", "viewport", "screen"):
         file[field] = None
-    file["levels"] = [{"key": level["key"], "name": level["name"], "blocks": level["blocks"]} for level in book["levels"]]
+    chosen = fork_choices(book)
+    file["levels"] = [
+        {"key": level["key"], "name": level["name"], "blocks": level["blocks"], "choice": chosen.get(level["level"])}
+        for level in book["levels"]
+    ]
     file["questionnaires"] = list(book["run"])
     file["timeStart"] = now
     for level in book["levels"]:

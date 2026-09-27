@@ -33,6 +33,16 @@ wide <- read.csv(wide_file, stringsAsFactors = FALSE, na.strings = "NA")
 
 SEP <- " | "
 when <- function(x) as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")
+
+# Every item and level, read out of content/ by the same reader the synthetic
+# workbench and the deck use, so no labels are restated here.
+codebook <- tryCatch(
+  jsonlite::fromJSON(paste(system2("bun", file.path("..", "synthetic", "codebook.js"), stdout = TRUE), collapse = "\n"),
+                     simplifyVector = FALSE),
+  error = function(e) stop("Could not run `bun data/synthetic/codebook.js`: ", conditionMessage(e))
+)
+level_keys <- vapply(codebook$levels, function(one) one$key, "")
+level_names <- vapply(codebook$levels, function(one) one$name, "")
 ```
 
 ```{r}
@@ -240,21 +250,263 @@ if (nrow(liked)) {
 }
 ```
 
+## Choices
+
+```{r}
+#| label: choices
+
+# Every fork choice in the runs, one row each. A file from September 2026 on
+# says how the cards stood and which was recommended (`Level_<N>_Offered`,
+# `_Recommended`, `_Chosen`, in keys). One from before says only what was taken
+# and what was passed over, in the words on the cards (`Level_<N>`, the taken
+# first), so where its cards stood and which was recommended are unknown; its
+# names are read back to keys through the codebook, which holds today's names.
+key_of <- setNames(level_keys, level_names)
+unnamed <- character()
+picks <- list()
+column <- function(name, row) if (name %in% names(wide)) as.character(wide[[name]][row]) else NA_character_
+for (screen in grep("^Level_[0-9]+$", names(wide), value = TRUE)) {
+  for (row in seq_len(nrow(wide))) {
+    offered <- column(paste0(screen, "_Offered"), row)
+    if (!is.na(offered)) {
+      picks[[length(picks) + 1]] <- list(
+        participant = wide$participant[row], screen = screen, placed = TRUE,
+        offered = strsplit(offered, SEP, fixed = TRUE)[[1]],
+        recommended = column(paste0(screen, "_Recommended"), row),
+        chosen = column(paste0(screen, "_Chosen"), row)
+      )
+      next
+    }
+    said <- column(screen, row)
+    if (is.na(said) || !grepl(SEP, said, fixed = TRUE)) next # the one button, not a choice
+    words <- strsplit(said, SEP, fixed = TRUE)[[1]]
+    keys <- unname(key_of[words])
+    if (anyNA(keys)) {
+      unnamed <- c(unnamed, words[is.na(keys)])
+      next
+    }
+    picks[[length(picks) + 1]] <- list(
+      participant = wide$participant[row], screen = screen, placed = FALSE,
+      offered = keys, recommended = NA_character_, chosen = keys[1]
+    )
+  }
+}
+
+# The same choices one row a card: what was offered, how many beside it, where
+# it stood, whether it was the one recommended and whether it was taken.
+cards <- do.call(rbind, lapply(seq_along(picks), function(i) {
+  one <- picks[[i]]
+  k <- length(one$offered)
+  data.frame(
+    choice = i, participant = one$participant, level = one$offered, k = k,
+    position = if (one$placed) seq_len(k) else NA_integer_,
+    recommended = if (is.na(one$recommended)) NA else one$offered == one$recommended,
+    chosen = one$offered == one$chosen,
+    stringsAsFactors = FALSE
+  )
+}))
+n_choices <- length(picks)
+n_known <- sum(vapply(picks, function(one) !is.na(one$recommended), TRUE))
+```
+
+`r n_choices` choices by `r length(unique(vapply(picks, function(one) one$participant, "")))` runs, `r n_known` of them saying where the cards stood and which was recommended. A level offered beside *k* others would be taken 1 in *k* times by chance, so **expected** below is that chance added up over every time the level was offered, and **lift** is the times taken over it: 1 is chance, 2 is twice as often. All of it is blind: nobody has taken a level when it is offered, only seen its name, its length and its blurred results.
+
+```{r}
+#| label: choices-pull
+#| results: asis
+
+# The two pulls that have nothing to do with the level: the card marked
+# "Recommended next", and where a card stood.
+if (n_known) {
+  known <- cards[!is.na(cards$recommended) & cards$recommended, ]
+  cat(sprintf("**The recommendation**: taken in %d of %d choices (%.0f%%), where chance would take it in %.0f%%.\n\n",
+              sum(known$chosen), nrow(known), 100 * mean(known$chosen), 100 * mean(1 / known$k)))
+  placed <- cards[!is.na(cards$position), ]
+  where <- do.call(rbind, lapply(split(placed, placed$position), function(one) {
+    data.frame(Card = one$position[1], Offered = nrow(one), Taken = sum(one$chosen),
+               Share = sprintf("%.0f%%", 100 * mean(one$chosen)), Chance = sprintf("%.0f%%", 100 * mean(1 / one$k)))
+  }))
+  cat("**Where the card stood** (1 is the left, or the top where the cards stack):\n\n")
+  print(knitr::kable(where, row.names = FALSE, align = "rrrrr"))
+} else {
+  cat("No choice yet says which card was recommended or where the cards stood.\n")
+}
+```
+
+```{r}
+#| label: choices-levels
+
+if (n_choices) {
+  popularity <- do.call(rbind, lapply(split(cards, cards$level), function(one) {
+    unmarked <- one[!is.na(one$recommended) & !one$recommended, ]
+    data.frame(
+      level = one$level[1],
+      offered = nrow(one),
+      taken = sum(one$chosen),
+      expected = sum(1 / one$k),
+      recommended = if (all(is.na(one$recommended))) NA else sum(one$recommended, na.rm = TRUE),
+      unmarked_offered = nrow(unmarked),
+      unmarked_taken = sum(unmarked$chosen),
+      stringsAsFactors = FALSE
+    )
+  }))
+  popularity$lift <- popularity$taken / popularity$expected
+  popularity <- popularity[order(-popularity$lift), ]
+  knitr::kable(data.frame(
+    Level = popularity$level,
+    Offered = popularity$offered,
+    Taken = popularity$taken,
+    Expected = sprintf("%.1f", popularity$expected),
+    Lift = sprintf("%.2f", popularity$lift),
+    Recommended = ifelse(is.na(popularity$recommended), "", popularity$recommended),
+    `Taken when not recommended` = ifelse(popularity$unmarked_offered > 0,
+                                          sprintf("%d of %d", popularity$unmarked_taken, popularity$unmarked_offered), ""),
+    check.names = FALSE
+  ), align = "lrrrrrr")
+} else {
+  cat("No level has been chosen over another yet.")
+}
+```
+
+Head to head: the times the row's level was taken while the column's was on offer beside it, out of the times the two were offered together.
+
+```{r}
+#| label: choices-pairs
+
+if (n_choices) {
+  met <- sort(unique(cards$level))
+  cell <- matrix("", length(met), length(met), dimnames = list(met, met))
+  for (a in met) for (b in met) {
+    if (a == b) next
+    both <- Filter(function(one) all(c(a, b) %in% one$offered), picks)
+    if (length(both)) cell[a, b] <- sprintf("%d/%d", sum(vapply(both, function(one) one$chosen == a, TRUE)), length(both))
+  }
+  knitr::kable(cell, align = "c")
+}
+```
+
+```{r}
+#| label: choices-model
+#| results: asis
+
+# **A conditional logit**: each choice is one card taken out of those offered,
+# with a card's pull the level's own strength (summing to 0 over the levels)
+# plus one shared pull for being the card recommended. That separates the
+# levels from the recommendation, which the lift above cannot, and it is only
+# identified where the recommendation varies across levels — so on the choices
+# that say which card it was, and only once there are enough of them. A light
+# ridge (`RIDGE`) keeps a level that has never been taken, or always has, from
+# running off to infinity on a handful of choices; it is not a prior anybody
+# should read anything into.
+MIN_CHOICES <- 30
+RIDGE <- 0.1
+strength <- NULL
+fit_choices <- function(cards) {
+  levels <- sort(unique(cards$level))
+  n <- length(levels)
+  at <- match(cards$level, levels)
+  marked <- as.numeric(cards$recommended)
+  by_choice <- split(seq_len(nrow(cards)), cards$choice)
+  pull <- function(par) c(par[seq_len(n - 1)], -sum(par[seq_len(n - 1)]))[at] + par[n] * marked
+  loss <- function(par) {
+    u <- pull(par)
+    -sum(vapply(by_choice, function(i) sum(u[i][cards$chosen[i]]) - log(sum(exp(u[i]))), 0)) + RIDGE * sum(par^2) / 2
+  }
+  fit <- optim(rep(0, n), loss, method = "BFGS", hessian = TRUE)
+  cover <- tryCatch(solve(fit$hessian), error = function(e) matrix(NA, n, n))
+  # The last level's strength is minus the sum of the others', so its
+  # uncertainty is theirs added up, covariances and all.
+  free <- seq_len(n - 1)
+  last <- c(rep(-1, n - 1), 0)
+  data.frame(
+    level = c(levels, "(recommended)"),
+    estimate = c(fit$par[free], -sum(fit$par[free]), fit$par[n]),
+    se = sqrt(c(diag(cover)[free], drop(t(last) %*% cover %*% last), cover[n, n])),
+    stringsAsFactors = FALSE
+  )
+}
+
+modelled <- if (n_choices) cards[cards$choice %in% which(vapply(picks, function(one) !is.na(one$recommended), TRUE)), ] else NULL
+if (!is.null(modelled) && length(unique(modelled$choice)) >= MIN_CHOICES) {
+  fitted <- fit_choices(modelled)
+  strength <- fitted[fitted$level != "(recommended)", ]
+  pulled <- fitted[fitted$level == "(recommended)", ]
+  cat(sprintf("**Blind strength**, from %d choices. Being the recommended card multiplies the odds of being taken by %.1f (%.1f to %.1f). A level's strength is its log odds of being taken against an average level on a card with the same mark:\n\n",
+              length(unique(modelled$choice)), exp(pulled$estimate),
+              exp(pulled$estimate - 1.96 * pulled$se), exp(pulled$estimate + 1.96 * pulled$se)))
+  strength <- strength[order(-strength$estimate), ]
+  print(knitr::kable(data.frame(Level = strength$level, Strength = sprintf("%+.2f", strength$estimate),
+                                SE = sprintf("%.2f", strength$se)), row.names = FALSE, align = "lrr"))
+} else {
+  cat(sprintf("\n\nThe model separating a level's own pull from the recommendation waits for %d choices that say which card was recommended (%d so far); until then the lift above stands in for it.\n",
+              MIN_CHOICES, if (is.null(modelled)) 0L else length(unique(modelled$choice))))
+}
+```
+
+### Chosen against liked
+
+How often a level is taken blind, against how many stars it gets once it has been taken: above the line, a level people like more than its card promised; below it, one that promised more than it gave. Blind popularity is the model's strength where there is one and the log of the lift where there is not.
+
+```{r}
+#| label: choices-liked
+#| fig-width: 7
+#| fig-height: 5
+
+if (n_choices) {
+  blind <- if (!is.null(strength)) setNames(strength$estimate, strength$level) else
+    setNames(log((popularity$taken + 0.5) / (popularity$expected + 0.5)), popularity$level)
+  score <- vapply(names(blind), function(key) {
+    given <- if (paste0("Rating_", key) %in% names(wide)) wide[[paste0("Rating_", key)]] else numeric()
+    if (any(!is.na(given))) mean(given, na.rm = TRUE) else NA_real_
+  }, 0)
+  rated_n <- vapply(names(blind), function(key) {
+    column <- paste0("Rating_", key)
+    if (column %in% names(wide)) sum(!is.na(wide[[column]])) else 0L
+  }, 0L)
+  both <- !is.na(score)
+  if (sum(both) >= 2) {
+    x <- blind[both]
+    y <- score[both]
+    par(mar = c(4, 4, 1, 1))
+    plot(x, y, ylim = c(1, 5), xlim = range(x) + c(-0.3, 0.8) * diff(range(x)) * 0.5, pch = 21,
+         bg = RESULTS["median"], col = "white", cex = 1.8, bty = "n", las = 1,
+         xlab = if (is.null(strength)) "Blind popularity (log lift)" else "Blind strength (log odds)",
+         ylab = "Mean rating (stars)")
+    text(x, y, sprintf("%s (%d)", names(x), rated_n[both]), pos = 4, cex = 0.8, col = "grey30")
+    if (sum(both) >= 3) {
+      line <- lm(y ~ x)
+      abline(line, col = "grey70", lty = 2)
+      gap <- sort(residuals(line), decreasing = TRUE)
+    }
+  } else {
+    cat("Fewer than two chosen levels have been rated yet.")
+  }
+}
+```
+
+```{r}
+#| label: choices-said
+#| results: asis
+
+# How far each level's stars sit from what its blind popularity predicts.
+if (exists("gap")) {
+  print(knitr::kable(data.frame(Level = names(gap), `Stars above expectation` = sprintf("%+.2f", gap), check.names = FALSE),
+                     row.names = FALSE, align = "lr"))
+}
+if (length(unnamed)) {
+  cat("\n\n**Cards not read** (a level name the codebook no longer has, so an older choice was left out): ",
+      paste(unique(unnamed), collapse = "; "), "\n", sep = "")
+}
+```
+
 ## Answers by level
 
 ```{r}
 #| label: codebook
 
-# Every item's scale, read out of content/ by the same reader the synthetic
-# workbench and the deck use, so no labels are restated here.
+# Every item's scale, out of the codebook read at the top.
 MIN_RUNS <- 2
 NOT_SCALES <- c("icar16") # right or wrong, and the values are positions in a list
-codebook <- tryCatch(
-  jsonlite::fromJSON(paste(system2("bun", file.path("..", "synthetic", "codebook.js"), stdout = TRUE), collapse = "\n"),
-                     simplifyVector = FALSE),
-  error = function(e) stop("Could not run `bun data/synthetic/codebook.js`: ", conditionMessage(e))
-)
-level_keys <- vapply(codebook$levels, function(one) one$key, "")
 
 scale_items <- Filter(function(item) {
   item$type %in% c("choice", "slider", "curve") && is.null(item$check) &&

@@ -318,14 +318,6 @@ body[data-screen="intro"] #app {
     display: none;
 }
 
-/* The body's stand-in standings ("higher than 00% of people") and readings
-   are not shown here: the rings and the names are the taste. */
-.why__slide .soma__reading,
-.why__slide .soma__told,
-.why__slide .soma__votes {
-    display: none;
-}
-
 .why__caption {
     margin: 12px 0 0;
     text-align: center;

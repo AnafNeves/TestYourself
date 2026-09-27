@@ -423,6 +423,11 @@
     // Written like `feedback`: a key per scored level, filled in below once the
     // run is known, so an unrated level and an unreached one read the same.
     const ratings = {}
+    // Level -> the fork choice made on its screen: the levels offered as keys
+    // in the order their cards stood on the page (left to right, or top to
+    // bottom where they stack), the one marked "Recommended next" and the one
+    // taken. Saved on that level's entry in `levels`, null where there was none.
+    const choices = {}
     const levelTimes = {} // level -> when its last remaining item was answered
     const timeStart = new Date().toISOString()
 
@@ -690,7 +695,10 @@
         // questionnaires in the order asked (the items' own `order` is
         // theirs). Every level screen is an item like any other, down in
         // `items[]`, and where the run forked its answer is the choice that
-        // put the next level where it stands.
+        // put the next level where it stands. The level's own `choice` is how
+        // that choice was put to the person — what it was taken from, and
+        // with which card recommended — or null where the way on was one
+        // button, so every level has the same shape.
         const file = {
             version: APP_VERSION,
             participant: participant,
@@ -698,7 +706,15 @@
             battery: battery,
             source: source,
             ...displayNow(),
-            levels: PLAN.map((entry) => ({ key: entry.key, name: entry.name, blocks: entry.blocks.slice() })),
+            levels: PLAN.map((entry, at) => {
+                const choice = choices[at + 1]
+                return {
+                    key: entry.key,
+                    name: entry.name,
+                    blocks: entry.blocks.slice(),
+                    choice: choice ? Object.assign({}, choice, { offered: choice.offered.slice() }) : null,
+                }
+            }),
             questionnaires: RUN.slice(),
             timeStart: timeStart,
         }
@@ -838,9 +854,24 @@
         return answers.reduce((sum, answer) => sum + answer, 0)
     }
 
-    // Share of the population below a score, from the dimension's norms.
-    // Abramowitz & Stegun 26.2.17 for the normal distribution function.
+    // Share of the population below a score, from the dimension's norms: off
+    // the people themselves where the norm carries their `distribution` (the
+    // share in each bin of `step` from `from` up), taking a bin's people as
+    // spread evenly across it, and otherwise off a normal curve through the
+    // mean and SD — Abramowitz & Stegun 26.2.17 for the distribution function.
+    // The two are kept in one place so that anything showing a standing shows
+    // the same one.
     function percentile(value, norm) {
+        const spread = norm.distribution
+        if (spread) {
+            const total = spread.shares.reduce((sum, share) => sum + share, 0)
+            let below = 0
+            spread.shares.forEach((share, at) => {
+                const lower = spread.from + at * spread.step
+                below += share * Math.min(1, Math.max(0, (value - lower) / spread.step))
+            })
+            return below / total
+        }
         const z = (value - norm.mean) / norm.sd
         const t = 1 / (1 + 0.2316419 * Math.abs(z))
         const density = 0.3989422804014327 * Math.exp((-z * z) / 2)
@@ -1653,11 +1684,11 @@
     // **The seabed falls at a share of the levels, not at a level.**
     // `WATER_SHARE` (content/timeline.js) puts the first two thirds of the
     // scored levels in the water and the rest in the rock under it — `BEDROCK`
-    // metres of it, about the thickness of the oceanic crust — so a depth past
-    // the floor reads "seabed + 2,400 m". Being a share and not a flag on a
-    // level, the break holds its place however many levels a battery asks and
-    // wherever the fork has put them: which level is the floor is the descent's
-    // business, and what is asked there is nothing to do with it.
+    // metres of it, about the thickness of the oceanic crust. Being a share and
+    // not a flag on a level, the break holds its place however many levels a
+    // battery asks and wherever the fork has put them: which level is the
+    // floor is the descent's business, and what is asked there is nothing to
+    // do with it.
     const BEDROCK = 7000 // metres of rock the levels beneath go down through
     const waterLevels = scoredLevels.slice(0, Math.round(scoredLevels.length * WATER_SHARE))
     const rockLevels = scoredLevels.slice(waterLevels.length)
@@ -1687,13 +1718,12 @@
         return Math.round(((waterLevels.indexOf(level) + 1) / waterLevels.length) * DEEPEST)
     }
 
-    // A depth written the way the gauge writes it: metres of water down to the
-    // floor, and past that metres of rock under the seabed. The gauge itself
-    // takes the `short` form, having no room for the word.
-    function sounding(depth, short) {
-        if (depth <= DEEPEST) return depth.toLocaleString("en-GB") + " m"
-        const rock = (depth - DEEPEST).toLocaleString("en-GB") + " m"
-        return short ? "+" + rock : "seabed + " + rock
+    // A depth written the way the gauge writes it: metres from the surface,
+    // in the water and in the rock alike. Counting the rock from the seabed
+    // instead would put two scales on one line, and a smaller number on a
+    // level that is further down.
+    function sounding(depth) {
+        return depth.toLocaleString("en-GB") + " m"
     }
 
     // What the timeline calls a level.
@@ -1835,7 +1865,7 @@
     // Handed the walk `renderSidebar` has already made rather than making its
     // own: `depth()` walks every question, and once an answer is enough.
     function renderDepth(soFar) {
-        $("depth").textContent = sounding(soFar.metres, true)
+        $("depth").textContent = sounding(soFar.metres)
         $("depth").title = soFar.answered + " of " + soFar.size + " questions answered"
         setDescent(soFar.share)
     }
@@ -2266,9 +2296,8 @@
         $("curtain-title").textContent = "Level " + level + " complete"
         // The floor is named when it is reached, since the way on from it is
         // through it; under it the water is not what is being sounded.
-        $("curtain-depth").textContent = beneath(level)
-            ? sounding(levelDepth(level)) + " into the rock"
-            : sounding(levelDepth(level)) + " down" + (level === floorLevel ? " · the floor" : "")
+        $("curtain-depth").textContent =
+            sounding(levelDepth(level)) + " down" + (beneath(level) ? " · in the rock" : level === floorLevel ? " · the floor" : "")
 
         layer.classList.remove("curtain--out")
         layer.hidden = false
@@ -2328,7 +2357,8 @@
         $("level-fork").hidden = !fork
         $("level-continue").hidden = !!fork
         if (fork) renderFork(fork, screen)
-        else if (next) results.renderTeaser($("level-next"), next, [levelTitle(next), aboutMinutes(next).toLowerCase()].filter(Boolean).join(" · "))
+        // Named without its number: "Next" has already said where it falls.
+        else if (next) results.renderTeaser($("level-next"), next, [levelName(next), aboutMinutes(next).toLowerCase()].filter(Boolean).join(" · "))
         // From the floor, the way on is down through it rather than on.
         $("level-continue").textContent = level === floorLevel ? "Go beneath the floor →" : "Continue the test →"
 
@@ -2368,6 +2398,10 @@
         const offered = offeredBy(fork)
         const first = offered.reduce((best, one) => (PLAN[one - 1].written < PLAN[best - 1].written ? one : best))
         const sides = shuffle(offered.slice())
+        // What the person was shown, read now: the cards in the order they
+        // stand on the page and the one marked, by key, since the swap that
+        // taking one makes changes what every place holds.
+        const shown = { offered: sides.map((side) => PLAN[side - 1].key), recommended: PLAN[first - 1].key }
         paths.style.setProperty("--paths", sides.length)
         paths.classList.toggle("level__paths--many", sides.length > 2)
 
@@ -2393,7 +2427,7 @@
             go.textContent = "Go this way →"
             go.addEventListener("click", () => {
                 if (screen.response !== null) return // a second press while the screen is leaving
-                takeFork(fork, side, screen)
+                takeFork(fork, side, screen, shown)
                 leaveLevel()
             })
             path.appendChild(go)
@@ -2443,14 +2477,19 @@
     // screen is then the first of the chosen level, and the stops on the
     // gauge take the names they now hold. What is recorded is the level taken
     // and then the ones passed over, in the order the timeline writes them,
-    // since which slot each was standing in says nothing to anybody.
-    function takeFork(fork, side, screen) {
+    // since which slot each was standing in says nothing to anybody. How the
+    // cards were laid out and which was recommended go onto this level's
+    // entry in `levels` (`choices`), which is what the pull of the
+    // recommendation and of a card's place is read from. The level whose
+    // screen it is has been finished, so no swap can move it from its place.
+    function takeFork(fork, side, screen, shown) {
         const target = fork.slots[fork.at]
         const passed = offeredBy(fork)
             .filter((one) => one !== side)
             .sort((one, other) => PLAN[one - 1].written - PLAN[other - 1].written)
         // Read before the swap, or two cards would name the same level.
         const words = [PLAN[side - 1].name].concat(passed.map((one) => PLAN[one - 1].name))
+        choices[screen.level] = { offered: shown.offered, recommended: shown.recommended, chosen: PLAN[side - 1].key }
 
         if (side !== target) swapLevels(target, side)
 
@@ -3250,7 +3289,20 @@
     // The scores on screen were the link's, and are let go of before anything
     // of the visitor's own can be answered. (The run's `source` was read when
     // the page loaded, from the link, which says `shared`.)
+    //
+    // Somebody sent one level's results is shown that level first: the page is
+    // loaded again with `?start=` naming its first block, since the run's order
+    // is settled from the link when the page loads (`PLAN`) and cannot be
+    // rearranged under it. The link's own scores go and the rest of it — the
+    // source, above all — stays.
     $("visit-start").addEventListener("click", () => {
+        if (visitingLevel) {
+            const query = new URLSearchParams(location.search)
+            for (const name of ["card", "level", "s", "m", "d"]) query.delete(name)
+            query.set("start", PLAN[visitingLevel.level - 1].blocks[0])
+            location.assign(location.origin + location.pathname + "?" + query.toString())
+            return
+        }
         visitor = null
         history.replaceState(null, "", location.origin + location.pathname)
         renderSidebar()

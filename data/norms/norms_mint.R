@@ -122,6 +122,12 @@ MINT_FACETS <- list(
 MINT_REVERSED <- "Bodily Clarity"
 MINT_RANGE <- c(0, 6)
 
+# The bins the distribution is printed in: twelve of half a point across the
+# scale. A dimension score is a mean of facet means, so it falls between the
+# answer points, and half a point is fine enough to show the shape and coarse
+# enough that no bin is a handful of people.
+MINT_STEP <- 0.5
+
 # The one answer the app's own attention check will accept
 # (`MINT_AttentionCheck`, `check: 0` in `content/block_mint.js`): the extreme
 # left of the scale. Norms should come from people who were reading, and these
@@ -273,8 +279,9 @@ if (length(pooled) == 0) {
   }
 
   cat("Paste into the `norms` of `mint` in content/block_mint.js\n")
-  cat("(the two number lines only — leave each `interpretations` where it is),\n")
-  cat("and take the PLACEHOLDER warning off them while you are there:\n\n")
+  cat("(the three number lines only — leave each `key` and `interpretations`\n")
+  cat("where it is). The `distribution` is what the app reads a standing off,\n")
+  cat("and what the level's figure draws the crowd with:\n\n")
 
   for (dimension in names(MINT_FACETS)) {
     value <- all_scores[[dimension]][!is.na(all_scores[[dimension]])]
@@ -282,7 +289,10 @@ if (length(pooled) == 0) {
       cat("  ", dimension, "   (no source carried it)\n\n", sep = "")
       next
     }
-    paste_lines(dimension, mean(value), stats::sd(value), sprintf("n = %d", length(value)))
+    paste_lines(
+      dimension, mean(value), stats::sd(value), sprintf("n = %d", length(value)),
+      distribution_of(value, MINT_RANGE[1], MINT_RANGE[2], MINT_STEP)
+    )
   }
 
   cat("These are a pooled convenience sample of online studies, not a norming\n")

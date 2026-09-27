@@ -32,7 +32,7 @@ defineBlock("mint", [
             hovercolors: ["#ef4444", "#22c55e"],
         },
 
-        // NOT placeholders: the means and SDs of 1,683 people who have already
+        // NOT placeholders: the means and SDs of 1,684 people who have already
         // answered these 33 items, pooled from the four studies that have asked
         // them — InteroceptionScale studies 1 and 2, FakeArt and FakeChat — and
         // scored exactly the way the app scores them, each dimension the mean of
@@ -46,11 +46,19 @@ defineBlock("mint", [
         // Awareness and Sensitivity and less so on Clarity (3.07, 3.10, 3.51,
         // 3.13), and the SDs carry the spread between studies as well as within
         // them. Real numbers from real people, and still not a population.
+        //
+        // Each carries its `distribution` as well: the share of those people in
+        // each half point of the scale, from 0 up. It is what a standing is read
+        // off (`percentile` in app.js), since Awareness is piled up between 4
+        // and 5.5 with a long tail below and a normal curve through its mean and
+        // SD would misplace most of the people on it, and it is what the level's
+        // figure draws the crowd with, so the number and the picture agree.
         norms: {
             "Bodily Awareness": {
                 key: "BodilyAwareness",
                 mean: 4.23,
                 sd: 0.87,
+                distribution: { from: 0, step: 0.5, shares: [0.1, 0.1, 0.2, 0.8, 2.2, 3.6, 12.6, 15.4, 24.8, 19.5, 15.1, 5.7] },
                 interpretations: {
                     low: "You may not pay much attention to what your body is doing in the moment. Physical changes can sometimes go unnoticed until they become obvious or have already passed. For example, you might only realise that you were tense, relaxed, hungry or needed the toilet once the feeling becomes hard to ignore.",
                     mid: "You tend to notice the clearer signals your body sends, while subtler sensations can sometimes pass you by. For example, you may easily notice that you are very hungry or relaxed, but be less aware of the small changes that happen before you get to that point.",
@@ -61,6 +69,7 @@ defineBlock("mint", [
                 key: "BodilySensitivity",
                 mean: 3.12,
                 sd: 1.28,
+                distribution: { from: 0, step: 0.5, shares: [2.3, 2.9, 6.5, 6.9, 11.9, 13.4, 16.8, 13.2, 11.5, 6.5, 4.8, 3.2] },
                 interpretations: {
                     low: "Your body's small fluctuations often stay in the background unless they become stronger. You might not notice a small change in your breathing or heartbeat, for example, until it becomes quite pronounced.",
                     mid: "You notice many of the changes happening in your body, especially when they are noticeable, but the smallest shifts can sometimes escape your attention. You might notice that your heart is beating faster after climbing stairs, for instance, without necessarily noticing smaller changes while sitting quietly.",
@@ -71,6 +80,7 @@ defineBlock("mint", [
                 key: "BodilyClarity",
                 mean: 3.17,
                 sd: 0.91,
+                distribution: { from: 0, step: 0.5, shares: [0.1, 0.5, 3.0, 5.7, 13.5, 19.1, 24.3, 14.2, 12.5, 4.8, 1.5, 0.8] },
                 interpretations: {
                     low: 'Your body\'s signals can sometimes be difficult to read or make sense of. You might notice that something feels different without being sure whether you are hungry, thirsty, tense, tired, need the toilet or simply feeling "off".',
                     mid: "You can usually make sense of what your body is telling you, although some sensations can still be difficult to interpret. Most of the time you can tell what you need physically, but occasionally your body's signals may leave you unsure.",
