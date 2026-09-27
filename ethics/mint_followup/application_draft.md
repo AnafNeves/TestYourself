@@ -26,7 +26,11 @@ operator (B11a, which had it as a Princeton department), the ERS being six
 items and not the whole scale, the CMQ items being adapted, the opinions
 level's item formats, the order the demographics fall in, the fork in the
 optional set, the seriousness question at the end, and the two self-placements
-among the single items.
+among the single items. **Changed with the app on 27 September 2026**: the
+core parts are now chosen by the participant from a pair drawn at random
+rather than drawn outright, and the optional set is offered three at a time
+rather than two (the Project Description, and the completion-screen note
+below).
 
 **Before submission — still to fill in**
 
@@ -103,19 +107,20 @@ among the single items.
     carries the contacts.
   - **The seriousness question is asked at the end of the core**, as the first
     thing on the completion screen or the item just before it. It cannot be
-    written as the last item of level 4, since levels 2–4 are drawn in a random
-    order and the last is a different level for each person; it belongs to the
-    completion screen, saved as that screen's own item the way a level
-    screen's way on is (`Level_<N>`).
+    written as the last item of level 4, since the order of levels 2–4 is drawn
+    and then chosen and the last is a different level for each person; it
+    belongs to the completion screen, saved as that screen's own item the way a
+    level screen's way on is (`Level_<N>`).
   - **Ask it again at the end** for those who went on, under a second key, so
     each stretch has its own answer: somebody tired by level 9 may say so, and
     that should not cast doubt on their core.
   - **One comments box**, either at the end as now or as an optional field on
     the completion screen, not both.
-  - **The fork meets it.** The first choice of the fork is made at the end of
-    level 4, so the completion screen falls between level 4's results and that
-    choice: "continue" could lead to the "What next?" cards, or the cards could
-    sit on the completion screen under "If you would like to go on".
+  - **The fork meets it.** The first choice of the optional set is made at the
+    end of level 4, so the completion screen falls between level 4's results
+    and that choice: "continue" could lead to the "What next?" cards, or the
+    cards could sit on the completion screen under "If you would like to go
+    on".
   - **Then the Project Description** lists the parts as consent, demographics,
     core, feedback with the debrief and the credit, then the optional set (with
     its own closing comments), and its "Feedback and debriefing" paragraph says
@@ -285,17 +290,19 @@ The optional set, offered after the core set, is:
   feedback.
 
 The survey always opens with age, month and day of birth and gender, and the
-brief trait scales. The three remaining parts of the core set — the MINT, the
-AI beliefs questionnaire, and the symptom measures — are then presented in an
-order drawn at random for each participant, so that no one instrument is always
-answered first and none always answered last; the other demographic questions
-open the MINT's part (education, field of study, student status, ethnicity and
-country) and the symptom part (financial comfort and social status), and so
-move with them. The items within each questionnaire are likewise presented in
-a random order, except where an instrument was validated in a fixed order, in
-which case that order is kept. The optional questionnaires are offered two at
-a time, the participant choosing which to answer next; the choice changes only
-the order, never what is asked.
+brief trait scales. The participant then chooses the order of the three
+remaining parts of the core set — the MINT, the AI beliefs questionnaire, and
+the symptom measures: two of them, drawn at random for each participant, are
+offered first, and the participant picks which to answer, then picks between
+the one left and the third. The random draw means that no one instrument is
+always answered first and none always answered last. The other demographic
+questions open the MINT's part (education, field of study, student status,
+ethnicity and country) and the symptom part (financial comfort and social
+status), and so move with them. The items within each questionnaire are
+presented in a random order, except where an instrument was validated in a
+fixed order, in which case that order is kept. The optional questionnaires are
+offered three at a time, the participant choosing which to answer next. In
+both sets the choice changes only the order, never what is asked.
 
 The complete list of every questionnaire and every item asked, with its source
 and reference, is published as part of the study documentation and can be

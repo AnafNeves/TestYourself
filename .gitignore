@@ -66,3 +66,9 @@ data/collected/clean/
 # ...and the overview rendered out of them: aggregates, but of a handful of people.
 data/collected/overview.html
 data/collected/overview_files/
+
+# The old pictures level 1's two figures are cut from: public domain, sixteen
+# megabytes between them, and fetched again from Wikimedia Commons by
+# assets/theories/source/cut.py whenever one is missing. What it cuts them into
+# is committed.
+assets/theories/source/*.jpg

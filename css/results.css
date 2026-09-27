@@ -282,7 +282,7 @@
     max-width: 440px;
 }
 
-/* Where the run forks, the way on is two ways: the two levels ahead side by
+/* Where the run forks, the way on is several ways: the levels offered side by
    side, each the taste the foot would carry of it alone — its name over its
    blurred figures — with a way into it underneath. Pressing one is the
    choice; the one button is put away while this is up. */
@@ -310,7 +310,7 @@
 
 .level__paths {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--paths, 2), minmax(0, 1fr));
     gap: 16px;
     align-items: stretch;
 }
@@ -321,11 +321,21 @@
     }
 }
 
+/* Three or more across want a wide window: below one, they are laid one
+   under another, as two are on a phone, rather than squeezed until the
+   figures in them are too small to read (about 200px a side, here). */
+@media (max-width: 920px) {
+    .level__paths--many {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* A side: the tag, the taste, then its button, on a card of its own that
-   lifts under the pointer so the two read as things to pick between. The
-   taste takes whatever height the taller side needs, so the two buttons sit
-   on one line whatever the figures above them measure. Two, always: a
-   choice is between the next two levels and never a menu. */
+   lifts under the pointer so the sides read as things to pick between. The
+   taste takes whatever height the tallest side needs, so the buttons sit on
+   one line whatever the figures above them measure. As many as the fork
+   offers at once (`fork: n` in the timeline, written onto the row as
+   `--paths`), and never a menu of everything left. */
 .level__path {
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -764,12 +774,13 @@
     user-select: none;
 }
 
-/* Every locked figure blurs the same way — a chart, a row of faces, the
-   temperament's plane and the sign's glyph alike. */
+/* Every locked figure blurs the same way — a chart and a row of faces alike.
+   Level 1's two are left in focus: locked, the plane draws no point and lights
+   no quarter of its own (the light goes round all four) and the sky lights no
+   sign and has no glyph at its pole (it turns), so there is nothing on either
+   to give away, and the two old pictures are the hook. */
 .result--locked .result__chart svg,
-.result--locked .faces svg,
-.result--locked .theory__figure,
-.result--locked .theory__glyph {
+.result--locked .faces svg {
     filter: blur(5px);
     opacity: 0.5;
 }
@@ -1470,30 +1481,47 @@
     color: var(--muted);
 }
 
+/* Side by side, the two cards share their rows (`subgrid`): the figure row
+   is as tall as the taller figure, which is the plane, so the two names, the
+   two "It predicts" lines, the two lists and the two votes each sit on one
+   line across. Six rows is what a card can hold — heading, figure, name,
+   predicts, words, vote — and a card with fewer (a sign that could be one of
+   two) leaves the rest empty. */
 .theories__pair {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-
-@media (max-width: 560px) {
-    .theories__pair {
-        grid-template-columns: 1fr;
-    }
+    column-gap: 14px;
+    row-gap: 0;
 }
 
 /* One of the two: what is predicting, its figure, its name, the words it
    predicts, and the vote on them. */
 .theory {
     display: grid;
+    grid-row: span 6;
+    grid-template-rows: subgrid;
     justify-items: center;
-    align-content: start;
-    gap: 4px;
+    row-gap: 4px;
     padding: 18px 16px 16px;
     border-radius: 16px;
     border: 1px solid var(--line);
     background: rgba(255, 255, 255, 0.025);
     text-align: center;
+}
+
+/* Stacked, there is nothing across to line up with, and each card is its own
+   grid again. */
+@media (max-width: 560px) {
+    .theories__pair {
+        grid-template-columns: 1fr;
+        row-gap: 14px;
+    }
+
+    .theory {
+        grid-row: auto;
+        grid-template-rows: none;
+        align-content: start;
+    }
 }
 
 .theory__kind {
@@ -1505,23 +1533,168 @@
     color: var(--muted);
 }
 
+/* The two old pictures take the whole width of their cards. */
 .theory__figure {
     width: 100%;
-    max-width: 210px;
     height: auto;
 }
 
-/* The sign's glyph stands where the temperament has its plane, at a size that
-   reads as a figure rather than a character. */
-.theory__glyph {
-    margin: 0;
-    height: 210px;
-    display: grid;
-    place-items: center;
-    font-size: 96px;
-    line-height: 1;
-    color: var(--chart);
-    text-shadow: 0 0 50px color-mix(in srgb, var(--chart) 60%, transparent);
+/* As the taste of the level to come: a line, and the plane on its own. */
+.theories--teaser {
+    justify-items: center;
+}
+
+.theories--teaser .theories__intro {
+    max-width: 44ch;
+    font-family: var(--serif);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--gold-pale);
+}
+
+.theories--teaser .theory__figure {
+    max-width: 320px;
+}
+
+/* Both of level 1's pictures: what they are printed in, and what marks the
+   person on them — the red old printers kept for what mattered most on a page,
+   which reads on the paper and on the night alike. */
+.sky,
+.quadrant {
+    --print-ink: #2b2118;
+    --rubric: #b8322a;
+    --cream: #f7eedb;
+}
+
+.print__paper--in {
+    stop-color: #f2e9d5;
+}
+
+.print__paper--out {
+    stop-color: #d6c39c;
+}
+
+/* The night shows only through the part hovered, focused or tapped — a sign's
+   stretch of the sky, a quarter of the plane — and fades in there: the script
+   marks which (`sky__night--on` with the stretch as its clip,
+   `quadrant__quarter--hovered`). */
+.sky__night,
+.quadrant__quarter {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.sky__night--on,
+.quadrant__quarter--hovered {
+    opacity: 1;
+}
+
+/* The star sign on Dürer's sky: the map printed on its paper, turned so the
+   sign stands at the top, the sign's stretch of the zodiac drawn round in red
+   and its glyph in a red seal at the pole. The night is the map in the
+   section's own colour on the dark, the sign's figure lit gold. It sits in the
+   middle of the row the plane beside it makes tall. */
+.sky {
+    align-self: center;
+}
+
+.sky__stop--print {
+    stop-color: var(--print-ink);
+}
+
+.sky__stop--night {
+    stop-color: color-mix(in srgb, var(--chart) 45%, var(--gold-pale));
+}
+
+.sky__ink--night {
+    opacity: 0.72;
+}
+
+.sky__dark {
+    fill: #07080d;
+}
+
+.sky__glint {
+    stop-color: var(--gold-pale);
+}
+
+.sky__glow {
+    opacity: 0.16;
+}
+
+.sky__lit {
+    filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--gold) 70%, transparent));
+}
+
+.sky__area {
+    fill: color-mix(in srgb, var(--rubric) 9%, transparent);
+    stroke: var(--rubric);
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.sky__rim {
+    fill: none;
+    stroke: color-mix(in srgb, var(--print-ink) 45%, transparent);
+    stroke-width: 1;
+    pointer-events: none;
+}
+
+.sky__hit {
+    fill: transparent;
+    cursor: help;
+    outline: none;
+}
+
+.sky__hit:focus-visible {
+    stroke: var(--rubric);
+    stroke-width: 1.2;
+}
+
+/* The seal: red wax with a ring pressed into it and the glyph in cream. */
+.sky__seal {
+    fill: var(--rubric);
+    stroke: color-mix(in srgb, var(--rubric) 60%, #000);
+    stroke-width: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+}
+
+.sky__ring {
+    fill: none;
+    stroke: color-mix(in srgb, var(--cream) 55%, transparent);
+    stroke-width: 0.8;
+    pointer-events: none;
+}
+
+.sky__glyph {
+    font-size: 24px;
+    fill: var(--cream);
+    pointer-events: none;
+}
+
+.sky__glyph--two {
+    font-size: 14px;
+}
+
+/* Locked, the sky turns — once in three minutes — with nothing marked. */
+.sky--turning .sky__turn {
+    transform-box: view-box;
+    transform-origin: center;
+    animation: sky-turn 180s linear infinite;
+}
+
+@keyframes sky-turn {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sky--turning .sky__turn {
+        animation: none;
+    }
 }
 
 .theory__name {
@@ -1571,48 +1744,200 @@
     color: var(--muted);
 }
 
-/* Eysenck's plane: four cells, the lit one the temperament, the point the
-   person, the axes named at their ends. */
-.quadrant__cell {
-    fill: rgba(255, 255, 255, 0.03);
-    stroke: var(--line);
+/* Eysenck's plane, drawn on Thurneysser's woodcut. The print is the woodcut in
+   dark ink on its paper, the person's quarter washed in the colour of its
+   humour (`--humour`, written on each), as a print was coloured by hand. The
+   night is the same picture as a mask, each quarter painting its ink in its
+   humour's colour on the dark, the person's lit and throwing a glow round its
+   lines, the others held back. */
+.quadrant__inked {
+    fill: var(--print-ink);
+}
+
+.quadrant__wash {
+    fill: var(--humour);
+    opacity: 0;
+}
+
+.quadrant__wash--lit {
+    opacity: 0.2;
+}
+
+.quadrant__page {
+    fill: #07080d;
+    stroke: none;
+}
+
+.quadrant__glow {
+    fill: var(--humour);
+    opacity: 0.035;
+}
+
+.quadrant__ink {
+    fill: var(--humour);
+}
+
+/* The person's own quarter, in the night, glows round its lines. */
+.quadrant__quarter--lit .quadrant__glow {
+    opacity: 0.16;
+}
+
+.quadrant__quarter--lit .quadrant__lines {
+    filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--humour) 70%, transparent));
+}
+
+.quadrant__hit {
+    fill: transparent;
+    stroke: none;
+    cursor: help;
+    outline: none;
+}
+
+.quadrant__hit:focus-visible {
+    stroke: var(--rubric);
+    stroke-width: 1.2;
+}
+
+.quadrant__frame {
+    fill: none;
+    stroke: color-mix(in srgb, var(--print-ink) 55%, transparent);
     stroke-width: 1;
-}
-
-.quadrant__cell--lit {
-    fill: color-mix(in srgb, var(--chart) 22%, transparent);
-    stroke: color-mix(in srgb, var(--chart) 60%, transparent);
-}
-
-.quadrant__name {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    fill: var(--muted);
-    opacity: 0.6;
-}
-
-.quadrant__name--lit {
-    fill: var(--text);
-    opacity: 1;
+    pointer-events: none;
 }
 
 .quadrant__axis {
-    font-size: 8px;
+    font-family: var(--serif);
+    font-size: 8.5px;
     font-style: italic;
     fill: var(--muted);
 }
 
+/* The person: a red pin with a cream collar and a dark line round that, so it
+   reads on the paper and the night and on any quarter, a ring beating out of
+   it, and a red line from it to the dot on the cross, where the average person
+   is — how far the pin is from the middle is the reading. */
+.quadrant__link,
+.quadrant__mean,
+.quadrant__halo,
+.quadrant__ring,
+.quadrant__pulse,
+.quadrant__you {
+    pointer-events: none;
+}
+
+.quadrant__link {
+    stroke: var(--rubric);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+.quadrant__mean {
+    fill: var(--rubric);
+}
+
 .quadrant__halo {
-    fill: var(--chart);
-    opacity: 0.25;
+    fill: var(--rubric);
+    opacity: 0.22;
+    filter: blur(2px);
+}
+
+.quadrant__ring {
+    fill: none;
+    stroke: color-mix(in srgb, var(--print-ink) 80%, transparent);
+    stroke-width: 1;
 }
 
 .quadrant__you {
-    fill: var(--chart);
-    stroke: var(--gold-pale);
-    stroke-width: 1.5;
+    fill: var(--rubric);
+    stroke: var(--cream);
+    stroke-width: 1.8;
+}
+
+/* The ring beating out of the pin, as on the opinions plane. */
+.quadrant__pulse {
+    fill: none;
+    stroke: var(--rubric);
+    stroke-width: 1.2;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: quadrant-pulse 2.6s ease-out 1.2s infinite;
+}
+
+@keyframes quadrant-pulse {
+    from {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(2.4);
+    }
+}
+
+/* Locked, the colour goes round the four quarters of the print, a quarter at
+   a time, from the top left and clockwise — which of them will it be. A
+   locked plane has no night to show. */
+.quadrant--turning .quadrant__wash {
+    animation: quadrant-turn-wash 8s ease-in-out infinite both;
+    animation-delay: calc(var(--turn) * 2s);
+}
+
+@keyframes quadrant-turn-wash {
+    0%,
+    34%,
+    100% {
+        opacity: 0;
+    }
+    8%,
+    25% {
+        opacity: 0.24;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .quadrant__pulse,
+    .quadrant--turning .quadrant__wash {
+        animation: none;
+    }
+}
+
+/* What a figure on level 1 shows when it is hovered, in the shared tooltip:
+   an old picture — a sign out of the German woodcut, or the head Lavater drew
+   for a temperament, which is oval — perhaps a name, and a line that begins
+   "Did you know?". (`.lore` and not `.face`, which is the Mood & Health faces'
+   and still in this sheet.) */
+.lore {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+}
+
+.lore__art {
+    display: block;
+    width: 150px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px rgba(246, 230, 196, 0.4), 0 14px 30px -14px #000;
+}
+
+.lore__art--oval {
+    width: 112px;
+    border-radius: 50%;
+}
+
+.lore__name {
+    margin: 2px 0 0;
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--gold-pale);
+}
+
+.lore__note {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
 }
 
 /* ---------------------------- the AI archetype --------------------------- */
@@ -2583,6 +2908,17 @@
 
 .tip--shown {
     opacity: 1;
+}
+
+/* Under what it is about rather than over it, where there is no room above. */
+.tip--below {
+    transform: translate(-50%, 0);
+}
+
+/* A piece rather than words: a little wider and more padded. */
+.tip--rich {
+    max-width: 260px;
+    padding: 12px 14px 13px;
 }
 
 /* ------------------------------ the legend ------------------------------ */

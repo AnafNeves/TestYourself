@@ -18,7 +18,9 @@
    half of what is on a results card fades in from nothing.
 
    What it cannot do: an image loads nothing from outside itself, so an
-   `<img>` or a `<canvas>` is turned into a data URL on the way; web fonts
+   `<img>`, a `<canvas>` or an SVG `<image>` is turned into a data URL on the
+   way (the last before the copy starts, since it has to be loaded again to be
+   read, which is why a picture is a promise); web fonts
    would not travel either (the app uses none); and hover and focus are
    whatever they were at the moment of the picture. Nothing here reads the
    run or any score — it is handed an element and gives back a canvas — and
@@ -110,6 +112,36 @@ const snapshot = (() => {
         }
     }
 
+    // An `<image>` inside an SVG — the woodcut the temperament's plane is
+    // drawn on — is no `<img>` to draw from, and what it points at would not
+    // load inside the picture. Each is loaded again, which the page has
+    // cached, and drawn out to a data URL the copy is given in its place: a
+    // JPEG for a JPEG, since the woodcut as a PNG is a megabyte of text. One
+    // that cannot be read keeps its address and is missing from the picture.
+    const XLINK = "http://www.w3.org/1999/xlink"
+    const hrefOf = (node) => node.getAttribute("href") || node.getAttributeNS(XLINK, "href")
+
+    async function pictures(element) {
+        const found = new Map()
+        for (const node of element.querySelectorAll("image")) {
+            const href = hrefOf(node)
+            if (!href || href.startsWith("data:") || found.has(href)) continue
+            try {
+                const image = new Image()
+                image.src = href
+                await image.decode()
+                const flat = document.createElement("canvas")
+                flat.width = image.naturalWidth
+                flat.height = image.naturalHeight
+                flat.getContext("2d").drawImage(image, 0, 0)
+                found.set(href, /\.jpe?g$/i.test(href) ? flat.toDataURL("image/jpeg", 0.9) : flat.toDataURL("image/png"))
+            } catch (error) {
+                // Left out of the picture rather than failing the whole of it.
+            }
+        }
+        return found
+    }
+
     // **An auto margin is not in the computed style.** On a grid or flex item
     // it reads back as `0px`, and what it was doing — centring a column
     // narrower than its track — is lost in the copy. So the page's own rules
@@ -192,6 +224,10 @@ const snapshot = (() => {
             clone = node.cloneNode(false)
             // A script-free picture: nothing in it should try to run.
             for (const name of Array.from(clone.attributes || [])) if (/^on/i.test(name.name)) clone.removeAttribute(name.name)
+            if (svgNode(node) && node.localName === "image" && pseudo.pictures.has(hrefOf(node))) {
+                clone.removeAttributeNS(XLINK, "href")
+                clone.setAttribute("href", pseudo.pictures.get(hrefOf(node)))
+            }
         }
         let style = styleText(computed, defaultOf(node), parent)
         // Text is drawn a hair wider in an image than on the page, and its box
@@ -223,9 +259,10 @@ const snapshot = (() => {
     // `skip` is a selector for what to leave out of the picture (buttons that
     // mean nothing in one, say); `ratio` is how many pixels a CSS pixel is
     // drawn at. Resolves to a canvas of the element's size times the ratio.
-    return function snapshot(element, how) {
+    return async function snapshot(element, how) {
         const skip = (how && how.skip) || null
         const ratio = (how && how.ratio) || 2
+        const loaded = await pictures(element)
 
         // A picture taken while something is still arriving would catch it
         // part of the way in — a section still fading up is a blank. Anything
@@ -256,8 +293,9 @@ const snapshot = (() => {
         // the badge that opened it is scaled, and the picture is not.
         let box, clone
         // What the whole copy carries along: the rules written for the
-        // ::before and ::after it finds, and the page's auto-margin rules.
-        const pseudo = { count: 0, rules: "", auto: autoRules() }
+        // ::before and ::after it finds, the page's auto-margin rules, and
+        // the SVG pictures read out above.
+        const pseudo = { count: 0, rules: "", auto: autoRules(), pictures: loaded }
         try {
             box = { width: element.offsetWidth, height: element.offsetHeight }
             clone = copy(element, null, skip, pseudo)

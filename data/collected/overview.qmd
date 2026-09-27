@@ -95,16 +95,28 @@ summarise <- function(frame, unit = "minutes") {
   }))
 }
 
-# In the order levels were met on average: no one person's order is the order.
-table <- summarise(done)
-where <- tapply(done$position, done$level, mean)
-table <- table[order(where[table$level]), ]
-rownames(table) <- NULL
+# Longer than this on one level, or on its results, is somebody who went away
+# and came back: kept out of the times, and counted on the page instead.
+BREAK <- 45
+timed <- done[done$minutes <= BREAK, ]
 screens$seconds <- screens$minutes * 60
-reading <- summarise(screens, "seconds")
-reading <- reading[match(table$level, reading$level), ]
-reading$level <- table$level
-reading$n[is.na(reading$n)] <- 0L
+read <- screens[screens$minutes <= BREAK, ]
+breaks <- sum(done$minutes > BREAK) + sum(screens$minutes > BREAK)
+
+# Every finished level gets a row, even one whose only time was a break.
+rows <- function(summary, levels) {
+  summary <- summary[match(levels, summary$level), ]
+  summary$level <- levels
+  summary$n[is.na(summary$n)] <- 0L
+  rownames(summary) <- NULL
+  summary
+}
+
+# In the order levels were met on average: no one person's order is the order.
+where <- tapply(done$position, done$level, mean)
+met <- names(sort(where))
+table <- rows(summarise(timed), met)
+reading <- rows(summarise(read, "seconds"), met)
 
 # A finished level with no screen in the file: the way on is only staged once
 # pressed, so the tab was closed on its results.
@@ -117,7 +129,7 @@ reading$closed <- as.integer(table(factor(stopped_on$level, levels = table$level
 
 ## How long a level takes
 
-Answering: first item shown to last answer, finished levels only. Results screen: until the way on was pressed.
+Answering: first item shown to last answer, finished levels only. Results screen: until the way on was pressed. Anything over `r BREAK` minutes is a break rather than a time and is left out of both (`r breaks` so far). Total: the levels' medians added up (and their minima and maxima, for the range), which is how long the whole test would take somebody typical on every level, over the levels timed so far.
 
 ```{r}
 #| label: plot
@@ -146,8 +158,8 @@ if (nrow(table)) {
   # Wider by the names, so the two plots come out the same width.
   op <- par(no.readonly = TRUE)
   layout(matrix(1:2, 1), widths = c(1.45, 1))
-  panel(table, done, "minutes", "Answering", ANSWERING, TRUE)
-  panel(reading, screens[screens$level %in% table$level, ], "seconds", "Results screen", RESULTS, FALSE)
+  panel(table, timed, "minutes", "Answering", ANSWERING, TRUE)
+  panel(reading, read[read$level %in% table$level, ], "seconds", "Results screen", RESULTS, FALSE)
   par(op)
 } else {
   cat("No level has been finished yet.")
@@ -172,115 +184,213 @@ shown <- data.frame(
   `Closed on results` = reading$closed,
   check.names = FALSE
 )
+
+# What the whole test would take somebody typical on every level: the levels'
+# medians (and minima, and maxima) added up, over the levels timed so far.
+added <- function(summary, digits) {
+  has <- summary$n > 0
+  if (!any(has)) return(c(median = "", range = ""))
+  c(median = sprintf("%.*f", digits, sum(summary$median[has])),
+    range = sprintf("%.*f to %.*f", digits, sum(summary$min[has]), digits, sum(summary$max[has])))
+}
+if (nrow(table)) {
+  answering <- added(table, 1)
+  results <- added(reading, 0)
+  shown <- rbind(shown, data.frame(
+    Level = sprintf("**Total** (%d levels)", sum(table$n > 0)),
+    `Answering: n` = "",
+    `median (min)` = answering[["median"]],
+    `range (min)` = answering[["range"]],
+    `Results: n` = "",
+    `median (s)` = results[["median"]],
+    `range (s)` = results[["range"]],
+    `Closed on results` = sum(reading$closed),
+    check.names = FALSE
+  ))
+}
 knitr::kable(shown, align = "lrrrrrrr")
 ```
 
-## Opinions
+## How long against how liked
 
-Mean and 95% CI, each item as a share of its own scale, as answered (reversed items not flipped).
+Each level's median answering time (as above, breaks left out) against the median of the stars its results were given, for the levels that have both. The number beside a level's name is how many runs rated it.
 
 ```{r}
-#| label: opinions-read
+#| label: liked
+#| fig-width: 7
+#| fig-height: 5
 
-# The saved words back into numbers — a copy of content/block_opinions.js,
-# which the file does not carry. An unknown label is reported, not dropped.
-AGREE <- c("Disagree strongly" = 1, "Disagree" = 2, "Neither agree nor disagree" = 3, "Agree" = 4, "Agree strongly" = 5)
-DIET <- c("I eat meat most days" = 1, "I eat meat, but try to eat less of it" = 2,
-          "I eat fish, but not meat" = 3, "Vegetarian" = 4, "Vegan" = 5)
-NUMBERED <- list(Opinion_ESS_LeftRight = c(0, 10), Opinion_Parity_Diversity = c(1, 5),
-                 Opinion_Conspiracy_1 = c(0, 100), Opinion_Conspiracy_2 = c(0, 100), Opinion_Conspiracy_3 = c(0, 100))
+# Stars are filed under the level's key, which is what `levels_walked` holds.
+stars <- do.call(rbind, lapply(table$level, function(key) {
+  column <- paste0("Rating_", key)
+  given <- if (column %in% names(wide)) wide[[column]] else numeric()
+  given <- given[!is.na(given)]
+  data.frame(level = key, rated = length(given), stars = if (length(given)) median(given) else NA)
+}))
+liked <- cbind(table[, c("level", "median")], stars[, c("rated", "stars")])
+liked <- liked[table$n > 0 & liked$rated > 0, ]
 
-opinion_keys <- sort(grep("^Opinion_", names(wide), value = TRUE))
-opinion_keys <- opinion_keys[!grepl("_RT$", opinion_keys)]
-unread <- character()
-reach <- function(key, given) {
-  if (key %in% names(NUMBERED)) {
-    range <- NUMBERED[[key]]
-    value <- suppressWarnings(as.numeric(sub("%$", "", given)))
-  } else {
-    range <- c(1, 5)
-    words <- if (key == "Opinion_Animals_Diet") DIET else AGREE
-    given <- as.character(given) # a numbered column reads as integers, which would index by position
-    value <- unname(words[given])
-    stray <- !is.na(given) & is.na(value) & !(key == "Opinion_Animals_Diet" & given == "Something else")
-    if (any(stray)) unread <<- c(unread, paste0(key, ": ", given[stray]))
-  }
-  (value - range[1]) / (range[2] - range[1])
+if (nrow(liked)) {
+  par(mar = c(4, 4, 1, 1))
+  plot(liked$median, liked$stars, xlim = c(0, max(liked$median) * 1.25), ylim = c(1, 5),
+       pch = 21, bg = ANSWERING["median"], col = "white", cex = 1.8, bty = "n", las = 1,
+       xlab = "Median answering time (minutes)", ylab = "Median rating (stars)")
+  text(liked$median, liked$stars, sprintf("%s (%d)", liked$level, liked$rated), pos = 4, cex = 0.8, col = "grey30")
+} else {
+  cat("No level has both a time and a rating yet.")
 }
-reaches <- sapply(opinion_keys, function(key) reach(key, wide[[key]]))
-reaches <- matrix(reaches, ncol = length(opinion_keys), dimnames = list(NULL, opinion_keys))
-
-# A scale is the key without its last part.
-scale_of <- function(key) {
-  parts <- strsplit(key, "_", fixed = TRUE)[[1]]
-  if (length(parts) > 2) paste(parts[-length(parts)], collapse = "_") else key
-}
-opinions <- data.frame(
-  key = opinion_keys,
-  scale = vapply(opinion_keys, scale_of, ""),
-  n = colSums(!is.na(reaches)),
-  mean = colMeans(reaches, na.rm = TRUE),
-  sd = apply(reaches, 2, sd, na.rm = TRUE),
-  stringsAsFactors = FALSE
-)
-half <- ifelse(opinions$n > 1, qt(0.975, opinions$n - 1) * opinions$sd / sqrt(opinions$n), NA)
-opinions$low <- pmax(0, opinions$mean - half)
-opinions$high <- pmin(1, opinions$mean + half)
 ```
 
-```{r}
-#| label: opinions-radar
-#| fig-width: 8.5
-#| fig-height: 8.5
+## Answers by level
 
-if (!length(opinion_keys) || all(opinions$n == 0)) {
-  cat("Nobody has answered the opinions level yet.")
-} else {
-  k <- nrow(opinions)
+```{r}
+#| label: codebook
+
+# Every item's scale, read out of content/ by the same reader the synthetic
+# workbench and the deck use, so no labels are restated here.
+MIN_RUNS <- 2
+NOT_SCALES <- c("icar16") # right or wrong, and the values are positions in a list
+codebook <- tryCatch(
+  jsonlite::fromJSON(paste(system2("bun", file.path("..", "synthetic", "codebook.js"), stdout = TRUE), collapse = "\n"),
+                     simplifyVector = FALSE),
+  error = function(e) stop("Could not run `bun data/synthetic/codebook.js`: ", conditionMessage(e))
+)
+level_keys <- vapply(codebook$levels, function(one) one$key, "")
+
+scale_items <- Filter(function(item) {
+  item$type %in% c("choice", "slider", "curve") && is.null(item$check) &&
+    !grepl("^demographics", item$questionnaire) && !item$questionnaire %in% NOT_SCALES &&
+    !is.null(item$lowest) && !is.null(item$highest) && item$highest > item$lowest
+}, codebook$items)
+
+# What was on screen, back into the value behind it: the option's words, else
+# the label written on its circle, else the number itself. An escape option
+# ("Something else") is no place on the scale.
+unread <- character()
+reach <- function(item, given) {
+  if (item$type %in% c("slider", "curve")) {
+    value <- suppressWarnings(as.numeric(sub("%$", "", given)))
+  } else {
+    said <- vapply(item$options, function(one) {
+      if (!is.null(one$text)) one$text else if (!is.null(one$label)) one$label else as.character(one$value)
+    }, "")
+    values <- vapply(item$options, function(one) if (isTRUE(one$custom)) NA_real_ else as.numeric(one$value), 0)
+    given <- as.character(given)
+    # The MINT's labels are drawn per run (`formatMint`) and the codebook holds
+    # one draw, so a bare number is read as the value it was under the other.
+    numbers <- vapply(item$options, function(one) as.character(one$value), "")
+    value <- ifelse(given %in% said, values[match(given, said)], values[match(given, numbers)])
+    stray <- !is.na(given) & !given %in% c(said, numbers)
+    if (any(stray)) unread <<- c(unread, paste0(item$key, ": ", given[stray]))
+  }
+  (value - item$lowest) / (item$highest - item$lowest)
+}
+
+# A scale is the key without its last part (or its first part, of two).
+scale_of <- function(key) {
+  parts <- strsplit(key, "_", fixed = TRUE)[[1]]
+  paste(parts[-length(parts)], collapse = "_")
+}
+
+by_level <- list()
+for (item in scale_items) {
+  if (!item$key %in% names(wide)) next
+  level <- level_keys[item$level]
+  column <- setNames(data.frame(reach(item, wide[[item$key]])), item$key)
+  by_level[[level]] <- if (is.null(by_level[[level]])) column else cbind(by_level[[level]], column)
+}
+by_level <- by_level[intersect(level_keys, names(by_level))]
+runs_on <- vapply(by_level, function(frame) sum(rowSums(!is.na(frame)) > 0), 0)
+
+# Answers under keys the codebook no longer has: renamed since they were saved.
+answered_keys <- setdiff(names(wide)[grepl("^[A-Z][A-Za-z0-9]*_", names(wide))], grep("_RT$", names(wide), value = TRUE))
+stale <- setdiff(answered_keys, vapply(codebook$items, function(item) item$key, ""))
+stale <- stale[!grepl("^(QC|Feedback|Rating|Level)_", stale)]
+```
+
+One radar per level that at least `r MIN_RUNS` runs have answered: a box plot along each ray (median, quartiles, whiskers to 1.5 IQR, points beyond), each item as a share of its own scale, as answered (reversed items not flipped). Nothing joins the rays: neighbouring items are not a continuum. Demographics, free text and right-answer items are left out.
+
+```{r}
+#| label: radar
+
+radar <- function(reaches, title) {
+  reaches <- reaches[, sort(names(reaches)), drop = FALSE]
+  keys <- names(reaches)
+  k <- length(keys)
   angle <- pi / 2 - 2 * pi * (seq_len(k) - 1) / k
   at <- function(r) cbind(r * cos(angle), r * sin(angle))
-  scales <- unique(opinions$scale)
-  hues <- hcl.colors(length(scales), "Dark 3")
-  hue <- hues[match(opinions$scale, scales)]
+  scales <- vapply(keys, scale_of, "")
+  hue <- hcl.colors(length(unique(scales)), "Dark 3")[match(scales, unique(scales))]
 
-  op <- par(mar = c(1, 1, 1, 1), xpd = TRUE)
+  op <- par(mar = c(1, 1, 2, 1), xpd = TRUE)
+  on.exit(par(op))
   plot(NULL, xlim = c(-1.5, 1.5), ylim = c(-1.4, 1.4), asp = 1, axes = FALSE, xlab = "", ylab = "")
+  title(main = title, font.main = 1, cex.main = 1.1, adj = 0)
   for (r in c(0.25, 0.5, 0.75, 1)) {
-    ring <- at(rep(r, k))
-    polygon(ring, border = if (r == 0.5) "grey75" else "grey88", lty = if (r == 0.5) 2 else 1)
+    polygon(at(rep(r, k)), border = if (r == 0.5) "grey75" else "grey88", lty = if (r == 0.5) 2 else 1)
   }
   segments(0, 0, cos(angle), sin(angle), col = "grey90")
-  text(0.02, c(0.25, 0.5, 0.75, 1) + 0.03, c("", "middle", "", "top"), cex = 0.6, col = "grey55", adj = 0)
+  text(0.02, c(0.5, 1) + 0.03, c("middle", "top"), cex = 0.6, col = "grey55", adj = 0)
 
-  # Where a spoke has no interval the band pinches to the mean.
-  has <- opinions$n > 0
-  high <- ifelse(is.na(opinions$high), opinions$mean, opinions$high)
-  low <- ifelse(is.na(opinions$low), opinions$mean, opinions$low)
-  if (all(has)) {
-    polypath(rbind(at(high), NA, at(low)[k:1, ]), col = "#7c5cff2e", border = NA, rule = "evenodd")
-    polygon(at(high), border = "#7c5cff55", lwd = 0.8)
-    polygon(at(low), border = "#7c5cff55", lwd = 0.8)
+  # A box plot lying along each ray: whiskers, the box between the quartiles
+  # as a strip across the ray, the median a bar across it, outliers as points.
+  width <- min(0.035, 0.8 / k) # half a box: at most a quarter of the gap between rays at the rim
+  for (i in seq_len(k)) {
+    given <- reaches[[i]]
+    given <- given[!is.na(given)]
+    if (!length(given)) next
+    stats <- boxplot.stats(given)
+    five <- stats$stats
+    along <- c(cos(angle[i]), sin(angle[i]))
+    across <- c(-along[2], along[1])
+    segments(five[1] * along[1], five[1] * along[2], five[5] * along[1], five[5] * along[2], col = hue[i], lwd = 1.2)
+    box <- rbind(five[2] * along + width * across, five[4] * along + width * across,
+                 five[4] * along - width * across, five[2] * along - width * across)
+    polygon(box, col = adjustcolor(hue[i], 0.3), border = hue[i], lwd = 1)
+    bar <- rbind(five[3] * along + 1.6 * width * across, five[3] * along - 1.6 * width * across)
+    segments(bar[1, 1], bar[1, 2], bar[2, 1], bar[2, 2], col = hue[i], lwd = 2.4)
+    if (length(stats$out)) points(stats$out * along[1], stats$out * along[2], pch = 16, cex = 0.6, col = hue[i])
   }
-  polygon(at(ifelse(has, opinions$mean, NA)), border = "#5b3fd6", lwd = 2)
-  points(at(opinions$mean), pch = 21, bg = hue, col = "white", cex = 1.1)
 
   # Read outwards, never upside down.
   degrees <- angle * 180 / pi
   flip <- cos(angle) < 0
   place <- at(rep(1.06, k))
   for (i in seq_len(k)) {
-    text(place[i, 1], place[i, 2], sub("^Opinion_", "", opinions$key[i]), cex = 0.62, col = hue[i],
+    text(place[i, 1], place[i, 2], sub("^Opinion_", "", keys[i]), cex = if (k > 30) 0.62 else 0.75, col = hue[i],
          srt = if (flip[i]) degrees[i] + 180 else degrees[i], adj = if (flip[i]) 1 else 0)
   }
-  par(op)
 }
 ```
 
 ```{r}
-#| label: opinions-said
+#| label: radars
+#| results: asis
+#| fig-width: 8.5
+#| fig-height: 8.5
+
+plotted <- names(runs_on)[runs_on >= MIN_RUNS]
+if (!length(plotted)) cat("No level has been answered by", MIN_RUNS, "runs yet.\n")
+for (level in plotted) {
+  cat("\n\n### ", level, "\n\n", sep = "")
+  radar(by_level[[level]], sprintf("%s (%d runs)", level, runs_on[[level]]))
+  cat("\n\n")
+}
+waiting <- names(runs_on)[runs_on < MIN_RUNS]
+if (length(waiting)) {
+  cat("\n\nNot drawn yet (fewer than ", MIN_RUNS, " runs): ",
+      paste(sprintf("%s (%d)", waiting, runs_on[waiting]), collapse = ", "), ".\n", sep = "")
+}
+```
+
+```{r}
+#| label: radars-said
 #| results: asis
 
 if (length(unread)) {
-  cat("\n\n**Answers not read** (a key or label missing from `NUMBERED`, `AGREE` or `DIET`): ", paste(unique(unread), collapse = "; "), "\n", sep = "")
+  cat("\n\n**Answers not read** (words matching no option of the item in the codebook): ", paste(unique(unread), collapse = "; "), "\n", sep = "")
+}
+if (length(stale)) {
+  cat("\n\n**Keys no longer in the codebook**, left out: ", paste(stale, collapse = ", "), "\n", sep = "")
 }
 ```

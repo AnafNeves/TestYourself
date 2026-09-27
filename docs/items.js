@@ -378,13 +378,13 @@ const ITEMS = {
         "There are secret organizations that greatly influence political decisions"
     ],
     "r34": [
-        "The government should do more to redistribute income from the better off to those who are less well off",
-        "Ordinary working people do not get their fair share of the country's wealth",
-        "Businesses should be free to make as much profit as they can, with as little interference from government as possible",
+        "In the country I live in, the government should do more to redistribute income from the better off to those who are less well off",
+        "In the country I live in, ordinary working people do not get their fair share of the nation's wealth",
+        "In the country I live in, businesses should be free to make as much profit as they can, with as little interference from government as possible",
         "How people choose to live, marry or raise a family is their own business, even when it goes against my country's tradition and culture",
-        "People who break the law should be given stiffer sentences",
-        "The law should always be obeyed, even if I think a particular law is wrong",
-        "The police should have more power to monitor people's activities to prevent crime, even at the cost of privacy"
+        "In the country I live in, people who break the law should be given stiffer sentences",
+        "In the country I live in, the law should always be obeyed, even if I think a particular law is wrong",
+        "In the country I live in, the police should have more power to monitor people's activities to prevent crime, even at the cost of privacy"
     ],
     "r35": [
         "A fair society is one where men and women, and people of every background, end up equally well off, not just one where they have the same chances",

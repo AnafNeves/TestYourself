@@ -21,9 +21,13 @@
 //      people who share a place on the plane still divide over it.
 //
 // Both are asked about **the country the person lives in** wherever the
-// answer depends on it, which is why several items carry "In the country I
-// live in…" over them and several more say so in their own words: "should government do more" means something different in Sweden and in
-// the United States, and the person is the one who knows which they mean.
+// answer depends on it, which is why several items open on "In the country I
+// live in" and several more say so in their own words: "should government do
+// more" means something different in Sweden and in the United States, and the
+// person is the one who knows which they mean. It is written into the item
+// rather than over it as an instruction (September 2026): an instruction is
+// italic and easy to read past, and a statement is only answerable with its
+// country in it.
 //
 // **These are political opinions, and are data of that kind** — calling them
 // views or opinions on screen does not change what they are for the purposes
@@ -83,33 +87,6 @@
 // item kept. The one exception is `Opinion_ESS_LeftRight`, which is the
 // ESS's item verbatim and whose key says so.
 //
-// **Renamed twice.** First from bare prefixes (`BSA_`, `CMQ_`, `ESS_`,
-// `Frontiers_`, `Outcomes_`, `Nature_`, `Beauty_`) to `Opinion_`, before any
-// run was saved. Then, on 23 September 2026, after the pilot runs of that day
-// had been saved, from source-named keys to the scheme above:
-//
-//   Opinion_BSA_LeftRight_1          -> Opinion_LeftRight_Redistribution
-//   Opinion_BSA_LeftRight_3          -> Opinion_LeftRight_FairShare
-//   Opinion_BSA_LeftRight_Markets    -> Opinion_LeftRight_Markets
-//   Opinion_BSA_LibAuth_2            -> Opinion_LibAuth_Sentences
-//   Opinion_BSA_LibAuth_5            -> Opinion_LibAuth_Obedience
-//   Opinion_BSA_LibAuth_Surveillance -> Opinion_LibAuth_Surveillance
-//   Opinion_BSA_LibAuth_Tradition    -> Opinion_LibAuth_Tradition
-//   Opinion_CMQ_1                    -> Opinion_Conspiracy_1
-//   Opinion_CMQ_4                    -> Opinion_Conspiracy_2
-//   Opinion_CMQ_5                    -> Opinion_Conspiracy_3
-//   Opinion_Diversity                -> Opinion_Parity_Diversity
-//   Opinion_Nuclear                  -> Opinion_Planet_Nuclear
-//   Opinion_Diet                     -> Opinion_Animals_Diet
-//
-// The pilot files that carried the old keys were deleted from the deposit,
-// so nothing downstream reads them.
-//
-// **Trimmed from 43 items to 35** (September 2026): the level was asked with
-// no scale under three items and one at seven, and the cuts were made for
-// overlap and for validity rather than for length alone — each is noted where
-// its scale is written up below. No scale is now above four items or below
-// three.
 //
 // Read back together as one figure (js/figures/stance.js): the two
 // BSA-derived scales as a plane, the other seven dimensions as spectra under
@@ -274,9 +251,9 @@ defineBlock("opinions", [
     // Seven scales and two single items, on the BSA's five labels, dealt in
     // among one another (see the head of the file for why they are one
     // questionnaire). No instruction over them — the labels already say it
-    // is a matter of agreeing — except the BSA-derived items, which carry
-    // "In the country I live in…" as their own, since whose government,
-    // whose law and whose wealth is the question they depend on.
+    // is a matter of agreeing. The BSA-derived items open on "In the country
+    // I live in", in the item itself, since whose government, whose law and
+    // whose wealth is the question they depend on.
     //
     // The scales, each written up where its items begin below:
     //
@@ -384,16 +361,14 @@ defineBlock("opinions", [
             {
                 key: "Opinion_LeftRight_Redistribution",
                 dimension: "Sharing",
-                instructions: "In the country I live in…",
-                text: "The government should do more to redistribute income from the better off to those who are less well off",
+                text: "In the country I live in, the government should do more to redistribute income from the better off to those who are less well off",
             },
-            // BSA left-right item 3, "the nation's wealth" made "the
-            // country's", the frame having said which country.
+            // BSA left-right item 3, with "In the country I live in" in front of
+            // it and otherwise verbatim.
             {
                 key: "Opinion_LeftRight_FairShare",
                 dimension: "Sharing",
-                instructions: "In the country I live in…",
-                text: "Ordinary working people do not get their fair share of the country's wealth",
+                text: "In the country I live in, ordinary working people do not get their fair share of the nation's wealth",
             },
             // Not the BSA's: the markets end, written for this scale, in place
             // of "There is one law for the rich and one for the poor" — a
@@ -403,8 +378,7 @@ defineBlock("opinions", [
                 key: "Opinion_LeftRight_Markets",
                 dimension: "Sharing",
                 reverse: true,
-                instructions: "In the country I live in…",
-                text: "Businesses should be free to make as much profit as they can, with as little interference from government as possible",
+                text: "In the country I live in, businesses should be free to make as much profit as they can, with as little interference from government as possible",
             },
             // In place of the BSA's libertarian-authoritarian item 1, "Young
             // people today don't have enough respect for traditional values",
@@ -421,23 +395,27 @@ defineBlock("opinions", [
             // the person's own life against their country's tradition, which
             // is the trade-off the scale is about — and the one reversed item
             // Order has, so it carries the acquiescence check for the side.
-            // The item names the country itself, so it takes no "In the
-            // country I live in…" over it.
+            // The item names the country itself, so it does not open on "In
+            // the country I live in" as the other Sharing and Order items do.
             {
                 key: "Opinion_LibAuth_Tradition",
                 dimension: "Order",
                 reverse: true,
                 text: "How people choose to live, marry or raise a family is their own business, even when it goes against my country's tradition and culture",
             },
-            // BSA libertarian-authoritarian item 2, verbatim.
-            { key: "Opinion_LibAuth_Sentences", dimension: "Order", instructions: "In the country I live in…", text: "People who break the law should be given stiffer sentences" },
+            // BSA libertarian-authoritarian item 2, with "In the country I live
+            // in" in front of it and otherwise verbatim.
+            {
+                key: "Opinion_LibAuth_Sentences",
+                dimension: "Order",
+                text: "In the country I live in, people who break the law should be given stiffer sentences",
+            },
             // BSA libertarian-authoritarian item 5: "…even if a particular law is wrong". Wrong by whose
             // lights is the whole question, so it is the person's own.
             {
                 key: "Opinion_LibAuth_Obedience",
                 dimension: "Order",
-                instructions: "In the country I live in…",
-                text: "The law should always be obeyed, even if I think a particular law is wrong",
+                text: "In the country I live in, the law should always be obeyed, even if I think a particular law is wrong",
             },
             // Not the BSA's, in place of its libertarian-authoritarian item 4,
             // "Schools should teach children to obey authority", which reads as either unobjectionable (children do
@@ -447,8 +425,7 @@ defineBlock("opinions", [
             {
                 key: "Opinion_LibAuth_Surveillance",
                 dimension: "Order",
-                instructions: "In the country I live in…",
-                text: "The police should have more power to monitor people's activities to prevent crime, even at the cost of privacy",
+                text: "In the country I live in, the police should have more power to monitor people's activities to prevent crime, even at the cost of privacy",
             },
 
             // Parity ==========================================================

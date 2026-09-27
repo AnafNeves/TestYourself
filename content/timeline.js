@@ -10,9 +10,10 @@
        level             the blocks of that level, in order — and a `key`,
                          what the saved file is written under, beside a `name`,
                          what the gauge, the level screen and the results panel
-                         call it; the ones marked `fork` are taken in whatever
-                         order the person chooses, and a run of them wrapped in
-                         `shuffle()` in one drawn for them
+                         call it; the ones marked `fork: n` are taken in
+                         whatever order the person chooses, `n` offered at a
+                         time, and a run of them wrapped in `shuffle()` in one
+                         drawn for them
          block           its entries: briefings and questionnaires, in order
            questionnaire its items
 
@@ -224,15 +225,25 @@ function shuffle(arr) {
 // fork has put them — which level is the floor is the descent's business and
 // not the content's.
 //
-// Levels written `fork: true` are a fork: their order is the person's, two
-// at a time. The places they take are the **slots** — the positions on this
-// timeline that carry the flag — and what goes in them is
-// the person's to arrange. At the end of the level before each slot, while
-// more than one level is left to fill it with, the two standing next are
-// shown side by side, blurred, and the person picks which to take first; the
-// one passed over falls to the slot after, and the one written first is
-// marked as recommended. It is the one thing about the run's order that is
-// the participant's, there so that the descent is not one straight line.
+// Levels written `fork: n` are a fork: their order is the person's, `n` at a
+// time. The places they take are the **slots** — the positions on this
+// timeline that carry it — and what goes in them is the person's to arrange.
+// At the end of the level before each slot, while more than one level is left
+// to fill it with, the next `n` standing (or as many as are left, if fewer)
+// are shown side by side, blurred, and the person picks which to take first;
+// the ones passed over stay in the running for the slot after, and the one
+// written first is marked as recommended. It is the one thing about the run's
+// order that is the participant's, there so that the descent is not one
+// straight line.
+//
+// **A fork is a run of levels written one after another with the same `n`.**
+// Two runs side by side with different numbers are two forks, each put in
+// order among itself and never across: the core below is `fork: 2` and the
+// rest `fork: 3`, so the core is finished before any of the rest is offered.
+// `n` is only how many are offered at once. Three levels at `fork: 2` are a
+// choice of two, then a choice between the one passed over and the third,
+// then the last as it falls; six at `fork: 3` are four choices of three, one
+// of two, and the last.
 //
 // A run of levels wrapped in `shuffle()` is the same rearrangement made *for*
 // the person rather than *by* them: their order is drawn once, when the file
@@ -240,29 +251,37 @@ function shuffle(arr) {
 // call that puts two blocks of a level in a random order, at the list above
 // theirs, which is why TIMELINE ends `.flat()` — and why what is drawn or
 // chosen is visible in the shape of the list rather than written as a word on
-// every line. Use it for a stretch that has to be ordered somehow but has
-// nothing worth choosing about: three questionnaires a study asks of
-// everybody want counterbalancing, not picking.
+// every line.
 //
-// Below the drawn run, the levels marked `fork` are put in order by the
-// person, two at a time. Both follow one rule: what is asked moves between
-// places and where it is asked does not, so a level's number, its depth, its
-// colour and which side of the seabed it falls on stay with the place.
+// **The two go together on the core**, and on purpose. A fork offers the
+// levels in the order they are written — the first `n` first, the rest as
+// places come free — so the level written last among three at `fork: 2` can
+// never be met first, and whichever is written first is recommended to
+// everybody. The core is asked of everybody and wants counterbalancing, so
+// its order is drawn and *then* forked: which two are offered first, and
+// which of them is recommended, falls differently for every person. Take the
+// `shuffle()` away and the core is still a fork, with the same pair always
+// offered first and the same level always recommended.
+//
+// Both follow one rule: what is asked moves between places and where it is
+// asked does not, so a level's number, its depth, its colour and which side
+// of the seabed it falls on stay with the place.
 //
 // **Neither says anything about a study.** Which levels are drawn and which
 // are chosen is a property of this run and not of the app: a battery that
-// leaves one level of the fork leaves nothing to choose, and a run of one
+// leaves one level of a fork leaves nothing to choose, and a run of one
 // drawn level draws nothing.
 //
 // The written order is the default — what the recommendation follows, and
 // what a battery that leaves one of them falls back on. A choice is saved as
 // the answer of the level screen it was made on (`Level_<N>` in `items[]`,
-// the level taken and then the one passed over); `levels` says the order
-// that was actually walked. Every slot must be a scored level and every slot
-// chosen for wants a scored level before it to be offered from; app.js
-// throws otherwise, and on a fork written on one level. A fork standing at
-// level 1 has nothing to be offered from, so its first place is filled as
-// written and the choosing starts at the second.
+// the level taken and then the ones passed over, in the order written);
+// `levels` says the order that was actually walked. Every slot must be a
+// scored level and every slot chosen for wants a scored level before it to be
+// offered from; app.js throws otherwise, on a fork written on one level, and
+// on an `n` that is not a whole number of 2 or more. A fork standing at level
+// 1 has nothing to be offered from, so its first place is filled as written
+// and the choosing starts at the second.
 //
 // Where the seabed falls among them all: the first two thirds of the scored
 // levels are in the water and the rest are in the rock.
@@ -279,16 +298,16 @@ const WATER_SHARE = 2 / 3
 const TIMELINE = [
     { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"] },
     shuffle([
-        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"] },
-        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"] },
-        { key: "MoodHealth", name: "Mood & Health", blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat() },
+        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 2 },
+        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2 },
+        { key: "MoodHealth", name: "Mood & Health", blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(), fork: 2 },
     ]),
-    { key: "Character", name: "Character", blocks: ["hexaco"], fork: true },
-    { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: true },
-    { key: "World", name: "The World", blocks: ["primals"], fork: true },
-    { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: true },
-    { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: true },
-    { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: true },
+    { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3 },
+    { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3 },
+    { key: "World", name: "The World", blocks: ["primals"], fork: 3 },
+    { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3 },
+    { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3 },
+    { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3 },
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
 

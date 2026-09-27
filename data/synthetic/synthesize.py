@@ -485,10 +485,11 @@ def screens(book):
 
     Its `response` is the way on that was taken. A synthetic run walks the
     written order, which is every fork choice taken as recommended: where a
-    level ends in a fork, the two offered are the next two levels of that
-    fork as written and the first of them is the one taken; otherwise it is
-    the words on the one button, which say so when the way on goes through
-    the seabed.
+    level ends in a fork, those offered are the next `fork` levels of that
+    fork as written (or all that are left, when fewer), the first of them is
+    the one taken and the rest follow it as the ones passed over; otherwise
+    it is the words on the one button, which say so when the way on goes
+    through the seabed.
     """
     # A briefing row carries no `dimension` at all — codebook.js writes one
     # only onto an item there is something to answer on — so it is asked for
@@ -502,12 +503,22 @@ def screens(book):
     rock = [level["level"] for level in book["levels"] if level["level"] in scored and level["beneath"]]
     floor = water[-1] if water and rock else None
 
-    # A choice is made on the screen of the level *before* the one it decides.
+    # A fork is a run of levels one after another with the same `fork`, the
+    # number being how many are offered at once — `FORKS` in app.js. A choice
+    # is made on the screen of the level *before* the one it decides.
+    runs = []
+    for level in book["levels"]:
+        if not level["fork"]:
+            continue
+        last = runs[-1] if runs else None
+        if last and last[-1]["fork"] == level["fork"] and last[-1]["level"] == level["level"] - 1:
+            last.append(level)
+        else:
+            runs.append([level])
     taken = {}
-    for name in {level["fork"] for level in book["levels"] if level["fork"]}:
-        group = [level for level in book["levels"] if level["fork"] == name]
+    for group in runs:
         for at in range(len(group) - 1):
-            taken[group[at]["level"] - 1] = [group[at]["name"], group[at + 1]["name"]]
+            taken[group[at]["level"] - 1] = [one["name"] for one in group[at : at + group[at]["fork"]]]
 
     return {
         level["level"]: {

@@ -134,12 +134,23 @@ function makeResults(engine) {
     tooltip.className = "tip"
     document.body.appendChild(tooltip)
 
+    // Words, or a piece built to go in it (a temperament's face, which is a
+    // picture and a note). It stands over what it is about, and under it when
+    // there is no room above — which a piece as tall as a face often wants —
+    // and is kept inside the window either side.
     function showTip(dot, text) {
         const spot = dot.getBoundingClientRect()
-        tooltip.textContent = text
+        const rich = typeof text !== "string"
+        if (rich) tooltip.replaceChildren(text)
+        else tooltip.textContent = text
+        tooltip.classList.toggle("tip--rich", rich)
+        const size = tooltip.getBoundingClientRect()
+        const below = spot.top - 10 - size.height < 8
+        tooltip.classList.toggle("tip--below", below)
+        const half = size.width / 2 + 8
+        tooltip.style.left = Math.min(Math.max(spot.left + spot.width / 2, half), window.innerWidth - half) + "px"
+        tooltip.style.top = (below ? spot.bottom + 10 : spot.top - 10) + "px"
         tooltip.classList.add("tip--shown")
-        tooltip.style.left = spot.left + spot.width / 2 + "px"
-        tooltip.style.top = spot.top - 10 + "px"
     }
 
     function hideTip() {
@@ -601,7 +612,10 @@ function makeResults(engine) {
     // A section per questionnaire of this level with something to show — or,
     // locked, a blurred taste of all of them. The figures that stand in for a
     // whole questionnaire take no rows: they say everything it has to say.
-    function renderResults(into, level, locked) {
+    // `teaser` is the taste the way on carries of this level, which is locked
+    // too and is the same drawing everywhere but on level 1 (see
+    // `renderOldTheories`).
+    function renderResults(into, level, locked, teaser) {
         into.innerHTML = ""
 
         if (locked) {
@@ -687,7 +701,7 @@ function makeResults(engine) {
             } else if (name === theories.OLD_THEORIES_OF) {
                 // Two cards already; a card round the pair would be a box in a box.
                 opened.section.classList.add("result--bare")
-                body.appendChild(theories.renderOldTheories(locked))
+                body.appendChild(theories.renderOldTheories(locked, teaser))
             } else {
                 if (CHARTS.indexOf(name) !== -1) {
                     const chart = figureHolder(
@@ -724,7 +738,7 @@ function makeResults(engine) {
     // fork, where the level's number is not yet decided, the `word` handed in
     // (the level's name) and no title.
     function renderTeaser(into, level, title, word) {
-        renderResults(into, level, true)
+        renderResults(into, level, true, true)
 
         for (const extra of into.querySelectorAll(".rows, .taste, .result__lock")) extra.remove()
         for (const section of into.querySelectorAll(".result")) {
@@ -1472,9 +1486,14 @@ function makeResults(engine) {
             // the first demographics.
             if (name === theories.OLD_THEORIES_OF) {
                 const built = theories.renderOldTheories(false)
-                const glyph = built.querySelector(".theory__glyph")
-                if (glyph) return emblem(glyph.textContent)
-                return crop(figureIn(built, "svg.theory__figure"), 100, 100, 200)
+                const sky = built.querySelector("[data-glyph]")
+                if (sky) return emblem(sky.dataset.glyph)
+                // The point and the quarter round it (`badgeCrop`, which
+                // knows where the woodcut is on its drawing).
+                const plane = figureIn(built, "svg.theory__figure")
+                const square = theories.badgeCrop(plane)
+                if (!square) continue
+                return crop(plane, square[0], square[1], square[2])
             }
 
             if (CHARTS.indexOf(name) !== -1) {

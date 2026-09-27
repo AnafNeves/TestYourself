@@ -79,14 +79,12 @@ defineBlock("singles", [
 
             // Self-Concept Clarity Scale (SCCS; Campbell et al., 1996), item 11
             // of the twelve: the one statement of the construct itself in the
-            // positive, on the scale's own 5 points. Added September 2026 for
-            // the sense of knowing who one is, beside the meaning-in-life
-            // ideas in README.md. No norms, so it earns no row.
+            // positive. The original scale is on 5 points, but adapted to 7 for consistency.
             {
                 key: "SCCS_SelfConceptClarity",
                 instructions: "Please indicate the extent to which you agree or disagree with this statement",
                 format: {
-                    options: [1, 2, 3, 4, 5],
+                    options: [1, 2, 3, 4, 5, 6, 7],
                     anchors: ["Strongly disagree", "Strongly agree"],
                     color: "#7B1FA2",
                     hovercolors: ["#ef4444", "#22c55e"],

@@ -146,52 +146,80 @@
 
     /* -------------------------------- forks ------------------------------- */
 
-    // Levels written `fork: true` are taken in the order the person chooses,
-    // two at a time. The places they take are the fork's **slots** — the level
-    // numbers carrying the flag — and `at` is the index of the slot the coming
-    // choice fills. On finishing the level before that slot, while more than
-    // one level is left to fill it with, the two standing next are offered and
-    // the one picked takes the slot, the other falling to the slot after — so
-    // a person who keeps passing a level over meets it again at every choice
-    // until it is the last one standing.
+    // Levels written `fork: n` are taken in the order the person chooses, `n`
+    // offered at a time. The places a fork's levels take are its **slots** —
+    // the level numbers carrying it — and `at` is the index of the slot the
+    // coming choice fills. On finishing the level before that slot, while more
+    // than one level is left to fill it with, the `width` standing next (or
+    // all that are left, when fewer) are offered and the one picked takes the
+    // slot, the others staying in the running for the slot after — so a person
+    // who keeps passing a level over meets it again at every choice until it
+    // is the last one standing.
+    //
+    // **A fork is a run of levels written one after another with the same
+    // `n`**, so two runs side by side with different numbers are two forks,
+    // each put in order among itself and never across the other: the core and
+    // the rest are written `fork: 2` and `fork: 3`. The runs are read off the
+    // timeline as written (`written`, on each level of the plan), and not off
+    // the plan, so that a battery dropping the level between two runs of one
+    // width never merges them.
     //
     // **The slots need not be next to each other.** They happen to be
     // contiguous, but nothing here requires it, which is why a choice is a
     // *swap* of two places rather than a shuffling of one run (`swapLevels`),
     // and why `beneath` stays with the place rather than travelling with what
-    // is asked there.
+    // is asked there. A swap is enough however many are offered: the next
+    // choice offers what stands in the next `width` slots, which is the ones
+    // passed over and one more, whichever of those slots each happens to be in.
     //
-    // The flag is a boolean rather than a name, so there is one fork at most:
-    // a second, independent one is something nobody has wanted, and a name
-    // that is only ever compared against itself says nothing. A run of levels
-    // drawn instead of chosen needs nothing here at all — `shuffle()` in
-    // content/ has already put them in an order by the time this runs.
+    // A run of levels drawn instead of chosen needs nothing here at all —
+    // `shuffle()` in content/ has already put them in an order by the time this
+    // runs, and a fork over a drawn run offers them in the drawn order.
     //
-    // A battery that leaves one level of the fork leaves nothing to choose,
-    // and that level is asked where it falls. A choice is not recorded here
-    // but on the level screen it was made on (`levelItems`, below): it is one
-    // of the two things that screen's way on can be, and is saved as that
-    // screen's answer.
-    const FORK = (() => {
-        const written = TIMELINE.filter((entry) => entry.fork).length
-        if (!written) return null
-        if (written < 2) throw new Error("a fork is two levels or more, and one level is written fork: true")
-        const slots = PLAN.map((entry, at) => (entry.fork ? at + 1 : 0)).filter(Boolean)
-        if (slots.length < 2) return null // a battery left one level of it; it is asked where it falls
-        // A choice is offered from the screen of the level before the slot it
-        // fills, and level 1 has none: a fork standing there takes its first
-        // place as written and the choosing starts at the second. Only a
-        // battery gets there, since the run's own first level is fixed.
-        return { slots: slots, at: slots[0] === 1 ? 1 : 0 } // at: the index of the slot the coming choice fills
+    // A battery that leaves one level of a fork leaves nothing to choose, and
+    // that level is asked where it falls. A choice is not recorded here but on
+    // the level screen it was made on (`levelItems`, below): it is one of the
+    // two things that screen's way on can be, and is saved as that screen's
+    // answer.
+    const FORKS = (() => {
+        const runs = []
+        TIMELINE.forEach((entry, at) => {
+            if (!entry.fork) return
+            if (!Number.isInteger(entry.fork) || entry.fork < 2) {
+                throw new Error("fork is how many levels are offered at once, a whole number of 2 or more, and " + entry.key + " is written fork: " + entry.fork)
+            }
+            const last = runs[runs.length - 1]
+            if (last && last.width === entry.fork && last.written[last.written.length - 1] === at - 1) last.written.push(at)
+            else runs.push({ width: entry.fork, written: [at] })
+        })
+        for (const run of runs) {
+            if (run.written.length < 2) throw new Error("a fork is two levels or more, and " + TIMELINE[run.written[0]].key + " is a fork of one")
+        }
+        return runs
+            .map((run) => {
+                const slots = PLAN.map((entry, at) => (entry.fork && run.written.indexOf(entry.written) !== -1 ? at + 1 : 0)).filter(Boolean)
+                if (slots.length < 2) return null // a battery left one level of it; it is asked where it falls
+                // A choice is offered from the screen of the level before the
+                // slot it fills, and level 1 has none: a fork standing there
+                // takes its first place as written and the choosing starts at
+                // the second. Only a battery gets there, since the run's own
+                // first level is fixed.
+                return { width: run.width, slots: slots, at: slots[0] === 1 ? 1 : 0 } // at: the index of the slot the coming choice fills
+            })
+            .filter(Boolean)
     })()
 
-    // Whether the fork has a choice to offer on finishing this level: the
-    // level is the one before the slot to fill next, and more than one level
-    // is left to fill it with. A level finished a second time, after going
-    // back into it, has the ordinary way on.
+    // Whether a fork has a choice to offer on finishing this level: the level
+    // is the one before the slot a fork fills next, and more than one level is
+    // left to fill it with. A level finished a second time, after going back
+    // into it, has the ordinary way on.
     function forkAfter(level) {
-        return FORK && FORK.at < FORK.slots.length - 1 && FORK.slots[FORK.at] === level + 1 ? FORK : null
+        return FORKS.find((fork) => fork.at < fork.slots.length - 1 && fork.slots[fork.at] === level + 1) || null
     }
+
+    // The places a fork's coming choice is between, as level numbers: the
+    // slot to fill and those after it, as many as the fork offers at once.
+    const offeredBy = (fork) => fork.slots.slice(fork.at, fork.at + fork.width)
 
     // The page is put back to the top underneath something that is covering
     // it. Moving smoothly there would be seen sliding about under the fade,
@@ -1459,7 +1487,7 @@
     // `timeResponse` when the way on is pressed, so **the two are how long
     // that level's results were read** — the one place the file measures
     // that. The `response` is the way on that was taken: where the level
-    // ends in a fork, the level chosen and then the one passed over, in the
+    // ends in a fork, the level chosen and then the ones passed over, in the
     // words the cards carried; otherwise the words on the one button, the
     // way a briefing saves its continue. One per scored level, made here and
     // null until the level is reached, so the shape of the file never
@@ -1505,9 +1533,9 @@
     // numbers that have to stay scored in every order. The last slot is filled
     // by what is left rather than chosen for, and so is the first when the fork
     // starts at level 1, so neither wants a level before it.
-    if (FORK) {
-        FORK.slots.forEach((slot, at) => {
-            const chosen = at >= FORK.at && at < FORK.slots.length - 1
+    for (const fork of FORKS) {
+        fork.slots.forEach((slot, at) => {
+            const chosen = at >= fork.at && at < fork.slots.length - 1
             for (const level of chosen ? [slot - 1, slot] : [slot]) {
                 if (scoredLevels.indexOf(level) === -1) throw new Error("a fork's slots and the levels before them are scored, and level " + level + " is not")
             }
@@ -2119,8 +2147,8 @@
         // The way on carries a blurred taste of the level it leads to, when
         // there is one with something to open: the closing level scores
         // nothing, so the last scored level is followed by nothing here. Where
-        // the run forks, it carries a taste of each of the two ahead with a
-        // way into either instead, and the one button is put away.
+        // the run forks, it carries a taste of each of the levels offered with
+        // a way into any of them instead, and the one button is put away.
         const fork = forkAfter(level)
         const screen = levelItem(level) // this screen's own item: what was read, and the way on that was taken
         const next = scoredLevels[scoredLevels.indexOf(level) + 1]
@@ -2152,7 +2180,7 @@
         )
     }
 
-    // The next two levels, side by side, each as the taste the way on would
+    // The levels offered, side by side, each as the taste the way on would
     // carry of it alone — its name over its blurred figures — with a way into
     // it underneath, and the one the timeline writes first marked as the
     // recommended one. Pressing one is the choice, and is what this level
@@ -2161,11 +2189,15 @@
         const paths = $("level-paths")
         paths.innerHTML = ""
 
-        // The two places still standing next, as level numbers: what is in
-        // them is what the cards show, and taking one is swapping the two.
-        const left = [fork.slots[fork.at], fork.slots[fork.at + 1]]
-        const first = left.reduce((best, one) => (PLAN[one - 1].written < PLAN[best - 1].written ? one : best))
-        const sides = shuffle(left)
+        // The places standing next, as level numbers: what is in them is what
+        // the cards show, and taking one is swapping it into the first. They
+        // are laid out in a random order, so the recommended one is not always
+        // on the left, and as many across as there are of them.
+        const offered = offeredBy(fork)
+        const first = offered.reduce((best, one) => (PLAN[one - 1].written < PLAN[best - 1].written ? one : best))
+        const sides = shuffle(offered.slice())
+        paths.style.setProperty("--paths", sides.length)
+        paths.classList.toggle("level__paths--many", sides.length > 2)
 
         for (const side of sides) {
             const recommended = side === first
@@ -2234,15 +2266,19 @@
     }
 
     // The choice made: recorded, and the chosen level put in the slot being
-    // filled — which, two being offered, is the two changing places. A level
-    // already standing there stays. The item waiting behind the level screen
-    // is then the first of the chosen level, and the stops on the gauge take
-    // the names they now hold.
+    // filled — which is it and the level standing there changing places. A
+    // level already standing there stays. The item waiting behind the level
+    // screen is then the first of the chosen level, and the stops on the
+    // gauge take the names they now hold. What is recorded is the level taken
+    // and then the ones passed over, in the order the timeline writes them,
+    // since which slot each was standing in says nothing to anybody.
     function takeFork(fork, side, screen) {
         const target = fork.slots[fork.at]
-        const passed = side === target ? fork.slots[fork.at + 1] : target
-        // Read before the swap, or both cards would name the same level.
-        const words = [PLAN[side - 1].name, PLAN[passed - 1].name]
+        const passed = offeredBy(fork)
+            .filter((one) => one !== side)
+            .sort((one, other) => PLAN[one - 1].written - PLAN[other - 1].written)
+        // Read before the swap, or two cards would name the same level.
+        const words = [PLAN[side - 1].name].concat(passed.map((one) => PLAN[one - 1].name))
 
         if (side !== target) swapLevels(target, side)
 
