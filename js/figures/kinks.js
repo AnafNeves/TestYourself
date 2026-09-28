@@ -1,0 +1,389 @@
+/* =========================================================================
+   How kinky — what the Sexuality level (the `sex` block) feeds back: one
+   dimension and one sentence, kept that simple on purpose.
+
+   The dimension is Kinkiness, vanilla to kinky: how many of the items in
+   content/block_sex.js — a kink, or one side of one — turn somebody on,
+   whether or not they have done it. It is drawn as the crowd it is read
+   against, stood on end — a band for each number of them from none at the
+   foot to all at the top (twenty-two items, so twenty-three bands), each
+   as wide as the share of people turned on by that many and drawn both ways
+   out of a spine, so the crowd is one shape, a violin, out of the norm's
+   `distribution` — shaded from vanilla to kinky as far as the person
+   reaches, their own band lit in gold and the rest dim beyond, so the shaded
+   part of the crowd is the share the words under it give. The MINT's crowd
+   card turned upright, so that kinkier is higher. The norm is a placeholder
+   stretched from the Big Kink Survey's (the block file says how), so the
+   standing is said against "people" like every other placeholder's, and the
+   crowd is named again once the app has one of its own.
+
+   Under the count, how many of those turn-ons have been lived out: the grid
+   asks whether each was done beside whether it appeals, and the share acted
+   on is the number people will want to share. It says nothing about which.
+
+   The sentence is the taboo reading. Kinky and taboo are one thing in the
+   BKS — how many somebody likes and how rare they are go together (NOTES in
+   the block file) — so rarity is not a second axis but a line: the rarest of
+   the kinks that turn somebody on, and how many people share it.
+
+   The rarest kink is the one thing on the level that says which, so it is
+   never in a shared link (a link carries scores and not answers, so the
+   sentence is simply not there for a visitor) and never in the picture of the
+   level (`.kinks__rarest` is among what results.js leaves out of it).
+   ========================================================================= */
+
+function makeKinks(shared) {
+    "use strict"
+
+    const score = shared.score
+    const known = shared.known
+    const answer = shared.answer
+    const normOf = shared.normOf
+    const standFrom = shared.standFrom
+    const teaseValue = shared.teaseValue
+    const pickButtons = shared.pickButtons
+    const showTip = shared.showTip
+    const hideTip = shared.hideTip
+    const VOTES = shared.VOTES
+
+    const KINKS_OF = "kinks"
+    const KINKS_KEY = "Kinky" // the vote on the figure
+    const DIMENSION = "Kinkiness"
+
+    // Whose crowd it is, said under the figure: "people", the norm being a
+    // placeholder (content/block_sex.js), until the app has a crowd of its
+    // own to name.
+    const CROWD = "people"
+
+    // Each item's share of the BKS's adults who find its nearest BKS interest
+    // arousing at all (>= 1 of 5; BKSPublic.csv, September 2026), and what it
+    // is called in the sentence. Keyed by item, and has to move with the list
+    // in content/block_sex.js. The BKS does not split a kink into its sides,
+    // so both sides carry the kink's share — a guide, like the rest — and
+    // where the two tie the giving side, written first, is the one named.
+    // Five are estimates (marked `~`), the BKS having no such item: the
+    // app's own data replace them.
+    const SHARES = {
+        Sex_Kink_Rough: [75, "rough sex"], // ~
+        Sex_Kink_Sexting: [65, "sexting"], // ~
+        Sex_Kink_Anal_Giving: [73, "giving anal sex"],
+        Sex_Kink_Anal_Receiving: [73, "receiving anal sex"],
+        Sex_Kink_Power_Giving: [58, "dominating"],
+        Sex_Kink_Power_Receiving: [58, "being dominated"],
+        Sex_Kink_Bondage_Giving: [57, "tying someone up"],
+        Sex_Kink_Bondage_Receiving: [57, "being tied up"],
+        Sex_Kink_Toys: [56, "sex toys"],
+        Sex_Kink_Group: [43, "group sex"],
+        Sex_Kink_Public: [41, "sex in public"],
+        Sex_Kink_Resisting_Giving: [37, "consensual non-consent, as the one taking"],
+        Sex_Kink_Resisting_Receiving: [37, "consensual non-consent, as the one taken"],
+        Sex_Kink_Pain_Giving: [35, "giving pain"],
+        Sex_Kink_Pain_Receiving: [35, "receiving pain"],
+        Sex_Kink_OrgasmControl_Giving: [25, "denying someone an orgasm"], // ~
+        Sex_Kink_OrgasmControl_Receiving: [25, "being denied an orgasm"], // ~
+        Sex_Kink_Humiliation_Giving: [22, "humiliating"],
+        Sex_Kink_Humiliation_Receiving: [22, "being humiliated"],
+        Sex_Kink_PartnerWatched: [15, "watching your partner with someone else"], // ~
+        Sex_Kink_Object_Giving: [8, "treating someone as an object"], // ~
+        Sex_Kink_Object_Receiving: [8, "being treated as an object"], // ~
+    }
+
+    // The crowd's colours, vanilla to kinky: cream to the level's pink to a
+    // deep plum.
+    const VANILLA = "#f3e2bf"
+    const MIDDLE = "#e05a8f"
+    const KINKY = "#7e2a8c"
+
+    // The figure in its own units. The badge crops against these. The crowd
+    // stands on end, a band a count from vanilla at the foot to kinky at the
+    // top, each as wide as its share and drawn both ways out of a spine, so
+    // the whole reads as one shape — a violin — rather than as a bar chart.
+    const WIDE = 320
+    const HIGH = 320
+    const SPINE = WIDE / 2 // the middle, the bands growing out both ways
+    const HALF = 105 // half the width of the widest band
+    const TOP = 30 // the top of the topmost band
+    const BASE = 290 // the foot of the lowest band
+    const GAP = 1.6
+
+    const NUMBERS = ["no one", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+
+    /* ------------------------------ the values ---------------------------- */
+
+    function items() {
+        return known(DIMENSION) ? shared.dimensions[DIMENSION] : []
+    }
+
+    function ready() {
+        return known(DIMENSION) && score(DIMENSION) !== undefined
+    }
+
+    // The score is the share of the kinks; the figure reads it as a count.
+    function countOf(value) {
+        return Math.round(value * items().length)
+    }
+
+    function valueOf(locked) {
+        return locked ? teaseValue(DIMENSION) : score(DIMENSION)
+    }
+
+    function colourAt(share) {
+        return share < 0.5 ? mix(VANILLA, MIDDLE, share * 2) : mix(MIDDLE, KINKY, (share - 0.5) * 2)
+    }
+
+    // The items that turn somebody on, as the options chosen — the cells,
+    // each carrying the row (`down`) it stands in: undefined when the answers
+    // cannot be read (a visitor's link carries scores alone).
+    function turnOns() {
+        const found = []
+        for (const question of items()) {
+            const given = answer(question.key)
+            if (given === undefined) return undefined
+            const counts = question.scores ? question.scores[given] : 0
+            if (counts !== 1) continue
+            const cell = question.options.find((one) => one.value === given)
+            found.push({ key: question.key, down: cell ? cell.down : 0 })
+        }
+        return found
+    }
+
+    // The rarest of them, as its item key: null when none does.
+    function rarest() {
+        const on = turnOns()
+        if (on === undefined) return undefined
+        let found = null
+        for (const one of on) {
+            if (!SHARES[one.key]) continue
+            if (!found || SHARES[one.key][0] < SHARES[found][0]) found = one.key
+        }
+        return found
+    }
+
+    // How many of them have been done at all: any row but the first.
+    function lived() {
+        const on = turnOns()
+        if (on === undefined) return undefined
+        return on.filter((one) => one.down > 0).length
+    }
+
+    // The foot of the band for a count: 0 at the foot, the most at the top.
+    function bandY(at, bands) {
+        const height = (BASE - TOP) / bands
+        return BASE - at * height
+    }
+
+    // The middle of the person's band, for the badge.
+    function youAt() {
+        const bands = items().length + 1
+        const height = (BASE - TOP) / bands
+        return [SPINE, bandY(countOf(score(DIMENSION)), bands) - height / 2]
+    }
+
+    /* ------------------------------- the crowd ---------------------------- */
+
+    function drawCrowd(figure, count, locked) {
+        const norm = normOf(DIMENSION)
+        const shares = norm && norm.distribution ? norm.distribution.shares : items().map(() => 1).concat([1])
+        const bands = shares.length
+        const widest = Math.max.apply(null, shares)
+        const height = (BASE - TOP) / bands
+
+        figure.setAttribute("viewBox", "0 0 " + WIDE + " " + HIGH)
+        figure.classList.add("kinks__crowd")
+
+        // The spine the bands grow out of, and the two ends of the scale.
+        figure.appendChild(draw("line", { class: "kinks__spine", x1: SPINE, y1: TOP - 6, x2: SPINE, y2: BASE + 6 }))
+        figure.appendChild(draw("text", { class: "kinks__end kinks__end--kinky", x: SPINE, y: TOP - 14, "text-anchor": "middle" })).textContent = "Kinky"
+        figure.appendChild(draw("text", { class: "kinks__end kinks__end--vanilla", x: SPINE, y: BASE + 22, "text-anchor": "middle" })).textContent = "Vanilla"
+
+        shares.forEach((share, at) => {
+            const half = Math.max(1.5, (share / widest) * HALF)
+            const place = at < count ? "below" : at === count ? "you" : "above"
+            figure.appendChild(
+                draw("rect", {
+                    class: "kinks__band kinks__band--" + place,
+                    x: SPINE - half,
+                    y: bandY(at, bands) - height + GAP / 2,
+                    width: half * 2,
+                    height: height - GAP,
+                    rx: Math.min(3, (height - GAP) / 2),
+                    fill: place === "you" ? "var(--gold)" : colourAt(at / (bands - 1)),
+                    style: "--beat: " + at * 30 + "ms",
+                }),
+            )
+        })
+
+        // The person's band, named beside it with a short lead. Nothing is
+        // named on a locked one: the tease stands for a shape, not a count.
+        if (!locked) {
+            const half = Math.max(1.5, (shares[count] / widest) * HALF)
+            const y = bandY(count, bands) - height / 2
+            figure.appendChild(draw("line", { class: "kinks__lead", x1: SPINE + half + 3, y1: y, x2: SPINE + HALF + 14, y2: y }))
+            figure.appendChild(draw("text", { class: "kinks__you", x: SPINE + HALF + 18, y: y + 4 })).textContent = "You"
+        }
+
+        // The ends of the count, beside the foot and the top.
+        figure.appendChild(draw("text", { class: "kinks__tick", x: SPINE - HALF - 12, y: BASE - height / 2 + 3.5, "text-anchor": "end" })).textContent = "0"
+        figure.appendChild(draw("text", { class: "kinks__tick", x: SPINE - HALF - 12, y: TOP + height / 2 + 3.5, "text-anchor": "end" })).textContent = String(bands - 1)
+        return figure
+    }
+
+    function text(tag, className, words) {
+        const element = document.createElement(tag)
+        element.className = className
+        if (words) element.textContent = words
+        return element
+    }
+
+    // The violin on the left and, beside it, what it says: the count, how
+    // many of it have been lived out and where it stands. The words stand
+    // beside the figure rather than under it so that the figure can be
+    // narrow, which a violin wants to be. Locked, the figure alone.
+    function stage(count, locked, value) {
+        const holder = document.createElement("div")
+        holder.className = "result__chart result__chart--wide kinks__stage"
+
+        const figure = document.createElementNS(SVG, "svg")
+        figure.setAttribute("role", "img")
+        figure.setAttribute(
+            "aria-label",
+            locked
+                ? "Blurred preview of where your answers will put you among other people"
+                : "How many of the " + items().length + " kinks turn people on, from none to all of them, with your own count among them: " + count,
+        )
+        drawCrowd(figure, count, locked)
+        holder.appendChild(figure)
+
+        if (locked) holder.appendChild(text("span", "result__lock", "Locked"))
+        else {
+            const tip = () => showTip(figure, "Each band is how many " + CROWD + " are turned on by that many of the " + items().length + " kinks, from none at the foot to all of them at the top. The gold one is you.")
+            figure.addEventListener("mouseenter", tip)
+            figure.addEventListener("mouseleave", hideTip)
+
+            const side = holder.appendChild(text("div", "kinks__side"))
+            side.appendChild(counted(count))
+            const done = livedLine(count)
+            if (done) side.appendChild(done)
+            const where = standing(value)
+            if (where) side.appendChild(where)
+        }
+        return holder
+    }
+
+    /* ------------------------------- the words ---------------------------- */
+
+    function counted(count) {
+        const said = text("p", "kinks__count")
+        const of = items().length
+        if (count === 0) {
+            said.append("None of these " + of + " kinks turns you on")
+            return said
+        }
+        if (count === of) {
+            said.append("All ")
+            said.appendChild(text("strong", "", String(count)))
+            said.append(" of these kinks turn you on")
+            return said
+        }
+        said.appendChild(text("strong", "", String(count)))
+        said.append(" of these " + of + " kinks " + (count === 1 ? "turns" : "turn") + " you on")
+        return said
+    }
+
+    // Where the count stands, and how many people that is read against
+    // (`n` on the norm, when it carries one).
+    function standing(value) {
+        const norm = normOf(DIMENSION)
+        if (!norm) return null
+        const stand = standFrom(value, norm)
+        const said = text("p", "kinks__standing")
+        said.append(stand.direction === "higher" ? "You are kinkier than " : "You are more vanilla than ")
+        said.appendChild(text("strong", "", stand.share + "%"))
+        said.append(" of " + CROWD)
+        if (norm.n) said.appendChild(text("span", "kinks__n", " (N = " + norm.n.toLocaleString("en-GB") + ")"))
+        return said
+    }
+
+    // Of the turn-ons, how many have been lived out. Nothing to say when
+    // nothing turns somebody on, or when the answers cannot be read.
+    function livedLine(count) {
+        const done = lived()
+        if (done === undefined || count === 0) return null
+        const said = text("p", "kinks__lived")
+        if (done === 0) {
+            said.append("None of them lived out yet")
+            return said
+        }
+        if (done === count) {
+            said.append("And you have lived out " + (count === 1 ? "it" : "all of them"))
+            return said
+        }
+        said.append("Of those, you have lived out ")
+        said.appendChild(text("strong", "", String(done)))
+        return said
+    }
+
+    // How many people a share is, in words a sentence can carry.
+    function howMany(share) {
+        if (share >= 50) return "most people (" + share + "%)"
+        if (share >= 40) return "nearly half of people"
+        const one = Math.round(100 / share)
+        return "about one person in " + (one <= 10 ? NUMBERS[one] : one)
+    }
+
+    function rarestLine() {
+        const key = rarest()
+        if (key === undefined) return null
+        const said = text("p", "kinks__rarest")
+        if (key === null) {
+            said.textContent = "None of the " + items().length + " turns you on, so there is no rarest to name."
+            return said
+        }
+        const [share, name] = SHARES[key]
+        said.append("Your rarest turn-on is ")
+        said.appendChild(text("strong", "", name))
+        said.append(", which turns on " + howMany(share) + ".")
+        return said
+    }
+
+    function vote(ask) {
+        const holder = text("div", "kinks__vote")
+        holder.appendChild(text("p", "kinks__ask", ask))
+        holder.appendChild(pickButtons(KINKS_KEY, VOTES))
+        return holder
+    }
+
+    /* ------------------------------ the section --------------------------- */
+
+    // A title, the crowd with the count, how many of it have been lived out
+    // and where it stands beside it, the rarest kink, and a vote. Locked, the title and the crowd
+    // from the tease, blurred, and nothing else — the preview is what
+    // finishing will show.
+    function renderKinks(locked) {
+        const all = document.createDocumentFragment()
+        const value = valueOf(locked)
+        const count = countOf(value)
+
+        const headline = text("header", "kinks__head")
+        headline.appendChild(text("h3", "kinks__title", "Vanilla or kinky?"))
+        all.appendChild(headline)
+
+        all.appendChild(stage(count, locked, value))
+        if (locked) return all
+
+        const line = rarestLine()
+        if (line) all.appendChild(line)
+
+        all.appendChild(vote("Does this match how kinky you are?"))
+        return all
+    }
+
+    return {
+        KINKS_OF: KINKS_OF,
+        KINKS_KEY: KINKS_KEY,
+        DIMENSION: DIMENSION,
+        ready: ready,
+        youAt: youAt,
+        renderKinks: renderKinks,
+    }
+}

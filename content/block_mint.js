@@ -1,6 +1,15 @@
-// Note: The MINT has 2 versions, being picked randomly (experimental manipulation.
-// It differs on the scale format.
-const formatMint = Math.random() < 0.5 ? "sequential7" : "symmetric7"
+// Note: The MINT has 3 versions, one picked at random per run (an experimental
+// manipulation of the response format): seven circles numbered 0 to 6
+// (`sequential7`), the same seven numbered -3 to +3 (`symmetric7`), or a
+// slider with no numbers on it at all (`slider`). All three answer on the same
+// 0-6 scale underneath, so the scoring, the reversed items and the norms are
+// one; the slider's answers are simply not whole numbers.
+//
+// Outside a browser nothing is drawn and the first is taken, the way
+// `shuffle()` in timeline.js hands back the written order: the codebook reads
+// this file too, and it should describe one fixed scale, not a new one per run.
+const MINT_FORMATS = ["sequential7", "symmetric7", "slider"]
+const formatMint = typeof window === "undefined" ? MINT_FORMATS[0] : MINT_FORMATS[Math.floor(Math.random() * MINT_FORMATS.length)]
 
 defineBlock("mint", [
     {
@@ -24,9 +33,17 @@ defineBlock("mint", [
         key: "mint",
         name: "Interoception",
         instructions: "Answer the following question based on how accurately the statement describes you <b>in general</b>",
+        // The slider runs over the circles' own 0 to 6, finely enough to be a
+        // line rather than seven stops, and says no number either on it or
+        // under the pointer (`reading: false`): the two ends are all it is.
+        type: formatMint === "slider" ? "slider" : undefined,
         format: {
-            options: [0, 1, 2, 3, 4, 5, 6],
+            options: formatMint === "slider" ? undefined : [0, 1, 2, 3, 4, 5, 6],
             labels: formatMint === "symmetric7" ? ["-3", "-2", "-1", "0", "+1", "+2", "+3"] : null,
+            min: 0,
+            max: 6,
+            step: 0.01,
+            reading: false,
             anchors: ["Disagree", "Agree"],
             color: "#e0457b",
             hovercolors: ["#ef4444", "#22c55e"],

@@ -70,13 +70,14 @@
 // rule that a key's prefix is the instrument: most of what is asked here is
 // custom, and the level is its instrument. The second segment is the scale
 // the item belongs to — `Opinion_LeftRight_`, `Opinion_LibAuth_`,
-// `Opinion_Conspiracy_`, `Opinion_Parity_` and the rest — and the third says
-// which item it is: a word for what it asks where the items were written or
-// rewritten one by one (`Opinion_LibAuth_Surveillance`), a number where they
-// are a run of like statements (`Opinion_Parity_1`, `Opinion_Conspiracy_1`).
-// The three unscored items sit under the scale they are nearest
-// (`Opinion_Parity_Diversity`, `Opinion_Planet_Nuclear`,
-// `Opinion_Animals_Diet`). **Where an item comes from a published scale is
+// `Opinion_Conspiracy_`, `Opinion_Parity_` and the rest — and the third is a
+// word for what the item asks (`Opinion_LibAuth_Surveillance`,
+// `Opinion_Parity_Outcomes`), never a number. The three unscored items sit
+// under the scale they are nearest (`Opinion_Parity_Diversity`,
+// `Opinion_Planet_Nuclear`, `Opinion_Animals_Diet`), and a number would
+// make them look like one more item of that scale; with a word on every
+// key, which items a scale holds is read off their `dimension` in this file
+// and never off the key. **Where an item comes from a published scale is
 // said in the comment beside it, not in its key** — the BSA and CMQ items
 // are adapted, and the source's name in the key would promise more than the
 // item keeps. The one exception is `Opinion_ESS_LeftRight`, which is the
@@ -112,9 +113,11 @@ defineBlock("opinions", [
     // file can be set beside almost any survey there is. Asked first, before
     // any statement can colour it. No dimension and no norms: it is saved and
     // read back to nobody. The ESS offers "Don't know" beside the eleven
-    // points; the engine cannot set a labelled way out beside numbered
-    // circles, so it is not offered, and somebody with no place on the line
-    // is left the middle — a known compromise, worth remembering at analysis.
+    // points and this does not, so somebody with no place on the line is left
+    // the middle — a known compromise, worth remembering at analysis. The
+    // engine can now set a labelled way out under numbered circles (an option
+    // written `small: true, custom: true`), so offering it is one option
+    // away.
     {
         key: "leftright",
         name: "Left and Right",
@@ -177,7 +180,7 @@ defineBlock("opinions", [
     // meant; the stem over the slider says the same thing shorter. None of
     // the three is the published item and none is pooled with CMQ data as
     // though it were, which is why their keys do not carry the CMQ's name or
-    // numbers. Which CMQ item each came from is written beside it.
+    // item numbers. Which CMQ item each came from is written beside it.
     //
     // One dimension under a plain name, Suspicion. Read back as one of the
     // spectra.
@@ -203,14 +206,14 @@ defineBlock("opinions", [
 
         items: [
             {
-                key: "Opinion_Conspiracy_1",
+                key: "Opinion_Conspiracy_Uninformed",
                 dimension: "Suspicion",
                 // CMQ item 1: "I think that many very important things happen in the
                 // world, which the public is never informed about."
                 text: "Many very important things happen in the world which the public is never informed about",
             },
             {
-                key: "Opinion_Conspiracy_2",
+                key: "Opinion_Conspiracy_Hidden",
                 dimension: "Suspicion",
                 // CMQ item 4, reworded (see above): "I think that events which
                 // superficially seem to lack a connection are often the result
@@ -218,7 +221,7 @@ defineBlock("opinions", [
                 text: "Many events which seem unrelated or accidental are in fact the result of secret activities",
             },
             {
-                key: "Opinion_Conspiracy_3",
+                key: "Opinion_Conspiracy_Organisations",
                 dimension: "Suspicion",
                 // CMQ item 5: "I think that there are secret organizations that
                 // greatly influence political decisions."
@@ -402,23 +405,23 @@ defineBlock("opinions", [
             // qualification in particular), each asked from both sides.
             // Deliberately about groups rather than income, which is Sharing.
             {
-                key: "Opinion_Parity_1",
+                key: "Opinion_Parity_Outcomes",
                 dimension: "Parity",
                 text: "A fair society is one where men and women, and people of every background, end up equally well off, not just one where they have the same chances",
             },
             {
-                key: "Opinion_Parity_2",
+                key: "Opinion_Parity_Representation",
                 dimension: "Parity",
                 text: "When a group, such as women or minorities, is under-represented in top jobs, in parliament or at university, steps should be taken until it is represented in proportion to its size",
             },
             {
-                key: "Opinion_Parity_3",
+                key: "Opinion_Parity_Chances",
                 dimension: "Parity",
                 reverse: true,
                 text: "As long as everyone has the same chances, it is fair for some groups to end up doing better than others",
             },
             {
-                key: "Opinion_Parity_4",
+                key: "Opinion_Parity_Merit",
                 dimension: "Parity",
                 reverse: true,
                 text: "Opportunities such as jobs or university places should go to the best-qualified candidates, whatever their background, even if that leaves some groups under-represented",
@@ -459,19 +462,19 @@ defineBlock("opinions", [
             //                Belief in Genetic Determinism scale, 2005.) Three
             //                items, one reversed.
             {
-                key: "Opinion_Enhancement_1",
+                key: "Opinion_Enhancement_Intelligence",
                 dimension: "Enhancement",
                 text: "If it were safe, I would take a treatment that made me more intelligent",
             },
             // The goal itself, asked straight and positively: a reversed item
             // built on a negation is the classic misread.
             {
-                key: "Opinion_Enhancement_2",
+                key: "Opinion_Enhancement_Immortality",
                 dimension: "Enhancement",
                 text: "It is good that we try to develop technology that would let people live for ever",
             },
             {
-                key: "Opinion_Enhancement_3",
+                key: "Opinion_Enhancement_Nature",
                 dimension: "Enhancement",
                 reverse: true,
                 text: "There is something wrong with using technology to improve on human nature",
@@ -480,19 +483,19 @@ defineBlock("opinions", [
             // off the table, so what is left to disagree with is the
             // bioconservative principle itself.
             {
-                key: "Opinion_Enhancement_4",
+                key: "Opinion_Enhancement_Selection",
                 dimension: "Enhancement",
                 reverse: true,
                 text: "Parents should not be allowed to choose their children's traits, even if the technology were safe and available to everyone",
             },
             {
-                key: "Opinion_Heredity_1",
+                key: "Opinion_Heredity_Intelligence",
                 dimension: "Heredity",
                 text: "Differences in intelligence between people are mostly down to their genes",
             },
-            { key: "Opinion_Heredity_2", dimension: "Heredity", text: "A person's character is largely there from birth" },
+            { key: "Opinion_Heredity_Character", dimension: "Heredity", text: "A person's character is largely there from birth" },
             {
-                key: "Opinion_Heredity_3",
+                key: "Opinion_Heredity_Upbringing",
                 dimension: "Heredity",
                 reverse: true,
                 text: "The differences in how people behave are mostly the result of how they were raised",
@@ -530,40 +533,40 @@ defineBlock("opinions", [
             // than in among them; it is the one known-groups check the Animals
             // scale has. Both are saved and read back to nobody.
             {
-                key: "Opinion_Planet_1",
+                key: "Opinion_Planet_Growth",
                 dimension: "Planet",
                 text: "Tackling climate change should come first, even if it means slower economic growth",
             },
             {
-                key: "Opinion_Planet_2",
+                key: "Opinion_Planet_Cost",
                 dimension: "Planet",
                 text: "I would accept paying more for fuel, flights and heating if it helped cut carbon emissions",
             },
             {
-                key: "Opinion_Planet_3",
+                key: "Opinion_Planet_Jobs",
                 dimension: "Planet",
                 reverse: true,
                 text: "Jobs and cheap energy should come before cutting carbon emissions",
             },
             {
-                key: "Opinion_Planet_4",
+                key: "Opinion_Planet_Technology",
                 dimension: "Planet",
                 reverse: true,
                 text: "New technology will deal with climate change without people having to change how they live",
             },
             {
-                key: "Opinion_Animals_1",
+                key: "Opinion_Animals_Killing",
                 dimension: "Animals",
                 text: "It is wrong to kill animals for food when people can live healthily without meat",
             },
             {
-                key: "Opinion_Animals_2",
+                key: "Opinion_Animals_Research",
                 dimension: "Animals",
                 reverse: true,
                 text: "Using animals in medical research is acceptable if it might help people",
             },
             {
-                key: "Opinion_Animals_3",
+                key: "Opinion_Animals_People",
                 dimension: "Animals",
                 reverse: true,
                 text: "People matter more than animals, and it is right to put our needs first",
@@ -584,17 +587,17 @@ defineBlock("opinions", [
             // beauty against helping people, which would measure who wants to
             // look kind. Three items, one reversed.
             {
-                key: "Opinion_Beauty_1",
+                key: "Opinion_Beauty_Buildings",
                 dimension: "Beauty",
                 text: "New public buildings should be beautiful, even if that makes them cost more",
             },
             {
-                key: "Opinion_Beauty_2",
+                key: "Opinion_Beauty_Art",
                 dimension: "Beauty",
                 text: "It is right to fund beautiful things with no practical use, such as art or monuments, even at the expense of things that are useful",
             },
             {
-                key: "Opinion_Beauty_3",
+                key: "Opinion_Beauty_Function",
                 dimension: "Beauty",
                 reverse: true,
                 text: "How well a thing works matters more than how it looks",

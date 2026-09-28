@@ -66,10 +66,11 @@
             .trim()
             .slice(0, 200) || UNKNOWN_SOURCE
 
-    // Which blocks this run asks — its battery. Every block the timeline
-    // names, unless the link says otherwise: `?battery=<name>` picks a preset
-    // out of BATTERIES (content/timeline.js), which is what a study links
-    // with; `?only=a,b` asks exactly those blocks and `?skip=a,b` everything
+    // Which blocks this run asks — its battery. `?battery=<name>` picks a
+    // preset out of BATTERIES (content/timeline.js), which is what a study
+    // links with, and a link naming none, or one that is not there, gets
+    // `default` — the timeline without the blocks still being written.
+    // `?only=a,b` asks exactly those blocks and `?skip=a,b` everything
     // but those, for testing. Battery first, `only` over it, `skip` off it.
     // The names are somebody else's text: only the characters a name is made
     // of survive, and a name that is no block is dropped with a word in the
@@ -83,11 +84,12 @@
     }
 
     const named = TIMELINE.flatMap((entry) => entry.blocks)
-    const wanted = namesIn("battery")[0] || null
-    const battery = wanted && BATTERIES[wanted] ? wanted : null
-    if (wanted && !battery) console.warn("No battery called " + wanted + " in content/timeline.js; asking the whole timeline")
+    const DEFAULT_BATTERY = "default"
+    const wanted = namesIn("battery")[0] || DEFAULT_BATTERY
+    const battery = BATTERIES[wanted] ? wanted : DEFAULT_BATTERY
+    if (wanted !== battery) console.warn("No battery called " + wanted + " in content/timeline.js; asking " + DEFAULT_BATTERY)
 
-    const asked = new Set(battery ? BATTERIES[battery] : named)
+    const asked = new Set(BATTERIES[battery])
     const only = namesIn("only")
     if (only.length) {
         asked.clear()
@@ -325,6 +327,25 @@
                     const scale = options.filter((one) => !one.custom)
                     const values = scale.map((o) => o.value)
 
+                    // An option may say what choosing it is worth (`score:`)
+                    // where its value cannot: two options saying different
+                    // things can be worth the same, and a value has to tell
+                    // them apart. Then the scores are the scale's bounds and
+                    // what `counted()` reads, and every option on the scale
+                    // wants one, or an answer would count as nothing at all.
+                    const scored = scale.some((one) => one.score !== undefined)
+                    if (scored && scale.some((one) => typeof one.score !== "number"))
+                        throw new Error(item.key + ": a scale scored by `score:` wants one on every option but its ways out")
+                    const worth = scored ? scale.map((one) => one.score) : null
+
+                    // A slider's way out is found by its value, in `said()` and
+                    // in `counted()`, so a value the line itself can give would
+                    // save a point on the line as the way out.
+                    if (type === "slider")
+                        for (const one of options)
+                            if (!one.custom || (one.value >= format.min && one.value <= format.max))
+                                throw new Error(item.key + ": a slider's options are its ways out, custom and valued off the line")
+
                     authored.push(
                         Object.assign(
                             {
@@ -340,14 +361,20 @@
                                 optional: format.optional,
                                 // A typed answer has no options, so its bounds are the scale;
                                 // an item with a right answer counts 1 or 0 whatever its
-                                // options are numbered, so those are its bounds.
-                                lowest: item.correct !== undefined ? 0 : scale.length ? Math.min.apply(null, values) : format.min,
-                                highest: item.correct !== undefined ? 1 : scale.length ? Math.max.apply(null, values) : format.max,
+                                // options are numbered, so those are its bounds, and a
+                                // scale scored by `score:` is bounded by its scores.
+                                lowest:
+                                    item.correct !== undefined ? 0 : worth ? Math.min.apply(null, worth) : scale.length ? Math.min.apply(null, values) : format.min,
+                                highest:
+                                    item.correct !== undefined ? 1 : worth ? Math.max.apply(null, worth) : scale.length ? Math.max.apply(null, values) : format.max,
+                                scores: worth ? Object.fromEntries(scale.map((one) => [one.value, one.score])) : null,
                                 custom: options.filter((one) => one.custom).map((one) => one.value),
                                 anchors: format.anchors,
                                 unit: format.unit,
                                 step: format.step,
+                                reading: format.reading,
                                 columns: format.columns,
+                                grid: format.grid,
                                 vertical: format.vertical,
                                 tooLow: format.tooLow,
                                 tooHigh: format.tooHigh,
@@ -394,12 +421,25 @@
 
     // The run so far, in place. `authored` is built in order, so a questionnaire
     // is always a single stretch of it and a change of name is its end.
+    //
+    // A follow-up — an item waiting (`showIf`) on another item of the same
+    // questionnaire — is not shuffled on its own but goes where its item goes,
+    // straight after it, with its own follow-ups after it in turn: shuffled
+    // loose it could be drawn before the answer it waits on, and `shown()`
+    // would pass it over for ever. Follow-ups keep the order they are written
+    // in, which for every branch written so far is the order they already had.
     function settle() {
-        const moving = shuffle(group.filter((question) => question.shuffle !== false))
+        const here = new Set(group.map((question) => question.key))
+        const follows = (question) => !!question.showIf && here.has(question.showIf.key)
+        const heads = group.filter((question) => !follows(question))
+        const moving = shuffle(heads.filter((question) => question.shuffle !== false))
         let next = 0
 
-        const settled = group.map((question) => (question.shuffle === false ? question : moving[next++]))
-        for (const question of settled) questions.push(question)
+        const place = (question) => {
+            questions.push(question)
+            for (const after of group) if (follows(after) && after.showIf.key === question.key) place(after)
+        }
+        for (const question of heads) place(question.shuffle === false ? question : moving[next++])
         group = []
     }
 
@@ -499,7 +539,8 @@
     function anyAnswer(question) {
         if (question.input === "text") return "test"
         const pool = offered(question).filter((one) => !one.custom)
-        const options = pool.length ? pool : offered(question)
+        // A slider's options are only its ways out, and the line is the answer.
+        const options = pool.length || question.type === "slider" ? pool : offered(question)
         // Several answers may be true at once, and one of them stands in for
         // the rest.
         if (question.type === "multi") return [options[Math.floor(Math.random() * options.length)].value]
@@ -826,6 +867,8 @@
         // way to compare (`answerKey`, timeline.js), so the key is not legible
         // from the file.
         if (question.correct !== undefined) return answerKey(question.key, answer) === question.correct ? 1 : 0
+        // An option that says what it is worth is worth that.
+        if (question.scores) return question.scores[answer]
         return question.reverse ? question.lowest + question.highest - answer : answer
     }
 
@@ -1038,7 +1081,12 @@
     // here alike — what differs is the writing on the buttons.
     function renderChoice(question, wrap) {
         const options = offered(question)
-        const labelled = options.some((o) => worded(o.text) !== null)
+        // A way out of the question (`small: true`, "That doesn't apply to
+        // me") is written in words even under a row of circles, and is set
+        // beneath the scale rather than on it — so it is not what decides
+        // whether the scale is labelled, nor how many circles it has.
+        const points = options.filter((o) => !o.small)
+        const labelled = points.some((o) => worded(o.text) !== null)
         const pictured = options.some((o) => o.image)
 
         // A row of circles is only as wide as its circles, so the scale draws
@@ -1062,23 +1110,78 @@
         // Labelled options given a column each are a Likert scale set in a row
         // rather than a list, and read centred like the circles do.
         wrap.classList.toggle("options--row", labelled && !pictured && question.columns === options.length)
-        wrap.classList.toggle("options--wide", !labelled && options.length > 7)
+        wrap.classList.toggle("options--wide", !labelled && points.length > 7)
         // Labelled options stack unless the item asks for columns; circles
         // always get one column each.
-        wrap.style.setProperty("--columns", labelled ? question.columns || 1 : options.length)
+        wrap.style.setProperty("--columns", labelled ? question.columns || 1 : points.length)
 
-        options.forEach((option, position) => {
+        options.forEach((option) => {
             const button = optionButton(option, "radio", () => answer(option.value))
 
-            // Each option lights up at its own point along the gradient.
-            if (question.hovercolors) {
-                const spread = options.length - 1
-                const shade = mix(question.hovercolors[0], question.hovercolors[1], position / spread)
+            // Each point lights up at its own place along the gradient; a way
+            // out is on none of it.
+            if (question.hovercolors && !option.small) {
+                const spread = points.length - 1
+                const shade = mix(question.hovercolors[0], question.hovercolors[1], points.indexOf(option) / spread)
                 button.style.setProperty("--hover", shade)
             }
 
             wrap.appendChild(button)
         })
+    }
+
+    // A question answered on two scales at once, as one cell of a grid: the
+    // columns are one scale and the rows the other (`format.grid`, `across`
+    // and `down`), and every option is a cell, carrying the `across` and
+    // `down` values it stands at — the content writes the options out, so
+    // everything that reads a scale off an item (the file, the codebook, test
+    // mode) finds an ordinary choice, and only the room it is answered in is
+    // a table. A cell shows a ring and nothing else, its words being the two
+    // headers it stands under; they are still on the button for a screen
+    // reader, and are what `said()` saves. A way out (`small`) is set under
+    // the table the way it is set under a row.
+    function renderGrid(question, wrap) {
+        const options = offered(question)
+        const grid = question.grid
+        wrap.classList.add("options--grid")
+        wrap.style.setProperty("--across", grid.across.length)
+
+        const head = (words, which) => {
+            const cell = document.createElement("div")
+            cell.className = "grid__head grid__head--" + which
+            cell.textContent = words
+            return cell
+        }
+        const heads = { across: [], down: [] }
+
+        wrap.appendChild(head("", "corner"))
+        grid.across.forEach((one) => heads.across.push(wrap.appendChild(head(one.text, "across"))))
+
+        grid.down.forEach((down, row) => {
+            heads.down.push(wrap.appendChild(head(down.text, "down")))
+            grid.across.forEach((across, column) => {
+                const option = options.find((one) => one.down === down.value && one.across === across.value)
+                if (!option) throw new Error(question.key + ": the grid has no cell at " + down.text + " / " + across.text)
+                const button = optionButton(option, "radio", () => answer(option.value))
+                button.classList.add("option--cell")
+                // The words go to the reader and off the face of the cell.
+                button.setAttribute("aria-label", button.textContent)
+                button.textContent = ""
+                // Hovering or focusing a cell lights the two headers it is
+                // read against, so the eye need not travel to find them.
+                const lit = (on) => {
+                    heads.across[column].classList.toggle("grid__head--lit", on)
+                    heads.down[row].classList.toggle("grid__head--lit", on)
+                }
+                button.addEventListener("mouseenter", () => lit(true))
+                button.addEventListener("mouseleave", () => lit(false))
+                button.addEventListener("focus", () => lit(true))
+                button.addEventListener("blur", () => lit(false))
+                wrap.appendChild(button)
+            })
+        })
+
+        options.filter((one) => one.small).forEach((option) => wrap.appendChild(optionButton(option, "radio", () => answer(option.value))))
     }
 
     // A question several answers may be true of at once: the same labelled
@@ -1328,11 +1431,23 @@
     // The spray on answering comes out of the point chosen (`.slider__mark`,
     // an empty mark riding under the thumb), not out of the button that
     // confirmed it, since the point is the answer.
+    //
+    // A slider written `reading: false` (the MINT's third format) says no
+    // number at all, neither over the thumb nor under the pointer: the ghost
+    // still follows it, empty, and the two ends are the whole of the scale.
+    //
+    // A way out ("This doesn't apply to me") is an option on the format, as
+    // under a row of circles — `small` and `custom`, valued off the line —
+    // and is set under Continue, taken on the press like a choice. It is the
+    // one thing on a slider that carries `data-value`, so the lighting and
+    // the spray find it the way they find an option.
     function renderSlider(question, wrap) {
         wrap.classList.add("options--slider")
 
         const holder = document.createElement("div")
         holder.className = "slider"
+        const mute = question.reading === false
+        if (mute) holder.classList.add("slider--mute")
 
         const field = document.createElement("input")
         field.type = "range"
@@ -1390,6 +1505,7 @@
         const show = () => {
             const value = Number(field.value)
             holder.style.setProperty("--at", shareOf(value))
+            if (mute) return
             reading.textContent = said(value)
             field.setAttribute("aria-valuetext", reading.textContent)
         }
@@ -1397,6 +1513,12 @@
             touched = true
             holder.classList.add("slider--touched")
             go.disabled = false
+            // A way out taken before, and gone back to, is no longer the answer
+            // once the line is.
+            for (const button of wrap.querySelectorAll(".option[data-value]")) {
+                button.classList.remove("option--selected")
+                button.setAttribute("aria-checked", "false")
+            }
             show()
         }
 
@@ -1413,7 +1535,7 @@
             if (event.pointerType === "touch") return
             const value = hovered(event)
             holder.style.setProperty("--over", shareOf(value))
-            ghostReading.textContent = said(value)
+            if (!mute) ghostReading.textContent = said(value)
             holder.classList.add("slider--hovered")
         })
         field.addEventListener("pointerleave", () => holder.classList.remove("slider--hovered"))
@@ -1446,10 +1568,12 @@
         holder.appendChild(ends)
         wrap.appendChild(holder)
         wrap.appendChild(go)
+        for (const option of offered(question)) wrap.appendChild(optionButton(option, "radio", () => answer(option.value)))
 
-        // An answer already given is put back where it was left.
+        // An answer already given is put back where it was left — on the line,
+        // or, for a way out, nowhere on it, `markSelection` lighting the button.
         const given = responses[question.key]
-        if (given !== undefined) {
+        if (given !== undefined && question.custom.indexOf(given) === -1) {
             field.value = given
             touch()
         } else show()
@@ -1462,14 +1586,15 @@
     // several answers is finished by pressing Continue rather than by any one
     // of them. A new way of answering is a `type` written in content/ and a
     // line in each of these, and nothing else moves.
-    const SCALES = { choice: renderChoice, input: renderEntry, multi: renderMulti, curve: renderCurve, slider: renderSlider }
+    const SCALES = { choice: renderChoice, input: renderEntry, multi: renderMulti, curve: renderCurve, slider: renderSlider, grid: renderGrid }
 
     const SPRAYS = {
         choice: (value) => document.querySelector('.option[data-value="' + value + '"]'),
+        grid: (value) => document.querySelector('.option[data-value="' + value + '"]'),
         input: () => $("options").querySelector(".option--go"),
         multi: () => $("options").querySelector(".option--go"),
         curve: () => $("options").querySelector(".curve__mark"),
-        slider: () => $("options").querySelector(".slider__mark"),
+        slider: (value) => $("options").querySelector('.option[data-value="' + value + '"]') || $("options").querySelector(".slider__mark"),
     }
 
     function renderScale(question) {
@@ -1484,7 +1609,7 @@
         // What the group is to a screen reader follows the kind of answer:
         // radios pick one, checkboxes tick several, and a typed field or a
         // curve is no group at all — its own control carries the item.
-        if (question.type === "choice") wrap.setAttribute("role", "radiogroup")
+        if (question.type === "choice" || question.type === "grid") wrap.setAttribute("role", "radiogroup")
         else if (question.type === "multi") wrap.setAttribute("role", "group")
         else wrap.removeAttribute("role")
 
@@ -1752,7 +1877,7 @@
         return "Level " + level + (name ? " · " + name : "")
     }
 
-    // How long a level is said to take, as the card offering it writes it:
+    // How long a level is said to take, as the badge over its teaser writes it:
     // the `minutes` written in the timeline from the pilot runs, or nothing
     // where a level carries none. It travels with what is asked, not with the
     // place, so a fork swaps it with the name (`swapLevels`).
@@ -2330,9 +2455,11 @@
     }
 
     let levelShowing = null // the level the level screen is holding, if any
+    let levelLeft = false // whether the way on from it has been taken
 
     function completeLevel(level) {
         levelShowing = level
+        levelLeft = false
 
         // A level's answers are all in, which is the moment worth staging: a
         // run left on the results screen it opens has still left a whole level
@@ -2358,7 +2485,7 @@
         $("level-continue").hidden = !!fork
         if (fork) renderFork(fork, screen)
         // Named without its number: "Next" has already said where it falls.
-        else if (next) results.renderTeaser($("level-next"), next, [levelName(next), aboutMinutes(next).toLowerCase()].filter(Boolean).join(" · "))
+        else if (next) results.renderTeaser($("level-next"), next, levelName(next), "", aboutMinutes(next))
         // From the floor, the way on is down through it rather than on.
         $("level-continue").textContent = level === floorLevel ? "Go beneath the floor →" : "Continue the test →"
 
@@ -2417,7 +2544,7 @@
 
             const taste = document.createElement("div")
             taste.className = "level__next"
-            results.renderTeaser(taste, side, aboutMinutes(side), PLAN[side - 1].name)
+            results.renderTeaser(taste, side, "", PLAN[side - 1].name, aboutMinutes(side))
             taste.hidden = false // a level with no figure still has its name to show
             path.appendChild(taste)
 
@@ -2612,8 +2739,9 @@
         // A level ends: show what it unlocked before carrying on. The lock
         // stays on until the way out of the level screen is pressed — the water
         // takes a moment to cover the survey, and the item waiting behind it
-        // has not been read yet.
-        if (questions[index].level !== finished) {
+        // has not been read yet. A level with nothing scored in it unlocked
+        // nothing and has no screen, so the run goes straight on from it.
+        if (questions[index].level !== finished && scoredLevels.indexOf(finished) !== -1) {
             locked = true
             completeLevel(finished)
         } else renderQuestion()
@@ -3044,7 +3172,10 @@
             return
         }
 
-        const options = offered(question)
+        // Only a choice is answered by position. A slider's options are its
+        // ways out, and a digit meant for the line must not take one; a grid
+        // has more cells than there are digits, and is answered by Tab.
+        const options = question.type === "choice" ? offered(question) : []
         const n = Number(e.key)
         // An option that is one letter — a lettered candidate, the next letter
         // of a series — is answered by its letter as well as by its position.
@@ -3245,6 +3376,13 @@
     // fork: the screen is drawn into its stop on the gauge and the item waiting
     // behind it is put up.
     function leaveLevel() {
+        // A level screen is left once. The way on stays pressable while the
+        // screen is being sucked away, and every press past the first would
+        // put the survey up again when its own animation ended — from the
+        // floor, when its own crossing did, nine seconds later, over whatever
+        // was on screen by then, and unlocked.
+        if (levelLeft) return
+        levelLeft = true
         const crossing = levelShowing === floorLevel
 
         // The way on, as this screen's answer. A fork has written the choice

@@ -1340,19 +1340,15 @@ h1 {
 
 /* The lead-in over a questionnaire changes where one questionnaire hands over
    to the next, and a lead-in read past turns the items under it into different
-   questions — so it is edged in the item's own colour to be seen at all, and
-   lit up once when it is new (`instructions--new`), since what changes between
-   two items that look alike is otherwise easy to miss. */
+   questions — so it is lit once in the item's own colour when it is new
+   (`instructions--new`), since what changes between two items that look alike
+   is otherwise easy to miss. Otherwise it is quiet text, with nothing round it. */
 .instructions {
-    color: var(--text);
+    color: var(--muted);
     font-size: 16.5px;
     font-style: italic;
     line-height: 1.45;
     margin: 30px 0 0;
-    padding: 8px 14px;
-    border-left: 3px solid var(--selected, var(--accent));
-    border-radius: 0 10px 10px 0;
-    background: color-mix(in srgb, var(--selected, var(--accent)) 12%, transparent);
 }
 
 .instructions--new {
@@ -1362,7 +1358,7 @@ h1 {
 @keyframes instructions-new {
     0%,
     30% {
-        background: color-mix(in srgb, var(--selected, var(--accent)) 42%, transparent);
+        color: color-mix(in srgb, var(--selected, var(--accent)) 60%, #ffffff 40%);
     }
 }
 
@@ -1779,11 +1775,14 @@ h1 {
 }
 
 /* A way out of the question rather than an answer to it: set apart, and
-   quieter than the answers above it. */
-.options--labelled .option--small {
+   quieter than the answers above it — a pill under the row whether the row is
+   of labelled buttons or of circles. */
+.options .option--small {
     grid-column: 1 / -1;
     justify-self: center;
     width: auto;
+    aspect-ratio: auto;
+    font-weight: 500;
     margin-top: 6px;
     padding: 7px 16px;
     border-radius: 999px;
@@ -1792,7 +1791,27 @@ h1 {
     color: var(--muted);
 }
 
-.options--labelled .option--small:hover {
+/* Under a row of circles the anchors are centred on the row, so the way out
+   hangs at the foot of the whole scale rather than being a row of the
+   circles' grid: were it one, the anchors would centre on circles and pill
+   together and sit low. The room it takes is the scale's padding, which is
+   outside the row the anchors are centred in, and it is under the anchors
+   too where a phone puts them beneath the circles. */
+.scale--circles:has(.option--small) {
+    position: relative;
+    padding-bottom: 43px;
+}
+
+.scale--circles .option--small {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: max-content;
+    margin: 0 auto;
+}
+
+.options .option--small:hover {
     color: var(--text);
 }
 
@@ -1847,6 +1866,72 @@ h1 {
    labelled ones above, latched rather than taken on the first press, and the
    way on sits under them across the full width — nothing here ends the item
    but Continue, so it has to be the thing the eye finishes on. */
+/* Two scales answered at once, as a table: a header a column across the top
+   and a header a row down the left, and a cell where each pair meets. A cell
+   carries no words of its own — its words are the two headers it stands
+   under — so it is a ring, filled when chosen, and the headers a cell is read
+   against light up as it is hovered or focused. The table takes the whole
+   width the scale gives it, the row headers taking what they need first. */
+.options--grid {
+    grid-template-columns: minmax(0, max-content) repeat(var(--across, 3), minmax(0, 1fr));
+    gap: 6px;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.grid__head {
+    font-size: 13.5px;
+    line-height: 1.3;
+    color: var(--muted);
+    transition: color 0.15s;
+}
+
+.grid__head--across {
+    align-self: end;
+    text-align: center;
+    padding: 0 4px 6px;
+}
+
+.grid__head--down {
+    align-self: center;
+    text-align: right;
+    padding-right: 10px;
+    max-width: 150px;
+}
+
+.grid__head--lit {
+    color: var(--text);
+}
+
+.options--grid .option--cell {
+    aspect-ratio: auto;
+    min-height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.option--cell::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0.55;
+    transition: opacity 0.15s, background 0.15s;
+}
+
+.option--cell:hover::before {
+    opacity: 1;
+}
+
+.option--cell.option--selected::before {
+    opacity: 1;
+    background: #ffffff;
+    border-color: #ffffff;
+}
+
 .options--multi .option--go {
     grid-column: 1 / -1;
     justify-self: center;
@@ -2284,6 +2369,13 @@ h1 {
     opacity: 0;
 }
 
+/* A slider that says no number (`reading: false`): the thumb and the ghost
+   are left, and neither carries a figure. */
+.slider--mute .slider__reading,
+.slider--mute .slider__ghost-reading {
+    display: none;
+}
+
 .slider__ends {
     display: flex;
     justify-content: space-between;
@@ -2697,6 +2789,21 @@ h1 {
     /* More than seven circles do not fit on one row. */
     .options--wide {
         grid-template-columns: repeat(6, minmax(0, 62px));
+    }
+
+    /* Smaller headers, so that three columns and their row headers share
+       a phone's width. */
+    .grid__head {
+        font-size: 12px;
+    }
+
+    .grid__head--down {
+        padding-right: 6px;
+        max-width: 96px;
+    }
+
+    .options--grid .option--cell {
+        min-height: 42px;
     }
 
     /* Six pictures in a row would be thumbnails: as many to a row as stay

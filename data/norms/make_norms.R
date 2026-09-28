@@ -14,6 +14,14 @@
 #   norms_mint.R    THE MINT (`content/block_mint.js`), from the raw answers of
 #                   the studies that have asked it
 #
+# and one that is not yet anything's:
+#
+#   norms_bks.R     THE BIG KINK SURVEY, tentative: the structure of its public
+#                   subsample, for deciding whether a level on sexuality is
+#                   worth writing. It prints no paste lines, takes minutes, and
+#                   is passed over here (`TENTATIVE`) until it has a block file
+#                   to feed
+#
 # Each runs on its own (`Rscript data/norms/norms_mint.R`), and this file runs
 # all of them, one after another, so a new questionnaire's norms are a new
 # `norms_*.R` and nothing here changes. Each is run in an environment of its
@@ -35,7 +43,12 @@ here <- local({
 
 source(file.path(here, "common.R"))
 
+# Scripts that are in the folder but feed nothing in `content/` yet, and so
+# are run on their own rather than with the rest.
+TENTATIVE <- c("norms_bks.R")
+
 for (script in sort(list.files(here, pattern = "^norms_.*[.]R$", full.names = TRUE))) {
+  if (basename(script) %in% TENTATIVE) next
   tryCatch(
     sys.source(script, envir = new.env(parent = globalenv())),
     error = function(e) cat("\nSTOPPED in ", basename(script), ": ", conditionMessage(e), "\n", sep = "")

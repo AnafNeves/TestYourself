@@ -133,7 +133,12 @@
      format: { min: 0, max: 100, step: 1, unit: "%", anchors: ["Certainly false", "Certainly true"], color: "#6aa7f0" }
 
    Nothing is answered until the line is touched, and Continue takes it. What
-   is saved is the number; `unit` is only written after it on screen.
+   is saved is the number; `unit` is only written after it on screen. A
+   slider may carry `options`, and they can only be ways out — each
+   `small: true, custom: true`, valued off the line (the engine throws
+   otherwise), set under Continue and taken on the press:
+
+     options: [{ value: 999, text: "This doesn't apply to me", small: true, custom: true }]
 
    An option with `image:` (a path under `assets/`) is a picture on a tile,
    its `text` under it as a caption — and still what is saved and what the
@@ -323,21 +328,34 @@ const TIMELINE = [
         { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
         { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
         { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
+        // Work in progress, asked only by the `all` battery below; `default`
+        // leaves the level out and the fork is the six above. A fork's slots
+        // must be scored levels, which is the whole reason one of its items
+        // carries a dimension (see content/block_sex.js). Its minutes are a
+        // guess, nobody having taken it.
+        { key: "Sexuality", name: "Sexuality", blocks: ["sex"], fork: 3, minutes: 4 },
     ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
 
-// Batteries: named subsets of the timeline's blocks, for a study that wants
-// less than the whole run. A link with `?battery=<name>` asks the blocks
-// named here and nothing else, in the timeline's own order — the list says
-// what is asked and never where — so a study's battery is written in the
-// repository, under a version, rather than in a URL somebody pasted.
-// `?only=a,b` and `?skip=a,b` do the same by hand, for testing, and
-// `?start=a,b` brings the levels holding those blocks to the front. `closing`
-// need not be written: it is always asked, since the run ends through it. A
-// link with no battery asks everything. The two below are examples, to be
-// edited or replaced when a study is designed.
+// Batteries: named subsets of the timeline's blocks. A link with
+// `?battery=<name>` asks the blocks named here and nothing else, in the
+// timeline's own order — the list says what is asked and never where — so a
+// study's battery is written in the repository, under a version, rather than
+// in a URL somebody pasted. `?only=a,b` and `?skip=a,b` do the same by hand,
+// for testing, and `?start=a,b` brings the levels holding those blocks to the
+// front. `closing` need not be written: it is always asked, since the run
+// ends through it.
+//
+// **A link with no battery, or naming one that is not here, asks `default`**:
+// the whole timeline but the blocks still being written, which are what the
+// ethics application covers. `all` is everything on the timeline, those
+// included, and is for trying them out and for nothing a participant is sent.
+// `test` is an example, to be edited or replaced when a study is designed.
+const WORK_IN_PROGRESS = ["sex"]
 const BATTERIES = {
+    default: TIMELINE.flatMap((level) => level.blocks).filter((name) => WORK_IN_PROGRESS.indexOf(name) === -1),
+    all: TIMELINE.flatMap((level) => level.blocks),
     test: ["icar", "regulation"],
 }
 

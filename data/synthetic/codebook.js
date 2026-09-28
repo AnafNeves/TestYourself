@@ -6,9 +6,9 @@
 
        bun data/synthetic/codebook.js > codebook.json
 
-   `synthesize.py` calls it for you. It loads `content/timeline.js` and then
-   every `content/block_*.js` that `index.html` names, in that order, inside
-   one function so that the globals they share (`defineBlock`, `QUESTIONNAIRES`,
+   `synthesize.py` calls it for you. It walks the `default` battery (see
+   below). It loads `content/timeline.js` and then every `content/block_*.js`
+   that `index.html` names, in that order, inside one function so that the globals they share (`defineBlock`, `QUESTIONNAIRES`,
    `BLOCKS`, `TIMELINE`, `formatMint`) resolve exactly as they do on the page,
    and then walks the four lists the way `app.js` does — levels, blocks,
    entries, items — so that the codebook can never disagree with the run.
@@ -32,7 +32,17 @@ const files = [...html.matchAll(/<script src="(content\/[^"]+)"><\/script>/g)].m
 if (!files.length) throw new Error("no content scripts found in index.html")
 
 const source = files.map((file) => fs.readFileSync(path.join(ROOT, file), "utf8")).join("\n;\n")
-const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, TIMELINE, WATER_SHARE, formatMint }")()
+const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, TIMELINE, BATTERIES, WATER_SHARE, formatMint }")()
+
+// The `default` battery, which is what a link naming none asks: the blocks
+// still being written are on the timeline but asked only by `all`, and what
+// this describes — the deck's Content table, a synthetic run — is the test as
+// it is sent to people. A level left with no block is dropped, as app.js
+// drops it, so the numbering stays that of a default run.
+const asked = new Set(content.BATTERIES.default.concat("closing"))
+const timeline = content.TIMELINE.map((entry) => Object.assign({}, entry, { blocks: entry.blocks.filter((name) => asked.has(name)) })).filter(
+    (entry) => entry.blocks.length,
+)
 
 // The app version, so a synthetic file says which code its codebook came from.
 const app = fs.readFileSync(path.join(ROOT, "js", "app.js"), "utf8")
@@ -69,7 +79,7 @@ function wordings(text, item) {
     return { textBy: { [waits]: textBy } }
 }
 
-content.TIMELINE.forEach((entry, at) => {
+timeline.forEach((entry, at) => {
     const level = at + 1
     levels.push({ level: level, key: entry.key, name: entry.name, blocks: entry.blocks, fork: entry.fork || null, beneath: false })
 

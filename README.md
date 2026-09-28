@@ -4,7 +4,7 @@ The big dispositional characteristics survey.
 
 ## Levels
 
-Every level closes on results of its own. Each link below starts the test on that level, and the rest of the run follows (see `?start=` under [Batteries](#batteries)).
+Every level closes on results of its own. Each link below starts the test on that level, and the rest of the run follows.
 
 <table>
   <tr>
@@ -71,6 +71,8 @@ Every level closes on results of its own. Each link below starts the test on tha
 
 The pictures are drawn from stand-in scores, not anybody's answers, by `assets/readme/make.py`; rerun it when a figure changes.
 
+**Work in progress: Sexuality.** Asked only by the `all` battery, since it is not covered by the ethics application, and with no results of its own yet. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=sex&battery=all&source=README).
+
 ## Includes
 
 What the test currently asks — every questionnaire, its reference and its
@@ -79,25 +81,29 @@ which is where that table now lives. Open `docs/index.html`; it needs nothing
 installed. **Adding, removing or renaming anything in `content/` means updating
 it in the same breath.**
 
-## Batteries
+## Options
 
-A study may ask a subset of the blocks above: `?battery=<name>` in the link picks one of the presets in `content/timeline.js` (`?only=` and `?skip=` list blocks by hand, for testing). The closing items are always asked.
+Everything a link can say about a run goes after the address, e.g.
+`https://realitybendinglab.com/TestYourself/?source=MyStudy&battery=test`. The participant is shown none of it.
 
-| Battery       | Blocks                                                          |
-| ------------- | --------------------------------------------------------------- |
-| *(none)*      | Everything in the Includes table, in order                      |
-| `personality` | demographics1, fipi, singles, demographics2, hexaco, archetypes |
-| `ai`          | demographics1, demographics2, bait                              |
+| Option | What it does | Example |
+|---|---|---|
+| `?source=` | Where the link was handed out (a project, an experimenter, a page). Written into the saved file and its name, never shown. A link without one is saved as `Unknown`. | `?source=Prolific-Pilot` |
+| `?sub=` | The participant's code, for a prewritten list or a platform's own id. Only `A-Z a-z 0-9 _ -` survive, 32 characters at most; otherwise a code is made up. | `?sub=P0042` |
+| `?battery=` | Ask a named preset of blocks out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run asks `default`: the whole test but the blocks still being written. `all` asks those too (currently the sexuality block, which is not covered by the ethics application). | `?battery=all` |
+| `?only=` | Ask exactly these blocks (comma-separated), for testing. Applied over `battery`. | `?only=mint,icar` |
+| `?skip=` | Ask everything but these blocks. Applied after `only`. | `?skip=opinions` |
+| `?start=` | Bring the levels holding these blocks to the front, in the order named; the rest follow as usual. Moves whole levels and asks nothing the battery left out. | `?start=icar` |
+| `?test=true` | Test mode (or a bare `?test`): each questionnaire shrinks to one item, the rest are answered at random, and the consent gate opens unread. Still sends a real file, prefixed `test_`. | `?test=true&start=opinions` |
+| `?card=1&s=` | Show somebody's whole-run profile web rather than the test. Made by the profile's "Copy share link", not by hand. | `?card=1&s=Curiosity~3.8,…` |
+| `?card=1&level=&s=` | Show one level's results out of a shared link, with `m=` and `d=` (a birth month and a stand-in day) for level 1's star sign. Made by a level's "Copy link". | `?card=1&level=Character&s=…` |
 
-`?source=<text>` says where the link was handed out (a project, an experimenter, a page it was posted on). It is saved in the file and put in its name, `<date>_<source>_<participant>.json`, so that a deposit sorts by date and one study's files can be picked out. Every real deployment should name one: a run without it is saved as `Unknown`, which is worth a second look. The links below carry `source=README`.
-
-`?start=<block>` puts the level holding that block first, and the rest of the run follows in its usual order. For example, to open on the opinions level (Where You Stand):
-
-https://realitybendinglab.com/TestYourself/?start=opinions&source=README
-
-It only reorders and never adds a block, so it combines with the others: https://realitybendinglab.com/TestYourself/?battery=test&start=regulation&source=README asks the `test` battery with Mind & Heart first, and https://realitybendinglab.com/TestYourself/?test=true&start=opinions&source=README gets to the opinions results quickly.
-
-Test mode walks the run in miniature (one item per questionnaire, the rest answered at random) and is not data. There is no button for it on the page; it is reached by the link alone: https://realitybendinglab.com/TestYourself/?test=true&source=README
+Options combine with `&`. The blocks, in timeline order, are `demographics1`, `fipi`, `singles` (General);
+`demographics2`, `mint` (Brain-Body Axis); `bait` (AI Expertise & Usage); `demographics3`, `mood`, `health`, `hitop`
+(Mood & Health); `hexaco` (Character); `archetypes`; `primals` (The World); `icar` (How You Think); `regulation`
+(Mind & Heart); `opinions` (Where You Stand); `sex` (Sexuality, asked only by `battery=all`); and `closing`, which is
+always asked. `mood` and `hitop` are asked or
+skipped together.
 
 ## Similar tests online
 
@@ -105,82 +111,72 @@ Worth going back to for what to add next and how to present it.
 
 - **[TakeTest](https://taketest.xyz/)**: some forty free tests, most of them published instruments — the BFI-2, the IPIP-NEO-300, the Short Dark Triad, the ICAR-16 and ICAR-60, the MMPI-2 in full and short, the Autism-Spectrum Quotient, the Moral Foundations Questionnaire-2, right- and left-wing authoritarianism, conspiracy and paranormal belief scales, vocabulary and civics tests. Each is scored against a large normed sample (the UK Biobank, the General Social Survey), results collect in one place across tests, and signing in keeps them across devices. Ideas for tests, and for where real norms come from.
 - **[Dimensional](https://www.dimensional.me/)** (an app): fifteen dimensions and "over 200 traits", from personality and values to love styles, attachment, attitudes to sexuality and political ideology, with profiles compared between friends and "compatibility" readings. No science claimed. Ideas for features: comparing with somebody else, and a reason to come back.
+- **[Aella's surveys](https://aella.lol/)**: large self-run online surveys, some on far more extreme ground than anything here — the Big Kink Survey asks about zoophilia and incest, among much else — whose anonymised data from thousands of respondents have been made public, with respondents agreeing to it and no major harm reported. A precedent worth citing if the ethics reviewers push back on the sensitivity of our own items (diagnoses, political opinions) or on releasing the data openly: by comparison, what we ask is mild.
 
 ## Questionnaire Ideas
 
+Not asked yet. "Partly there" names what the test already asks on the same ground.
 
+| Domain | Idea | Notes | Partly there |
+|---|---|---|---|
+| Humour | Being funny, dark humour | | |
+| Cognition | Wordsum | A short vocabulary test, heavily g-loaded ([thread](https://x.com/cremieuxrecueil/status/2098586478443901419?s=20)) | ICAR-16 (How You Think) |
+| Cognition | Imagery across the senses | Short form of the PSIQ | |
+| Cognition | Sensory sensitivity | Visual especially: it predicts everything | |
+| Cognition | Obsessive-compulsive beliefs | Perfectionism, intolerance of uncertainty, control of thoughts | |
+| Cognition | Cross-modal correspondences | | |
+| Cognition | Abstract vs. concrete construal | | |
+| Cognition | Rumination and worry | | CERQ's Rumination (Mind & Heart) |
+| Cognition | Intolerance to Uncertainty | |  |
+| Unusual experiences | Paranormal beliefs | | |
+| Unusual experiences | Unusual sensory experiences | | HiTOP-BR's Unusual Experiences (Mood & Health) |
+| Unusual experiences | Fantasy proneness | | |
+| Unusual experiences | Psychotic experiences | | HiTOP-BR's Unusual Experiences (Mood & Health) |
+| Identity | Masculine–feminine | | |
+| Hormones | Menstrual cycle phase, contraceptive use, last sexual activity | For females. Needs a line saying why it is asked (conscious experience is shaped by hormonal state, which influences cognition and emotion) and a way to skip | |
+| Sleep | Parasomnias and boundary failures | IOWA / MPS. **Ask Giulia about the validation of her scale** | |
+| Sleep | Sleep health | SATED | SQS single (Mood & Health) |
+| Sleep | Dreams | DIQ | |
+| Sleep | Daytime sleepiness | ESS (Epworth) | |
+| Family and work | Relationship status and satisfaction | | |
+| Family and work | Dependents | | |
+| Family and work | Occupation and job satisfaction | Would let `gjs` (in `content/block_UNUSED.js`) be asked, which waits on an employment item | |
+| Sexuality | Sexual orientation | Kinsey scale? | |
+| Sexuality | Sex-life satisfaction | The WHO scales cover many life domains, this among them, and are short | |
+| Sexuality | Kinkiness | Aella's measures | |
+| Self and others | Attachment style | | |
+| Self and others | Empathy | | |
+| Self and others | Peripersonal space | We made an avatar task for this a while back | |
+| Self and others | Public and private self-consciousness | | |
+| Self and others | Shame and disgust | | |
+| Self and others | Social connection | | |
+| Self and others | Suggestibility | | |
+| Self and others | PCS? | | |
+| Wellbeing and emotions | Coping | | CERQ-short (Mind & Heart) |
+| Wellbeing and emotions | Self-rated health | | Health single (General) |
+| Wellbeing and emotions | Dimorphous emotions | | |
+| Wellbeing and emotions | Mattering | | |
+| Wellbeing and emotions | Wisdom | | |
+| Wellbeing and emotions | Aesthetic experiences | | `Aesthetics_Beauty` single (General) |
+| Politics | Words Can Harm Scale (WCHS) | | |
+| Politics | Nietzscheanism | | |
+| Relationship with AI | Relationship | See below | BAIT (AI Expertise & Usage) |
+| Relationship with AI | Revelation | See below | |
+| Relationship with AI | Roles given to a chatbot | Companion, friend, therapist, romantic partner, sexual partner, as one tick-any-number item, after Buck & Maheux (2026, *JMIR*) | |
 
-// Coping
+**Relationship with AI**, for the `bait` block. The "AI psychosis" reports describe a spiral that starts with a bond and ends in
+revelation, so measure the stages rather than the outcome: two facets on the BAIT's own 0–6 scale, asked only above "Never" on
+`BAIT_Usage`, under a key prefix of their own, scored without norms and fed back nowhere.
 
-// Being funny, dark humor
-// Wordsum: g-factor loaded https://x.com/cremieuxrecueil/status/2098586478443901419?s=20
-// Masculine-Feminine 
+- *Relationship*: I have felt closer to an AI than to most people I know · I would rather talk something through with an AI than
+  with a person · I feel a sense of loss when a conversation with an AI ends or its memory is reset · I talk about things with AI
+  that I don't talk about with people close to me · I have kept how much I talk to AI from the people close to me
+- *Revelation*: I have developed ideas with an AI that I have not been able to share with anyone in my life · AI makes real
+  breakthroughs about the nature of the world accessible to anyone · Through AI, I have come to understand things about myself
+  and the world that most people never will
 
-// Hormones
-- For females, add questions about menstrual cycle phase and contraceptive use. Also add question about last sexual activity. These questions need to be accompanied by a mention of why we are asking them (and the possibility to skip them). Explaining that our conscious experiences are shaped by our hormonal state which influences cognition and emotion.
-
-// Sleep
-
-// Parasomnias/boundary failures (IOWA/MPS): TODO ASK GIULIA ABOUT VALIDATION OF HER SCALE
-// Sleep health (SATED)
-// Dreams (DIQ)
-// Daytime sleepiness (ESS)
-
-// Family/Work
-
-// Relationship status/satisfaction
-// Dependents
-// Occupation (and current job satisfaction)
-
-// Sexuality
-
-// Sexual orientation (Kinsey scale?)
-// WHO scales have stuff that taps into lots of life domains including sex life satisfaction – quite short I think
-// Kinkiness measures from Aella 
-
-// Self vs. others
-
-// Attachment style
-// Empathy
-// Peri-personal space (we created an avatar thingy for this a while back)
-// Public/private self-consciousness
-// Shame/disgust
-// Social connection
-// Suggestibility
-// PCS?
-
-// Wellbeing/emotions
-
-// Self-Rated Health
-// Dimorphous emotions
-// Mattering
-// Wisdom
-// Aesthetic experiences
-
-// Relationship with AI (for the `bait` block; the "AI psychosis" reports describe a spiral that starts with a bond and ends in revelation, so measure the stages rather than the outcome)
-
-// Two facets on the BAIT's own 0-6 scale, gated behind BAIT_Usage above "Never", under a key prefix of their own, scored without norms and fed back nowhere
-// Relationship: I have felt closer to an AI than to most people I know / I would rather talk something through with an AI than with a person / I feel a sense of loss when a conversation with an AI ends or its memory is reset / I talk about things with AI that I don't talk about with people close to me / I have kept how much I talk to AI from the people close to me
-// Revelation: I have developed ideas with an AI that I have not been able to share with anyone in my life / AI makes real breakthroughs about the nature of the world accessible to anyone / Through AI, I have come to understand things about myself and the world that most people never will
-// The roles people give their chatbot (companion, friend, therapist, romantic partner, sexual partner) as one tick-any-number item, after Buck & Maheux (2026, JMIR), whose GAATES items ("AI helps me make sense of secret messages intended only for me", "I've discovered hidden truths about the world through AI") are the clinical end of the same ground
-
-// Sensory and cognitive
-
-// Imagery (across sensory modalities – short version of PSIQ)
-// Sensory sensitivity (esp. visual – this predicts everything!)
-// Obsessive compulsive beliefs (perfectionism, intolerance of uncertainty, control of thoughts)
-// Cross-modal correspondences
-// Paranormal beliefs
-// Unusual sensory experiences
-// Fantasy proneness
-// Psychotic experiences
-// Rumination/worry
-// Abstract vs. concrete construal
-
-// political ideology
-
-// Words Can Harm Scale (WCHS)
-// Nietzscheanism
+Buck & Maheux's GAATES items ("AI helps me make sense of secret messages intended only for me", "I've discovered hidden truths
+about the world through AI") are the clinical end of the same ground.
 
 ## Inspiration and Resources
 

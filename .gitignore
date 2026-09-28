@@ -58,6 +58,10 @@ data/synthetic/work/
 data/synthetic/out/
 __pycache__/
 
+# The Big Kink Survey's public file (52 MB, fetched by data/norms/norms_bks.R
+# from its Zenodo record) and what the script writes beside it.
+data/norms/bks/
+
 # The answers themselves, pulled off Zenodo by data/collected/download.py, and
 # the tables preprocess.R makes of them. Real participant data: it lives on this
 # machine and in the deposit, never here.

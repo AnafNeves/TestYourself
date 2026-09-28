@@ -56,6 +56,8 @@ levels_of <- function(one) {
   walked <- strsplit(row$levels_walked, SEP, fixed = TRUE)[[1]]
   items <- long[long$participant == one, ]
   items <- items[order(items$order), ]
+  # A run that pressed Start and answered nothing has a row and no items.
+  if (!nrow(items)) return(NULL)
   screen <- grepl("^Level_[0-9]+$", items$key)
   at <- 1 + cumsum(screen) - screen
   data.frame(
@@ -519,7 +521,15 @@ scale_items <- Filter(function(item) {
 # ("Something else") is no place on the scale.
 unread <- character()
 reach <- function(item, given) {
-  if (item$type %in% c("slider", "curve")) {
+  # The MINT is asked in one of three formats a run (`format_mint`), and the
+  # codebook describes only the first: on the circles numbered 0 to 6 and on the
+  # slider what is saved is the value itself, and on the circles numbered -3 to
+  # +3 it is the value less three.
+  if (identical(item$questionnaire, "mint")) {
+    value <- suppressWarnings(as.numeric(given)) + ifelse(wide$format_mint %in% "symmetric7", 3, 0)
+    stray <- !is.na(given) & is.na(value)
+    if (any(stray)) unread <<- c(unread, paste0(item$key, ": ", given[stray]))
+  } else if (item$type %in% c("slider", "curve")) {
     value <- suppressWarnings(as.numeric(sub("%$", "", given)))
   } else {
     said <- vapply(item$options, function(one) {
@@ -527,8 +537,8 @@ reach <- function(item, given) {
     }, "")
     values <- vapply(item$options, function(one) if (isTRUE(one$custom)) NA_real_ else as.numeric(one$value), 0)
     given <- as.character(given)
-    # The MINT's labels are drawn per run (`formatMint`) and the codebook holds
-    # one draw, so a bare number is read as the value it was under the other.
+    # A bare number is read as the value, for an option whose words have
+    # changed since it was saved.
     numbers <- vapply(item$options, function(one) as.character(one$value), "")
     value <- ifelse(given %in% said, values[match(given, said)], values[match(given, numbers)])
     stray <- !is.na(given) & !given %in% c(said, numbers)

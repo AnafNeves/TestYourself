@@ -313,7 +313,8 @@ def render_items(book, items):
 
 def schema_for(item):
     kind = item["type"]
-    if kind in ("choice", "multi"):
+    # A grid is a choice among its cells, which the content writes out as options.
+    if kind in ("choice", "grid", "multi"):
         values = [o["value"] for o in item["options"]]
         one = {"type": "integer" if all(isinstance(v, int) for v in values) else "number", "enum": values}
         return {"type": "array", "items": one} if kind == "multi" else one
@@ -388,7 +389,7 @@ def fake_answers(book, persona, rng):
     answers = {}
     for item in for_model(book, persona):
         kind = item["type"]
-        if kind == "choice":
+        if kind in ("choice", "grid"):
             answers[item["key"]] = rng.choice(item["options"])["value"]
         elif kind == "multi":
             exclusive = [o["value"] for o in item["options"] if o["exclusive"]]
@@ -420,7 +421,7 @@ def tidy(book, persona, given):
             continue
         kind = item["type"]
         values = [o["value"] for o in item["options"]]
-        if kind == "choice" and value not in values:
+        if kind in ("choice", "grid") and value not in values:
             print(f"  ! {persona['code']} {key}: {value!r} is not an option, left unanswered")
             answers[key] = None
         elif kind == "multi":
@@ -586,9 +587,9 @@ def write_file(book, persona, given, bio, provenance):
 
     file = {"version": book["version"], "participant": persona["code"], "testMode": False}
     file["synthetic"] = dict(provenance, seed=persona["seed"], flavours=persona["flavours"], bio=bio, generated=now)
-    # The whole timeline, in its written order, which is what a synthetic run
-    # walks: no battery, every level and questionnaire as written.
-    file["battery"] = None
+    # The default battery, in its written order, which is what a synthetic run
+    # walks (codebook.js reads no other): every level and questionnaire as written.
+    file["battery"] = "default"
     file["source"] = "Synthetic"  # the app writes a string here always, "Unknown" where the link named none
     # Answered on no screen at all.
     for field in ("device", "touchscreen", "screenLayout", "screenLayouts", "viewport", "screen"):

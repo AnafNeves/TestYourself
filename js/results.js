@@ -371,6 +371,7 @@ function makeResults(engine) {
     const reasoning = makeReasoning(shared)
     const heads = makeHeads(shared)
     const stance = makeStance(shared)
+    const kinks = makeKinks(shared)
 
     // The climb is one section for two questionnaires, rendered where the
     // first of them falls in the run and skipped where the other would; the
@@ -655,6 +656,14 @@ function makeResults(engine) {
                 continue
             }
 
+            // The sexuality level's crowd and the rarest kink under it.
+            if (name === kinks.KINKS_OF) {
+                if (!onLevel(dimensionsOf(name), level)) continue
+                if (!locked && !kinks.ready()) continue
+                openSection(into, "Vanilla or Kinky", colourOf(kinks.DIMENSION), locked).body.appendChild(kinks.renderKinks(locked))
+                continue
+            }
+
             if (name === archetype.ARCHETYPE_OF) {
                 if (!onLevel(dimensionsOf(name), level)) continue
                 const type = archetype.aiArchetype()
@@ -727,11 +736,14 @@ function makeResults(engine) {
     // The foot of a finished level carries a taste of the next: the same
     // locked rendering with the rows and the note taken out — a blurred figure
     // is the hook, blurred rows only look like a page that failed to load — and
-    // the count of answers still to go where the Locked badge was. "Next"
-    // stands large over it with the level's title small underneath — or, at a
-    // fork, where the level's number is not yet decided, the `word` handed in
-    // (the level's name) and no title.
-    function renderTeaser(into, level, title, word) {
+    // how long the level takes where the Locked badge was (`about`, the
+    // timeline's `minutes` as app.js words it) — a few minutes reads as less
+    // of a climb than forty answers — or, for a level with no minutes
+    // written, the count of answers still to go. "Next" stands large over it
+    // with the level's title small underneath — or, at a fork, where the
+    // level's number is not yet decided, the `word` handed in (the level's
+    // name) and no title.
+    function renderTeaser(into, level, title, word, about) {
         renderResults(into, level, true, true)
 
         for (const extra of into.querySelectorAll(".rows, .taste, .result__lock")) extra.remove()
@@ -744,7 +756,7 @@ function makeResults(engine) {
         for (const body of into.querySelectorAll(".result__body")) {
             const badge = document.createElement("span")
             badge.className = "result__lock"
-            badge.textContent = left + " more answer" + (left === 1 ? "" : "s") + " to unlock"
+            badge.textContent = (about || left + " more answer" + (left === 1 ? "" : "s")) + " to unlock"
             body.appendChild(badge)
         }
 
@@ -1137,7 +1149,9 @@ function makeResults(engine) {
 
     // Left out of a picture, and hidden on a visitor's page: what asks for an
     // answer, and what the picture is being taken with.
-    const NOT_SHOWN = ".votes, [class*='__ask'], [class*='__vote'], .rating, .levelshare, .result__lock"
+    // The rarest kink is the one reading on the Sexuality level that says
+    // which, and a picture travels further than its owner means it to.
+    const NOT_SHOWN = ".votes, [class*='__ask'], [class*='__vote'], .rating, .levelshare, .result__lock, .kinks__rarest"
 
     function nameOfLevel(key) {
         const entry = TIMELINE.find((one) => one.key === key)
@@ -1447,6 +1461,13 @@ function makeResults(engine) {
                 const at = stance.youAt().map((one) => Math.min(250, Math.max(70, one)))
                 return crop(figureIn(stance.renderStance(false), "svg.stance__plane"), at[0], at[1], 140)
             }
+            // The person's band in the crowd, and its neighbours above and
+            // below, kept inside the figure.
+            if (name === kinks.KINKS_OF) {
+                if (!kinks.ready()) continue
+                const at = kinks.youAt()
+                return crop(figureIn(kinks.renderKinks(false), "svg.kinks__crowd"), at[0], Math.min(250, Math.max(70, at[1])), 130)
+            }
             if (name === archetype.ARCHETYPE_OF) {
                 if (!archetype.aiArchetype()) continue
                 return archetype.badge()
@@ -1534,7 +1555,8 @@ function makeResults(engine) {
                     add(stance.STANCE_KEY, stance.STANCE_KEY)
                     add(stance.BELIEFS_KEY, stance.BELIEFS_KEY)
                 }
-            } else if (name === archetype.ARCHETYPE_OF) add(archetype.ARCHETYPE_KEY, archetype.ARCHETYPE_KEY)
+            } else if (name === kinks.KINKS_OF) add(kinks.KINKS_KEY, kinks.KINKS_KEY)
+            else if (name === archetype.ARCHETYPE_OF) add(archetype.ARCHETYPE_KEY, archetype.ARCHETYPE_KEY)
             else if (name === wheel.WHEEL_OF) add(wheel.WHEEL_KEY, wheel.WHEEL_KEY)
             else if (name === reasoning.REASONING_OF) add(reasoning.REASONING_KEY, reasoning.REASONING_KEY)
             else if (name === sea.SEA) add(sea.SEA_KEY, sea.SEA_KEY)

@@ -395,7 +395,8 @@
 .level__path .climbview__head,
 .level__path .seaview__head,
 .level__path .headsview__head,
-.level__path .stance__head {
+.level__path .stance__head,
+.level__path .kinks__head {
     display: none;
 }
 
@@ -3260,6 +3261,213 @@
     .stance__pole--right {
         text-align: right;
     }
+}
+
+/* =========================================================================
+   Vanilla or kinky — the sexuality level's crowd (js/figures/kinks.js): a
+   title, the crowd as columns at the width of the card with its two ends
+   under it, the count and where it stands, the rarest kink, a vote. Each
+   piece arrives a beat after the one above it.
+   ========================================================================= */
+.kinks__head {
+    margin: 0 0 16px;
+    text-align: center;
+    animation: rise 0.8s var(--ease) both;
+}
+
+.kinks__title {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--gold-pale);
+    text-shadow: 0 0 40px rgba(217, 164, 65, 0.35);
+}
+
+/* The violin and, beside it, what it says. On a phone the words go under. */
+.kinks__stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    max-width: 620px;
+    margin: 0 auto;
+    animation: fade 1s var(--ease) 0.15s both;
+}
+
+/* `min-width: 0`, or the svg's automatic minimum (its specified 100% width)
+   overrides its basis and squeezes the words beside it into a column of one
+   word a line. */
+.kinks__crowd {
+    display: block;
+    height: auto;
+    overflow: visible;
+    cursor: help;
+}
+
+/* Scoped to the stage: the same svg, cropped, is the level's badge on the
+   shelf, and the shelf sizes it. */
+.kinks__stage .kinks__crowd {
+    flex: 0 0 270px;
+    width: 270px;
+    min-width: 0;
+}
+
+.kinks__side {
+    flex: 1 1 200px;
+    min-width: 0;
+    text-align: left;
+}
+
+@media (max-width: 560px) {
+    .kinks__stage {
+        flex-wrap: wrap;
+    }
+
+    .kinks__stage .kinks__crowd {
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 260px;
+    }
+
+    .kinks__side {
+        text-align: center;
+    }
+}
+
+/* A band opens out of the spine, one after another from the foot up; those
+   beyond the person are held back, and theirs is the gold one. */
+.kinks__band {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: crowd-open 0.7s var(--ease) calc(0.4s + var(--beat, 0ms)) both;
+}
+
+@keyframes crowd-open {
+    from {
+        transform: scaleX(0);
+    }
+}
+
+.kinks__band--above {
+    opacity: 0.22;
+}
+
+.kinks__band--you {
+    filter: drop-shadow(0 0 6px rgba(217, 164, 65, 0.9));
+}
+
+.kinks__spine {
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+}
+
+.kinks__lead {
+    stroke: var(--gold-pale);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    animation: fade 0.6s ease 1.2s both;
+}
+
+.kinks__you {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--gold-pale);
+    animation: fade 0.6s ease 1.2s both;
+}
+
+.kinks__tick {
+    font-size: 10px;
+    fill: var(--muted);
+}
+
+.kinks__end {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.kinks__end--vanilla {
+    fill: #f3e2bf;
+}
+
+.kinks__end--kinky {
+    fill: #c77ad6;
+}
+
+.kinks__count {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(20px, 3vw, 24px);
+    color: var(--text);
+}
+
+.kinks__count strong {
+    color: var(--gold-pale);
+}
+
+.kinks__lived {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.kinks__lived strong {
+    color: var(--gold-pale);
+}
+
+.kinks__standing {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.kinks__standing strong {
+    font-size: 16px;
+    color: var(--text);
+}
+
+.kinks__n {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.kinks__rarest {
+    max-width: 520px;
+    margin: 20px auto 0;
+    padding: 12px 18px;
+    border: 1px solid color-mix(in srgb, var(--chart) 45%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--chart) 10%, transparent);
+    font-size: 15px;
+    line-height: 1.55;
+    text-align: center;
+    color: var(--text);
+    animation: rise 0.8s var(--ease) 0.4s both;
+}
+
+.kinks__rarest strong {
+    color: var(--gold-pale);
+}
+
+.kinks__vote {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    animation: rise 0.8s var(--ease) 0.5s both;
+}
+
+.kinks__ask {
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text);
 }
 
 /* --------------------------- the reasoning compass ------------------------ */
