@@ -69,9 +69,10 @@
     // Which blocks this run asks — its battery. `?battery=<name>` picks a
     // preset out of BATTERIES (content/timeline.js), which is what a study
     // links with, and a link naming none, or one that is not there, gets
-    // `default` — the timeline without the blocks still being written.
+    // `default` — the timeline as the ethics application covers it.
     // `?only=a,b` asks exactly those blocks and `?skip=a,b` everything
-    // but those, for testing. Battery first, `only` over it, `skip` off it.
+    // but those, for testing. Battery first, `only` over it, `skip` off it,
+    // and whatever `?start=` names back onto it.
     // The names are somebody else's text: only the characters a name is made
     // of survive, and a name that is no block is dropped with a word in the
     // console and nothing on screen — the participant never sees any of
@@ -100,6 +101,23 @@
         const group = HELD_TOGETHER.find((one) => one.indexOf(name) !== -1) || [name]
         for (const one of group) asked.delete(one)
     }
+    // A block named in `?start=` is asked whatever the battery, `only` or
+    // `skip` said, since a link asking to open on something is asking for it:
+    // `?start=sex` opens on a block `default` leaves out. `closing` is the one
+    // it cannot bring, and is refused below.
+    // A shared level's link (`?card=1&level=<key>`, `levelShare` in
+    // results.js) brings its level in the same way, or a level the battery
+    // leaves out could be shared and never shown: the visitor's run would have
+    // no level under that key to draw it on, and the link would fall through to
+    // the landing page. "Take the test yourself" then opens on it by `?start=`.
+    const sharedLevel =
+        query.get("card") === "1" && query.get("s") ? TIMELINE.find((entry) => entry.key === query.get("level")) : undefined
+    const brought = namesIn("start").concat(sharedLevel ? sharedLevel.blocks : [])
+    for (const name of brought) {
+        if (name === "closing" || named.indexOf(name) === -1) continue
+        const group = HELD_TOGETHER.find((one) => one.indexOf(name) !== -1) || [name]
+        for (const one of group) asked.add(one)
+    }
     asked.add("closing")
     for (const name of asked) if (named.indexOf(name) === -1) console.warn("No block called " + name + " on the timeline; ignored")
 
@@ -115,9 +133,9 @@
     // study that wants one instrument met fresh, or for testing one without
     // walking to it. It moves whole levels, never a block out of its level
     // (a level is what carries the key its ratings and quality control are
-    // filed under), and it asks nothing that was not already asked: a name
-    // the battery left out, or `closing`, which the run ends through, is
-    // dropped with a word in the console. A level brought forward is taken
+    // filed under). A block it names is asked even where the battery left it
+    // out (it was added to `asked` above); `closing`, which the run ends
+    // through, is dropped with a word in the console. A level brought forward is taken
     // out of the fork, since it has been given its place by the link rather
     // than left for the person to choose; the rest of the fork still forks.
     // The saved file's `levels` says the order that was walked, as always.
@@ -129,7 +147,6 @@
         const starts = namesIn("start").filter((name) => {
             if (name === "closing") console.warn("closing is where the run ends, so it cannot start it; ignored")
             else if (named.indexOf(name) === -1) console.warn("No block called " + name + " on the timeline; ignored")
-            else if (!asked.has(name)) console.warn("Block " + name + " is not asked in this run, so it cannot start it; ignored")
             else return true
             return false
         })
@@ -1140,6 +1157,16 @@
     // headers it stands under; they are still on the button for a screen
     // reader, and are what `said()` saves. A way out (`small`) is set under
     // the table the way it is set under a row.
+    //
+    // Where the format carries the two questions (`grid.ask`), both are set
+    // in the table's top left corner with an arrow each to the headers they
+    // ask — the across one highest, its arrow dropping from under the words
+    // and hooking onto the first column header; the down one in the corner
+    // itself, its arrow pointing down onto the first row header. And an answer is drawn as the product of the two: a beam
+    // runs along its row out of the row header and another down its column
+    // out of the column header, the two headers are lit, and the cell pops
+    // where the beams meet. Every beam and ask is placed by the rows and
+    // columns of the table itself, so nothing is measured.
     function renderGrid(question, wrap) {
         const options = offered(question)
         const grid = question.grid
@@ -1152,26 +1179,117 @@
             cell.textContent = words
             return cell
         }
+        // Written as a note in the margin of the table rather than set in
+        // it: a hand, a tilt, and a stroke of the pen to what it asks. The
+        // across arrow drops from under its words and hooks right, onto the
+        // first of the column headers; the down one falls from the end of its
+        // words onto the first of the row headers. Each is held by the end
+        // that points (in the stylesheet), so that it stops short of the
+        // headers' words however they wrap and however wide the hand writes.
+        const ARROWS = {
+            across: { box: "0 0 32 46", d: "M7 2 C2 20 5 36 26 37 M19.8 32 L26 37 L19.6 41.8" },
+            down: { box: "0 0 20 28", d: "M6 2 C13 9 13 18 9 26 M4.6 21 L9 26 L13.6 21.6" },
+        }
+        const ask = (words, which) => {
+            const cell = document.createElement("div")
+            cell.className = "grid__ask grid__ask--" + which
+            const said = document.createElement("span")
+            said.className = "grid__said"
+            said.textContent = words
+            const arrow = draw("svg", { class: "grid__arrow", viewBox: ARROWS[which].box, "aria-hidden": "true" })
+            arrow.appendChild(draw("path", { d: ARROWS[which].d }))
+            cell.append(said, arrow)
+            return cell
+        }
         const heads = { across: [], down: [] }
+        // The first row of the table, where the header row stands: one lower
+        // when the questions take a row over it.
+        const top = grid.ask ? 2 : 1
 
-        wrap.appendChild(head("", "corner"))
+        // With the questions, the across one takes the corner of a row over
+        // the table, the rest of the row held empty so that the headers do not
+        // come up into it, and the down one the corner under it, where the
+        // header row meets the row headers.
+        if (grid.ask) {
+            const rest = document.createElement("div")
+            rest.className = "grid__rest"
+            rest.setAttribute("aria-hidden", "true")
+            wrap.append(ask(grid.ask.across, "across"), rest)
+        }
+        wrap.appendChild(grid.ask ? ask(grid.ask.down, "down") : head("", "corner"))
         grid.across.forEach((one) => heads.across.push(wrap.appendChild(head(one.text, "across"))))
+
+        // Out of the flow of the table (absolutely placed on the grid lines of
+        // the cells they join), so they take no place from anything.
+        const beam = (which, kind) => {
+            const one = document.createElement("div")
+            one.className = "grid__beam grid__beam--" + which + (kind ? " grid__beam--" + kind : "")
+            one.setAttribute("aria-hidden", "true")
+            return wrap.appendChild(one)
+        }
+        // The pointer's pair first, so that the answer's, drawn after, lies
+        // over it where the two share a row or a column.
+        const traces = { across: beam("across", "trace"), down: beam("down", "trace") }
+        const beams = { across: beam("across"), down: beam("down") }
+        // Both ends of every line are written: an absolutely placed item's
+        // `auto` end is the edge of the table, not the next line.
+        const lay = (pair, column, row) => {
+            pair.across.style.gridRow = top + 1 + row + " / " + (top + 2 + row)
+            pair.across.style.gridColumn = "1 / " + (column + 3)
+            pair.down.style.gridColumn = column + 2 + " / " + (column + 3)
+            pair.down.style.gridRow = top + " / " + (top + 2 + row)
+        }
+        let met = null
+
+        // Light the answer as where its row and its column meet, sweeping the
+        // beams in when it has just been given and standing them there when it
+        // is an answer come back to.
+        const cross = (option, sweep) => {
+            if (met) met.classList.remove("option--met")
+            wrap.classList.remove("options--crossed", "options--sweeping")
+            heads.across.concat(heads.down).forEach((one) => one.classList.remove("grid__head--chosen"))
+            met = null
+            if (!option || option.small) return
+
+            const column = grid.across.findIndex((one) => one.value === option.across)
+            const row = grid.down.findIndex((one) => one.value === option.down)
+            lay(beams, column, row)
+            heads.across[column].classList.add("grid__head--chosen")
+            heads.down[row].classList.add("grid__head--chosen")
+            met = wrap.querySelector('.option--cell[data-value="' + option.value + '"]')
+
+            // Taken off and put back with a reflow between, or a second answer
+            // on the same screen would find the animations already run.
+            void wrap.offsetWidth
+            wrap.classList.add("options--crossed")
+            if (sweep) {
+                wrap.classList.add("options--sweeping")
+                met.classList.add("option--met")
+            }
+        }
+        const take = (option) => () => {
+            if (answer(option.value)) cross(option, true)
+        }
 
         grid.down.forEach((down, row) => {
             heads.down.push(wrap.appendChild(head(down.text, "down")))
             grid.across.forEach((across, column) => {
                 const option = options.find((one) => one.down === down.value && one.across === across.value)
                 if (!option) throw new Error(question.key + ": the grid has no cell at " + down.text + " / " + across.text)
-                const button = optionButton(option, "radio", () => answer(option.value))
+                const button = optionButton(option, "radio", take(option))
                 button.classList.add("option--cell")
                 // The words go to the reader and off the face of the cell.
                 button.setAttribute("aria-label", button.textContent)
                 button.textContent = ""
                 // Hovering or focusing a cell lights the two headers it is
-                // read against, so the eye need not travel to find them.
+                // read against, and traces the way from each to the cell — the
+                // answer's beams, fainter — so the eye need not travel to find
+                // them.
                 const lit = (on) => {
                     heads.across[column].classList.toggle("grid__head--lit", on)
                     heads.down[row].classList.toggle("grid__head--lit", on)
+                    if (on) lay(traces, column, row)
+                    wrap.classList.toggle("options--tracing", on)
                 }
                 button.addEventListener("mouseenter", () => lit(true))
                 button.addEventListener("mouseleave", () => lit(false))
@@ -1181,7 +1299,9 @@
             })
         })
 
-        options.filter((one) => one.small).forEach((option) => wrap.appendChild(optionButton(option, "radio", () => answer(option.value))))
+        options.filter((one) => one.small).forEach((option) => wrap.appendChild(optionButton(option, "radio", take(option))))
+
+        cross(options.find((one) => one.value === responses[question.key]), false)
     }
 
     // A question several answers may be true of at once: the same labelled
@@ -1531,27 +1651,64 @@
             const along = Math.min(1, Math.max(0, (event.clientX - box.left - thumb / 2) / (box.width - thumb)))
             return Math.round((question.lowest + along * span) / step) * step
         }
-        field.addEventListener("pointermove", (event) => {
+
+        // **The line, not the range, takes the pointer**, as the curve's
+        // figure does: left to itself a range is pressed differently by every
+        // browser — iOS moves the thumb only when the thumb itself is dragged,
+        // and the thumb here is hidden in the middle until the line is
+        // touched, so a tap near it picked it up from there and landed
+        // somewhere else. A press puts the value where it lands, and a drag
+        // carries it. The range under it still holds the value, is what the
+        // keyboard and a screen reader move, and is focused on the press so
+        // that Enter takes it.
+        const line = document.createElement("div")
+        line.className = "slider__line"
+        line.appendChild(field)
+
+        // A finger rolls as it lifts: a touch counts as a drag only once it
+        // has moved this far, or a tap on 40 would be saved as 47.
+        const SLOP = 10
+        let held = null
+        const place = (event) => {
+            field.value = hovered(event)
+            touch()
+        }
+        line.addEventListener("pointerdown", (event) => {
+            if (event.button > 0) return
+            event.preventDefault()
+            line.setPointerCapture(event.pointerId)
+            held = { id: event.pointerId, x: event.clientX, dragging: event.pointerType !== "touch" }
+            // Held down is dragging: the thumb grows and the reading lifts.
+            holder.classList.add("slider--held")
+            field.focus({ preventScroll: true })
+            place(event)
+        })
+        line.addEventListener("pointermove", (event) => {
+            if (held && event.pointerId === held.id) {
+                if (!held.dragging && Math.abs(event.clientX - held.x) < SLOP) return
+                held.dragging = true
+                place(event)
+            }
             if (event.pointerType === "touch") return
             const value = hovered(event)
             holder.style.setProperty("--over", shareOf(value))
             if (!mute) ghostReading.textContent = said(value)
             holder.classList.add("slider--hovered")
         })
-        field.addEventListener("pointerleave", () => holder.classList.remove("slider--hovered"))
-
-        // Held down is dragging: the thumb grows and the reading lifts.
-        field.addEventListener("pointerdown", () => holder.classList.add("slider--held"))
-        // The range keeps the pointer while it is dragged, so the release
-        // arrives here wherever it happens.
-        for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) field.addEventListener(type, () => holder.classList.remove("slider--held"))
+        line.addEventListener("pointerleave", () => holder.classList.remove("slider--hovered"))
+        // The line keeps the pointer while it is held, so the release arrives
+        // here wherever it happens.
+        for (const type of ["pointerup", "pointercancel", "lostpointercapture"])
+            line.addEventListener(type, () => {
+                held = null
+                holder.classList.remove("slider--held")
+            })
 
         const take = () => {
             holder.classList.add("slider--taken")
             answer(Number(field.value))
         }
 
-        field.addEventListener("pointerdown", touch)
         field.addEventListener("input", touch)
         field.addEventListener("keydown", (event) => {
             if (event.key === "Enter" && touched) take()
@@ -1564,7 +1721,7 @@
         holder.appendChild(reading)
         holder.appendChild(ghost)
         holder.appendChild(mark)
-        holder.appendChild(field)
+        holder.appendChild(line)
         holder.appendChild(ends)
         wrap.appendChild(holder)
         wrap.appendChild(go)
@@ -1596,6 +1753,11 @@
         curve: () => $("options").querySelector(".curve__mark"),
         slider: (value) => $("options").querySelector('.option[data-value="' + value + '"]') || $("options").querySelector(".slider__mark"),
     }
+
+    // How long an answer stays on screen before the next item, where a type
+    // wants longer than ADVANCE_DELAY: a grid's beams have to meet at the cell
+    // (`grid-beam` and `grid-meet` in style.css) before the item fades.
+    const HOLDS = { grid: 700 }
 
     function renderScale(question) {
         const wrap = $("options")
@@ -2651,8 +2813,10 @@
     // Only the item being shown can be answered. The option buttons of the one
     // before it are still in the survey screen while a level screen is up over
     // it, and they still call this.
+    // Says whether the answer was taken, for a renderer that draws something
+    // of its own on the press (the grid's beams) and must not on one refused.
     function answer(value) {
-        if (locked || screen !== "survey") return
+        if (locked || screen !== "survey") return false
 
         const question = questions[index]
         responses[question.key] = value
@@ -2682,7 +2846,8 @@
         // The answer stays lit and the burst clears before the item goes; what
         // is left of the delay is the fade out of it.
         locked = true
-        setTimeout(() => $("screen-survey").classList.add("turning"), ADVANCE_DELAY - TURN)
+        const hold = HOLDS[question.type] || ADVANCE_DELAY
+        setTimeout(() => $("screen-survey").classList.add("turning"), hold - TURN)
 
         // **The turn this answer takes belongs to it.** If anything has moved
         // the run on in the meantime — a level screen going up behind the fade,
@@ -2697,7 +2862,8 @@
             if (turn !== turns) return
             locked = false
             advance()
-        }, ADVANCE_DELAY)
+        }, hold)
+        return true
     }
 
     // On from whatever is showing: the next item, the level screen if that was

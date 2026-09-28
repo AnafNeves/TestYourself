@@ -3264,10 +3264,10 @@
 }
 
 /* =========================================================================
-   Vanilla or kinky — the sexuality level's crowd (js/figures/kinks.js): a
-   title, the crowd as columns at the width of the card with its two ends
-   under it, the count and where it stands, the rarest kink, a vote. Each
-   piece arrives a beat after the one above it.
+   How kinky — the sexuality level's crowd (js/figures/kinks.js): a title,
+   the crowd stood on end with its two ends, the count, how much of it has
+   been lived out and where it stands beside it, a vote. Each piece arrives a
+   beat after the one above it.
    ========================================================================= */
 .kinks__head {
     margin: 0 0 16px;
@@ -3405,6 +3405,9 @@
     font-family: var(--serif);
     font-size: clamp(20px, 3vw, 24px);
     color: var(--text);
+    /* No lone word on a second line (kinks.js also holds "turn you on"
+       together). */
+    text-wrap: pretty;
 }
 
 .kinks__count strong {
@@ -3437,24 +3440,6 @@
     opacity: 0.8;
 }
 
-.kinks__rarest {
-    max-width: 520px;
-    margin: 20px auto 0;
-    padding: 12px 18px;
-    border: 1px solid color-mix(in srgb, var(--chart) 45%, transparent);
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--chart) 10%, transparent);
-    font-size: 15px;
-    line-height: 1.55;
-    text-align: center;
-    color: var(--text);
-    animation: rise 0.8s var(--ease) 0.4s both;
-}
-
-.kinks__rarest strong {
-    color: var(--gold-pale);
-}
-
 .kinks__vote {
     display: grid;
     justify-items: center;
@@ -3468,6 +3453,354 @@
     font-size: 14px;
     font-style: italic;
     color: var(--text);
+}
+
+/* =========================================================================
+   How hot is your volcano — the sexuality level's second figure
+   (js/figures/volcano.js), a prototype. It is laid out with the climb's
+   classes (the head, the note, the two ends, the vote), which is why so
+   little is here: the scene and its loops, the lava pouring down the flanks
+   once as the card opens, and the three channels against the crowd.
+   ========================================================================= */
+.volcano {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.95);
+}
+
+/* The three channels against the crowd, a strip each: the name and the
+   standing on one line, the bell of the sample under it shaded as far as the
+   person stands, the average ticked and the person a gold line. */
+.volcanoview__crowds {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+    max-width: 520px;
+    margin: 22px auto 8px;
+}
+
+.volcanoview__crowds [role="list"] {
+    display: grid;
+    gap: 6px;
+}
+
+.volcanoview__crowd {
+    display: grid;
+    gap: 6px;
+    padding: 10px 14px 20px;
+    border-radius: 12px;
+    outline: none;
+    transition: background 0.25s ease;
+    animation: rise 0.8s var(--ease) both;
+}
+
+.volcanoview__crowd:nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.volcanoview__crowd:nth-child(3) {
+    animation-delay: 0.24s;
+}
+
+.volcanoview__crowd:hover,
+.volcanoview__crowd:focus-visible,
+.volcanoview__crowd--lit {
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.volcanoview__crowd:focus-visible {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--key) 60%, transparent);
+}
+
+.volcanoview__said {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2px 14px;
+    margin: 0;
+    font-size: 14px;
+    text-align: left;
+    color: var(--text);
+}
+
+.volcanoview__name {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--key);
+}
+
+.volcanoview__said strong {
+    color: var(--key);
+    font-weight: 700;
+}
+
+.volcanoview__stage {
+    position: relative;
+    display: block;
+    height: 46px;
+    margin-top: 12px;
+}
+
+.volcanoview__bell {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* The shade sweeps out to the person as the strip arrives. */
+.volcanoview__upto {
+    transform-box: fill-box;
+    transform-origin: left;
+    animation: volcano-shade 1.3s var(--ease) 0.3s both;
+}
+
+@keyframes volcano-shade {
+    from {
+        transform: scaleX(0);
+    }
+}
+
+.volcanoview__you {
+    position: absolute;
+    top: -2px;
+    bottom: 2px;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgba(217, 164, 65, 0.8);
+    animation: fade 0.6s ease 1.2s both;
+}
+
+.volcanoview__you span {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -2px);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-pale);
+}
+
+/* The dashed tick in the middle of the bell, named under the baseline, where
+   the person's own name, over it, cannot run into it. */
+.volcanoview__mean {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 3px);
+    font-size: 9.5px;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.volcanoview__crowd:hover .volcanoview__you,
+.volcanoview__crowd:focus-visible .volcanoview__you {
+    box-shadow: 0 0 16px rgba(217, 164, 65, 1);
+}
+
+.volcanoview__who {
+    margin: 2px 0 0;
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* Hovering a part of the volcano, or its strip, lights the part: a dashed
+   outline round the chamber, a rim round the conduit, the course the lava
+   could run down each flank. `data-lit` on the figure names which. */
+.volcano__trace {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.volcano[data-lit="heat"] .volcano__trace--heat,
+.volcano[data-lit="hold"] .volcano__trace--hold {
+    opacity: 0.8;
+}
+
+.volcano[data-lit="narrow"] .volcano__trace--narrow {
+    opacity: 0.75;
+}
+
+.volcano__hit {
+    cursor: pointer;
+}
+
+/* A badge is a crop of the same drawing, and nothing in it answers the
+   pointer. */
+.shelf__badge .volcano__hit {
+    pointer-events: none !important;
+}
+
+/* A flow is drawn as a share of its length (`stroke-dasharray`), and pours
+   from the cleft to that share on arrival. A sealed card holds it at the
+   cleft until the level opens. */
+.volcano__flow {
+    animation: volcano-pour 1.8s var(--ease) 0.7s both;
+}
+
+@keyframes volcano-pour {
+    from {
+        stroke-dashoffset: var(--pour);
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* The loops the scene carries, each the same for everybody and none of them
+   saying anything: steam leaving the cleft, the melt turning over and rising,
+   a few stars, the moon's glitter, the surf and a boat riding the swell. A
+   sealed card holds them all at their first frame, as it does the sea's. */
+.volcano__puff {
+    animation: volcano-puff 6.6s ease-in-out var(--phase, 0s) infinite;
+}
+
+@keyframes volcano-puff {
+    0%,
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(5px, -3px);
+        opacity: 0.7;
+    }
+}
+
+.volcano__rising {
+    animation: volcano-rise 1.6s linear infinite;
+}
+
+@keyframes volcano-rise {
+    from {
+        stroke-dashoffset: 24;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.volcano__current {
+    animation: volcano-rise 3.2s linear infinite;
+}
+
+.volcano__glow {
+    animation: volcano-breathe 4.8s ease-in-out infinite;
+}
+
+@keyframes volcano-breathe {
+    50% {
+        opacity: 0.95;
+    }
+}
+
+.volcano__star {
+    animation: volcano-twinkle var(--beat, 3s) ease-in-out var(--phase, 0s) infinite;
+}
+
+@keyframes volcano-twinkle {
+    50% {
+        opacity: 0.1;
+    }
+}
+
+.volcano__glint,
+.volcano__surf {
+    animation: volcano-twinkle 2.6s ease-in-out var(--phase, 0s) infinite;
+}
+
+.volcano__bob {
+    animation: volcano-bob 4.4s ease-in-out infinite;
+}
+
+@keyframes volcano-bob {
+    50% {
+        transform: translate(0, 1.2px) rotate(-2deg);
+    }
+}
+
+.volcano__hiss {
+    animation: volcano-puff 3.4s ease-in-out infinite;
+}
+
+/* A drop of spatter: across at a steady pace in the outer group, up and down
+   again in the inner, so that together they fly an arc. Where it lands and
+   how high it goes are written on each drop. */
+.volcano__jet {
+    animation: volcano-breathe 0.9s ease-in-out infinite;
+}
+
+.volcano__drop {
+    animation: volcano-across var(--beat, 1.6s) linear var(--phase, 0s) infinite;
+}
+
+.volcano__drop .volcano__arc {
+    animation: volcano-arc var(--beat, 1.6s) linear var(--phase, 0s) infinite;
+}
+
+@keyframes volcano-across {
+    0% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+    8% {
+        opacity: 1;
+    }
+    88% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--dx), 0);
+        opacity: 0;
+    }
+}
+
+@keyframes volcano-arc {
+    0% {
+        transform: translate(0, 0);
+        animation-timing-function: cubic-bezier(0.3, 0.6, 0.6, 1);
+    }
+    35% {
+        transform: translate(0, calc(-1 * var(--up)));
+        animation-timing-function: cubic-bezier(0.4, 0, 0.7, 0.4);
+    }
+    100% {
+        transform: translate(0, var(--down));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .volcano__flow,
+    .volcano__puff,
+    .volcano__rising,
+    .volcano__current,
+    .volcano__glow,
+    .volcano__star,
+    .volcano__glint,
+    .volcano__surf,
+    .volcano__bob,
+    .volcano__hiss {
+        animation: none;
+    }
+
+    /* Held still, a drop would hang over the cleft. */
+    .volcano__drop {
+        display: none;
+    }
 }
 
 /* --------------------------- the reasoning compass ------------------------ */
@@ -4089,5 +4422,57 @@
     .curtain--out .curtain__splash,
     .curtain--out .curtain__words {
         animation-name: vanish;
+    }
+}
+
+/* ------------------------------ the Hyborian Age ------------------------------
+   Two cards on level 1's pattern (js/figures/hyborian.js, borrowing `.theories`
+   and `.theory`): an emblem on a round plate for a figure, each card voting in
+   its own colour, and under the pair the seven dimensions as bars on the
+   climb's pattern, the hero's three and the god's four. Locked, the emblems
+   are blurred by `.blank` on the figure itself, since they sit in no
+   `.result__chart`. */
+.hyborian__card {
+    --plate: #0b1020;
+}
+
+.hyborian__card .theory__figure {
+    max-width: 150px;
+    color: var(--chart);
+    outline: none;
+    cursor: help;
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--chart) 35%, transparent));
+}
+
+.hyborian__card .theory__figure.blank {
+    filter: blur(4.5px);
+}
+
+.hyborian__card .theory__figure:focus-visible {
+    outline: 2px solid var(--chart);
+    outline-offset: 6px;
+    border-radius: 50%;
+}
+
+.hyborian__vote {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hyborian__bars {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    max-width: 680px;
+    gap: 10px;
+}
+
+.hyborian__note {
+    text-align: center;
+}
+
+@media (max-width: 560px) {
+    .hyborian__bars {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }

@@ -1,11 +1,10 @@
 /* ==========================================================================
-   content/block_sex.js — a level on sexuality, being looked into and not yet
-   decided on. ASKED ONLY BY `?battery=all`: it is on the timeline, as a level
-   of its own (`Sexuality`) in the second fork, but it is in WORK_IN_PROGRESS in
-   content/timeline.js, so the `default` battery — what a link naming none
-   asks — leaves it out. It is not in the ethics application, and no link a
-   participant is sent may name `all`. Moving it into `default` takes THE
-   BLOCKERS, below, first.
+   content/block_sex.js — a level on sexuality. ASKED ONLY BY `?battery=all`:
+   it is on the timeline, as a level of its own (`Sexuality`) in the second
+   fork, but it is in NOT_YET_COVERED in content/timeline.js, so the `default`
+   battery — what a link naming none asks — leaves it out. It is not in the
+   ethics application, and no link a participant is sent may name `all`.
+   Moving it into `default` takes THE BLOCKERS, below, first.
 
    The file is in three parts: what is asked (this header, then the block),
    then NOTES — the thinking so far, kept beside the block it is about rather
@@ -17,19 +16,36 @@
      Briefing_Sexuality  LOCKED IN. Why a test of the person asks about sex
                          at all: a large part of a life and a small part of
                          the science, too often studied as a problem.
-     sexuality           LOCKED IN. Orientation (and, after "Something
+     sexuality           LOCKED IN. Relationship status (added September
+                         2026, what the rest of the level reads against);
+                         orientation (and, after "Something
                          else", in their own words); the number of women and of
                          men somebody has had sex with, asked by the
                          orientation as a behavioural check on it; and
                          masculine-feminine on a slider. Scored nowhere.
+     Briefing_Desire     ACTIVE. The SIS/SES-SF's own instructions: what
+                         "aroused" means, and to answer a situation never
+                         met as if it had been.
+     sisses              ACTIVE (September 2026). Desire: the SIS/SES-SF's
+                         fourteen items, the dual control model's accelerator
+                         (Sexual Excitation) and two brakes (Inhibition:
+                         Performance, Inhibition: Consequences), checked
+                         against the chapter, with its published norms.
+                         Read back as How hot is your volcano?
+                         (js/figures/volcano.js), a PROTOTYPE (NOTES,
+                         DESIRE).
      Briefing_Kinks      ACTIVE. What the list is, before its first item, so
                          that it does not come out of the blue.
      kinks               ACTIVE. Twenty-two items — fourteen kinks, eight of
                          them asked as their two sides — one screen each,
                          answered as one cell of a grid: does it turn you on
-                         (Not for me / I'm fine with it / Turns me on) across,
+                         (It's not for me / I'm fine with it / It turns me
+                         on) across,
                          and have you done it (Never / not yet, Once or twice,
-                         Many times, Part of my sex life) down. Scored as how
+                         Many times, Part of my sex life) down, with one more
+                         column in front, "It disgusts me", for the recoil
+                         "It's not for me" is too polite for (see THE KINKS).
+                         Scored as how
                          many turn somebody on: Kinkiness, vanilla to kinky.
                          Everything else a cell says — done without wanting,
                          wanted and never done, which side — is in the words,
@@ -37,9 +53,10 @@
 
    The level closes on one figure (js/figures/kinks.js): the crowd as a
    violin, stood on end, of how many of the items turn people on, with the
-   person's band lit and where they stand among those people, how many of their
-   turn-ons they have lived out, and one sentence naming the rarest that
-   turns them on and how many people share it. Everything on the level is
+   person's band lit and where they stand among those people, and how many of
+   their turn-ons they have lived out — and nothing that says which (a
+   sentence naming the rarest was taken out, September 2026, as the one
+   reading that gave an answer away; the figure's header says more). Everything on the level is
    `profile: false`. Why kinks at all, what else measures them, what was
    weighed and why this — under THE KINKS in NOTES.
 
@@ -79,30 +96,58 @@
 // is an estimate and people give one as "about 10" or "20-30"; optional, so
 // it can be skipped (a blank is saved as "", not as the null of never asked).
 // `max` is the field's length in characters, not a cap on the count.
-const SEX_PARTNERS = { input: "text", max: 30, optional: true, placeholder: "An approximate number" }
+const SEX_PARTNERS = {
+    input: "text",
+    max: 30,
+    optional: true,
+    placeholder: "An approximate number",
+}
 
 // A way out of an item somebody would rather not answer. It holds the
 // dimension unfinished (THE BLOCKERS, 3).
-const SEX_RATHER_NOT = { value: 98, text: "I'd rather not say", small: true, custom: true }
+const SEX_RATHER_NOT = {
+    value: 98,
+    text: "I'd rather not say",
+    small: true,
+    custom: true,
+}
 
 // THE KINKS. Each item is one kink, or one side of one, answered as a cell
-// of a grid (`type: "grid"`): across, whether it turns somebody on — Not for
-// me / I'm fine with it / Turns me on — and down, whether they have done it —
+// of a grid (`type: "grid"`): across, whether it turns somebody on — It's not
+// for me / I'm fine with it / It turns me on — and down, whether they have
+// done it —
 // Never / not yet, Once or twice, Many times, Part of my sex life. Two scales
 // at one press, so that the cells a single line of steps cannot reach are
 // answers: fine with it and done regularly (the accommodating partner, the
 // commonest answer to some of these), turned on and never done (the
 // fantasy), not for me and done (tried and disliked — or done for somebody
 // else, which the analysis reads off the "many times" row of that column and
-// nothing on screen names). Three columns rather than four because a phone
-// fits three; three lifetime rows and one present-tense one, so a habit given
-// up is "many times".
+// nothing on screen names). Three lifetime rows and one present-tense one, so
+// a habit given up is "many times".
+//
+// And a fourth column in front of them, "It disgusts me" (September 2026):
+// the recoil that "It's not for me" is too polite to hold. Not for me is a
+// preference
+// and says nothing about how strongly; disgust is a reaction, and the one the
+// notes kept wanting a measure of (THE LIKING CUES, and the TDDS shelved).
+// Counted over the twenty-two it is a disgust score of its own, read at
+// analysis time; it scores 0 towards Kinkiness like every cell off the
+// "It turns me on" column. It has a cell in every row, though disgust at
+// something that is "Part of my sex life" should be rare: rare enough to be a
+// check on whether somebody is reading the table, and where it is not rare it
+// is worth knowing about (done for a partner, or a kink that is part of its
+// own appeal). "It disgusts me" rather than "Eww" or "filthy": plain, like
+// "It turns me on" at the other end of the row, and "filthy" is praise to
+// some of the people answering. All four headers are written as short
+// sentences of about one length ("It's not for me", "It turns me on"), so
+// that each wraps onto two lines in a narrow column and the header row is
+// even.
 //
 // The cells are written out as options (`gridOf`), one a pair, each carrying
 // the `across` and `down` value it stands at, so that the file, the codebook
 // and test mode see an ordinary choice; only renderGrid() in app.js reads the
 // table. A cell's text is its two headers, which is what `said()` saves
-// ("Turns me on · Once or twice"). What is scored is the column alone
+// ("It turns me on · Once or twice"). What is scored is the column alone
 // (`score:`, read by counted() in app.js in place of the value): 1 for a
 // turn-on and 0 otherwise, so the dimension's mean is the share of the items
 // that turn somebody on and the figure draws it as a count. The row is in the
@@ -114,9 +159,13 @@ const SEX_RATHER_NOT = { value: 98, text: "I'd rather not say", small: true, cus
 // told from a no.
 const KINK_COLOUR = "#c2417a"
 const KINK_ACROSS = [
-    { value: 0, text: "Not for me", score: 0 },
+    // Its value is 3, after the others, so that the three columns written
+    // before it keep the values their cells were saved under; it stands first
+    // because that is where it is read, before "It's not for me".
+    { value: 3, text: "It disgusts me", score: 0 },
+    { value: 0, text: "It's not for me", score: 0 },
     { value: 1, text: "I'm fine with it", score: 0 },
-    { value: 2, text: "Turns me on", score: 1 },
+    { value: 2, text: "It turns me on", score: 1 },
 ]
 const KINK_DOWN = [
     { value: 0, text: "Never / not yet" },
@@ -124,13 +173,27 @@ const KINK_DOWN = [
     { value: 2, text: "Many times" },
     { value: 3, text: "Part of my sex life" },
 ]
-const KINK_RATHER_NOT = { value: 98, text: "I'd rather not say", small: true, score: 0 }
+const KINK_RATHER_NOT = {
+    value: 98,
+    text: "I'd rather not say",
+    small: true,
+    score: 0,
+}
+
+// The two questions the table is the product of, each set over the headers
+// it asks with an arrow down to them, so that a cell reads as an answer to
+// both rather than as one more point on a scale.
+const KINK_ASK = {
+    across: "Do you like it?",
+    down: "Have you ever done it?",
+}
 
 // A grid format out of its two scales: the table for the renderer, and the
 // cells as options for everything else. A cell's value is its row and column
 // (10 × down + across), legible in the file's values though nothing reads it
-// back that way; its score is its column's.
-function gridOf(across, down, ways) {
+// back that way; its score is its column's. `ask`, the two questions, is the
+// renderer's alone and may be left out.
+function gridOf(across, down, ways, ask) {
     const options = []
     for (const row of down)
         for (const column of across)
@@ -141,9 +204,13 @@ function gridOf(across, down, ways) {
                 across: column.value,
                 down: row.value,
             })
-    return { grid: { across: across, down: down }, options: options.concat(ways), color: KINK_COLOUR }
+    return {
+        grid: { across: across, down: down, ask: ask },
+        options: options.concat(ways),
+        color: KINK_COLOUR,
+    }
 }
-const KINK_GRID = gridOf(KINK_ACROSS, KINK_DOWN, [KINK_RATHER_NOT])
+const KINK_GRID = gridOf(KINK_ACROSS, KINK_DOWN, [KINK_RATHER_NOT], KINK_ASK)
 
 // A kink with two sides — spanking somebody, being spanked — is two items,
 // `Sex_Kink_<Name>_Giving` and `Sex_Kink_<Name>_Receiving`, and not one item
@@ -157,8 +224,16 @@ const KINK_GRID = gridOf(KINK_ACROSS, KINK_DOWN, [KINK_RATHER_NOT])
 // on screen; the analysis pairs them by the key.
 function sided(name, giving, receiving) {
     return [
-        { key: "Sex_Kink_" + name + "_Giving", dimension: "Kinkiness", text: giving },
-        { key: "Sex_Kink_" + name + "_Receiving", dimension: "Kinkiness", text: receiving },
+        {
+            key: "Sex_Kink_" + name + "_Giving",
+            dimension: "Kinkiness",
+            text: giving,
+        },
+        {
+            key: "Sex_Kink_" + name + "_Receiving",
+            dimension: "Kinkiness",
+            text: receiving,
+        },
     ]
 }
 
@@ -192,6 +267,58 @@ defineBlock("sex", [
         // choice is offered from the results screen of the one just
         // finished).
         items: [
+            // Relationship status, first because it is the gentlest way into
+            // the level and because nearly everything after it reads against
+            // it: "Never / not yet" on every row of the kinks means one thing
+            // from somebody single for years and another from somebody in a
+            // long relationship, and the same will go for desire and, when it
+            // comes, frequency. Custom, and not the ONS's legal list (which
+            // has no place for somebody seeing someone and has divorced and
+            // widowed, which say how a relationship ended rather than whether
+            // there is one); ordered by commitment, the two ways out outside
+            // it. Single is split by whether somebody is looking, since not
+            // looking and looking are different lives beside the desire items
+            // (a quiet accelerator reads differently in each); casual sex is
+            // one option with casual dating rather than one of its own, since
+            // hooking up is something done rather than a status, and a
+            // separate option would cross "single" and "seeing someone". How
+            // much casual sex there is belongs to FREQUENCY (NOTES). It asks
+            // status and not structure: whether a relationship is
+            // monogamous or open is a second question (NOTES, RELATIONSHIP),
+            // since "in more than one relationship" as an option here would
+            // cross the two. Asked only here for now, since the `default`
+            // battery's demographics are the group's shared set and the
+            // ethics application says so (A3); it is the first candidate to
+            // move into `demographics3`, where it would be keyed
+            // `Demographics_Relationship`.
+            {
+                key: "Sex_Relationship",
+                text: "At the moment, I am...",
+                format: {
+                    options: [
+                        { value: 1, text: "Single, and not looking" },
+                        { value: 2, text: "Single, and looking" },
+                        { value: 3, text: "Dating or hooking up, nothing serious" },
+                        { value: 4, text: "In a relationship, not living together" },
+                        { value: 5, text: "In a relationship, living together" },
+                        { value: 6, text: "Married or in a civil partnership" },
+                        {
+                            value: 8,
+                            text: "Something else",
+                            small: true,
+                            custom: true,
+                        },
+                        {
+                            value: 98,
+                            text: "I'd rather not say",
+                            small: true,
+                            custom: true,
+                        },
+                    ],
+                    color: "#c2417a",
+                },
+            },
+
             // Sexual orientation, after the Kinsey scale (Kinsey et al., 1948)
             // but written in terms of women and men rather than of the
             // "opposite" and "same" sex, so that it means the same thing
@@ -221,9 +348,24 @@ defineBlock("sex", [
                         { value: 5, text: "More men than women" },
                         { value: 6, text: "Mostly men" },
                         { value: 7, text: "Only men" },
-                        { value: 8, text: "Something else", small: true, custom: true },
-                        { value: 99, text: "Nobody, or hardly anybody", small: true, custom: true },
-                        { value: 98, text: "I'd rather not say", small: true, custom: true },
+                        {
+                            value: 8,
+                            text: "Something else",
+                            small: true,
+                            custom: true,
+                        },
+                        {
+                            value: 99,
+                            text: "Nobody, or hardly anybody",
+                            small: true,
+                            custom: true,
+                        },
+                        {
+                            value: 98,
+                            text: "I'd rather not say",
+                            small: true,
+                            custom: true,
+                        },
                     ],
                     color: "#c2417a",
                 },
@@ -232,7 +374,13 @@ defineBlock("sex", [
                 key: "Sex_OrientationOther",
                 text: "I would describe it as...",
                 showIf: { key: "Sex_Orientation", is: 8 },
-                format: { input: "text", max: 60, optional: true, placeholder: "In your own words", color: "#c2417a" },
+                format: {
+                    input: "text",
+                    max: 60,
+                    optional: true,
+                    placeholder: "In your own words",
+                    color: "#c2417a",
+                },
             },
 
             // Body count, as a behavioural check on the orientation above:
@@ -245,13 +393,19 @@ defineBlock("sex", [
             {
                 key: "Sex_PartnersWomen",
                 text: "How many women have you had sex with, in your life so far?<br /><br /><small>Count everyone you have had any kind of sex with, not only intercourse.</small>",
-                showIf: { key: "Sex_Orientation", is: [1, 2, 3, 4, 5, 6, 8, 98, 99] },
+                showIf: {
+                    key: "Sex_Orientation",
+                    is: [1, 2, 3, 4, 5, 6, 8, 98, 99],
+                },
                 format: SEX_PARTNERS,
             },
             {
                 key: "Sex_PartnersMen",
                 text: "How many men have you had sex with, in your life so far?<br /><br /><small>Count everyone you have had any kind of sex with, not only intercourse.</small>",
-                showIf: { key: "Sex_Orientation", is: [2, 3, 4, 5, 6, 7, 8, 98, 99] },
+                showIf: {
+                    key: "Sex_Orientation",
+                    is: [2, 3, 4, 5, 6, 7, 8, 98, 99],
+                },
                 format: SEX_PARTNERS,
             },
 
@@ -270,9 +424,208 @@ defineBlock("sex", [
                     min: 0,
                     max: 100,
                     anchors: ["Very masculine", "Very feminine"],
-                    options: [{ value: 999, text: "This doesn't apply to me", small: true, custom: true }],
+                    options: [
+                        {
+                            value: 999,
+                            text: "This doesn't apply to me",
+                            small: true,
+                            custom: true,
+                        },
+                    ],
                     color: "#c2417a",
                 },
+            },
+        ],
+    },
+
+    // DESIRE: the SIS/SES-SF ================================================
+    // The Sexual Inhibition/Sexual Excitation Scales – Short Form (Carpenter,
+    // Janssen, Graham, Vorst & Wicherts, 2010, in Fisher, Davis, Yarber &
+    // Davis, eds., Handbook of Sexuality-Related Measures, 3rd ed., pp.
+    // 236-239; on the shelf as literature/Carpenteretal2010SISSES-SF.pdf),
+    // fourteen items of the SIS/SES's forty-five (Janssen, Vorst, Finn &
+    // Bancroft, 2002), chosen as the ones measurement-invariant across women
+    // and men: the dual control model's accelerator and its two brakes.
+    // Excitation is how readily somebody is aroused (six items); Performance,
+    // inhibition by distraction and the fear of losing arousal once it is
+    // there (four); Consequences, inhibition by the risks of the situation —
+    // being seen, being caught, an infection (four). The three are fairly
+    // independent of one another, which is the model's point: a strong
+    // accelerator says nothing about the brakes. What it adds to the kinks,
+    // which cannot say it: whether somebody who scores kinky is somebody who
+    // wants many things or somebody who wants a lot (NOTES, DESIRE).
+    //
+    // VERBATIM from the chapter's appendix but for the full stops, with TWO
+    // ADAPTATIONS, so this is an adapted SIS/SES-SF and none of its items is
+    // to be pooled with the published data as the same item.
+    //
+    // The first: four items (2, 6, 7 and 13) end on a negated outcome, "I am
+    // unlikely to stay aroused", which on an agree-disagree scale leaves
+    // disagreeing as a double negative to be worked out. They are reworded
+    // to say the outcome, in the words the scale already uses for it (item
+    // 5's "I will lose my sexual arousal", item 12's "I easily lose my
+    // arousal"): same situation, same direction, agreeing is still more
+    // inhibition, nothing reverses. The published wording is beside each.
+    //
+    // The second: items 5, 9 and 12 are printed in two versions, the men's
+    // and the women's, divided by a slash ("lose my erection/my arousal"),
+    // for the questionnaire to be given in one or the other by sex. Here
+    // everybody is given the women's, which speaks of arousal and not of
+    // erections: arousal covers an erection, and choosing a version by sex
+    // would mean guessing somebody's body from `Demographics_Gender`, which
+    // the level may not even have (`?only=sex`) and which does not say it.
+    // So for women these three are the published items and for men a close
+    // variant, and a man's Performance and Consequences scores are not
+    // strictly the SIS/SES-SF's; the men's words are beside each. Item 9 is
+    // also the instrument's weakest (Velten et al., 2018, drop it for fit)
+    // and asks about intercourse, which not everybody's sex is; kept, so the
+    // scale is the published one, and the first to adapt if it misfits.
+    //
+    // The published scale runs 1 "Strongly agree" to 4 "Strongly disagree"
+    // and is recoded before scoring so that high is more excitation or more
+    // inhibition; here it runs disagree to agree, left to right as every
+    // other scale in the run does, so the values are the recoded ones and
+    // nothing reverses. The published instructions (the chapter's appendix)
+    // are carried by `Briefing_Desire`, below: what "aroused" means, and that
+    // a statement that does not apply is answered as if it did — which the
+    // lead-in over each item says again, since several are situations
+    // somebody may never have been in (sex outdoors, a sexy voice on the
+    // telephone). The chapter prefers an incomplete scale discarded to one
+    // filled in with means, which is what the engine does anyway: "I'd
+    // rather not say" holds the dimension unfinished (THE BLOCKERS, 3).
+    //
+    // Shuffled: nothing in its validation fixes an order. The keys count
+    // within the subscale, the published item number beside each. The three
+    // dimension names are the instrument's constructs; what the participant
+    // reads (the accelerator and the brakes) is the figure's business: How hot
+    // is your volcano? (js/figures/volcano.js, a PROTOTYPE), which reads the
+    // three as standings against the norms below.
+    {
+        type: "briefing",
+        key: "Briefing_Desire",
+        text:
+            "<h2>Desire.</h2>" +
+            "<p>What follows are statements about how you might react in different sexual situations. How you react will often depend on the circumstances, so say what your most likely reaction would be. Where a statement speaks of being aroused, it means feeling sexually excited: horny, hot or turned on.</p>" +
+            "<p><em>If a situation has never happened to you, answer as you would if it had. Give your first reaction.</em></p>",
+    },
+    {
+        key: "sisses",
+        name: "Desire",
+        profile: false,
+        instructions: "How much do you agree? If it has never happened, answer as you think you would react",
+        format: {
+            options: [
+                { value: 1, text: "Strongly disagree" },
+                { value: 2, text: "Disagree" },
+                { value: 3, text: "Agree" },
+                { value: 4, text: "Strongly agree" },
+                SEX_RATHER_NOT,
+            ],
+            columns: 4,
+            color: KINK_COLOUR,
+        },
+        // PUBLISHED norms, not invented: Carpenter et al. (2010), 2,045
+        // Indiana University undergraduates (978 men, 1,067 women, mean age
+        // 19.8), given there as sums by sex and here pooled over the two and
+        // divided by the number of items, since the engine scores a mean.
+        // Men, then women, as item means: Excitation 2.85 (0.47), 2.50
+        // (0.47); Performance 2.05 (0.48), 2.18 (0.45); Consequences 2.63
+        // (0.53), 3.00 (0.58). Young students of one American university,
+        // and — for men — on the three items worded for women (above), so a
+        // guide rather than a norming sample. `n` is the pooled sample, said
+        // under the volcano's crowds. The volcano reads them pooled;
+        // it may want to read against the person's own sex instead.
+        norms: {
+            "Sexual Excitation": { key: "SexualExcitation", mean: 2.667, sd: 0.498, n: 2045 },
+            "Sexual Inhibition: Performance": { key: "SexualInhibitionPerformance", mean: 2.115, sd: 0.466, n: 2045 },
+            "Sexual Inhibition: Consequences": { key: "SexualInhibitionConsequences", mean: 2.821, sd: 0.582, n: 2045 },
+        },
+        items: [
+            // Excitation: items 1, 3, 8, 10, 11 and 14.
+            {
+                key: "SISSES_Excitation_1",
+                dimension: "Sexual Excitation",
+                text: "When a sexually attractive stranger accidentally touches me, I easily become aroused",
+            },
+            {
+                key: "SISSES_Excitation_2",
+                dimension: "Sexual Excitation",
+                text: "When I talk to someone on the telephone who has a sexy voice, I become sexually aroused",
+            },
+            {
+                key: "SISSES_Excitation_3",
+                dimension: "Sexual Excitation",
+                text: "When I think of a very attractive person, I easily become sexually aroused",
+            },
+            {
+                key: "SISSES_Excitation_4",
+                dimension: "Sexual Excitation",
+                text: "When I start fantasizing about sex, I quickly become sexually aroused",
+            },
+            {
+                key: "SISSES_Excitation_5",
+                dimension: "Sexual Excitation",
+                text: "When I see others engaged in sexual activities, I feel like having sex myself",
+            },
+            {
+                key: "SISSES_Excitation_6",
+                dimension: "Sexual Excitation",
+                text: "When an attractive person flirts with me, I easily become sexually aroused",
+            },
+
+            // Performance (SIS1): items 4, 9, 12 and 13.
+            {
+                key: "SISSES_Performance_1",
+                dimension: "Sexual Inhibition: Performance",
+                text: "I cannot get aroused unless I focus exclusively on sexual stimulation",
+            },
+            {
+                key: "SISSES_Performance_2",
+                dimension: "Sexual Inhibition: Performance",
+                // Item 9, the women's version. The men's: "Once I have an
+                // erection, I want to start intercourse right away before I
+                // lose my erection."
+                text: "Once I am sexually aroused, I want to start intercourse right away before I lose my arousal",
+            },
+            {
+                key: "SISSES_Performance_3",
+                dimension: "Sexual Inhibition: Performance",
+                // Item 12, the women's version. The men's: "…I easily lose my
+                // erection."
+                text: "When I have a distracting thought, I easily lose my arousal",
+            },
+            {
+                key: "SISSES_Performance_4",
+                dimension: "Sexual Inhibition: Performance",
+                // Item 13, adapted: "…I am unlikely to stay aroused."
+                text: "If I am distracted by hearing music, television, or a conversation, I would lose my arousal",
+            },
+
+            // Consequences (SIS2): items 2, 5, 6 and 7.
+            {
+                key: "SISSES_Consequences_1",
+                dimension: "Sexual Inhibition: Consequences",
+                // Item 2, adapted: "…I am not likely to get very aroused."
+                text: "If I am having sex in a secluded, outdoor place and I think that someone is nearby, I would find it hard to get very aroused",
+            },
+            {
+                key: "SISSES_Consequences_2",
+                dimension: "Sexual Inhibition: Consequences",
+                // Item 5, the women's version. The men's: "…I will lose my
+                // erection."
+                text: "If I am masturbating on my own and I realize that someone is likely to come into the room at any moment, I will lose my sexual arousal",
+            },
+            {
+                key: "SISSES_Consequences_3",
+                dimension: "Sexual Inhibition: Consequences",
+                // Item 6, adapted: "…I am unlikely to stay sexually aroused."
+                text: "If I realize there is a risk of catching a sexually transmitted disease, I would lose my sexual arousal",
+            },
+            {
+                key: "SISSES_Consequences_4",
+                dimension: "Sexual Inhibition: Consequences",
+                // Item 7, adapted: "…I am unlikely to stay sexually aroused."
+                text: "If I can be seen by others while having sex, I would lose my sexual arousal",
             },
         ],
     },
@@ -289,8 +642,8 @@ defineBlock("sex", [
         key: "Briefing_Kinks",
         text:
             "<h2>Kinks.</h2>" +
-            "<p>What follows is a list of kinks: things that turn some people on and leave others cold, from the very common to the rare. Some will be familiar and some may surprise you. Nobody likes all of them, and most of them are not for most people. That is the point: everybody's list is different, and at the end you will see where yours falls among other people's.</p>" +
-            "<p><em>For each one, say whether it turns you on and whether you have done it, with one press. You can always answer “I'd rather not say”.</em></p>",
+            "<p>What follows is a list of kinks: things that turn some people on and leave others cold. Some will be familiar and some may surprise you. Few like all of them, and most of them are not for most people. That is the point: everybody's list is different, and at the end you will see where yours falls among other people's.</p>" +
+            "<p><em>For each one, say whether it turns you on and whether you have done it, with one press.</em></p>",
     },
 
     // THE KINKS: fourteen, on a LADDER of prevalence — from rough sex, which
@@ -306,10 +659,10 @@ defineBlock("sex", [
     // out September 2026 as too specific, hypnosis reading as a cover for
     // being controlled, which the power pair asks straight. Each beside the
     // BKS interest it stands nearest and that interest's share of the BKS's
-    // adults finding it arousing at all, which is what the figure's
-    // rarest-kink sentence reads (`SHARES` in js/figures/kinks.js, which has
-    // to move with this list; a `~` is an estimate where the BKS has no such
-    // item, to be replaced by the app's own data); adapted, not the BKS's
+    // adults finding it arousing at all, which is where the item stands on
+    // the ladder (a `~` is an estimate where the BKS has no such item, to be
+    // replaced by the app's own data; nothing on screen reads these since the
+    // rarest-kink sentence came out); adapted, not the BKS's
     // words, so the shares are a guide and not norms. Oral sex is left out as
     // turning on 99% of people, which tells nobody apart. Everything here is
     // `askable` in data/norms/norms_bks.R or not in the BKS at all.
@@ -341,7 +694,11 @@ defineBlock("sex", [
                 distribution: {
                     from: -0.5 / 22,
                     step: 1 / 22,
-                    shares: [0.3, 2.0, 4.0, 5.6, 6.8, 7.5, 8.0, 8.3, 7.9, 7.3, 7.1, 6.5, 5.7, 5.0, 4.1, 3.3, 2.9, 2.4, 1.8, 1.3, 1.0, 0.7, 0.4],
+                    shares: [
+                        0.3, 2.0, 4.0, 5.6, 6.8, 7.5, 8.0, 8.3, 7.9, 7.3, 7.1,
+                        6.5, 5.7, 5.0, 4.1, 3.3, 2.9, 2.4, 1.8, 1.3, 1.0, 0.7,
+                        0.4,
+                    ],
                 },
             },
         },
@@ -350,8 +707,16 @@ defineBlock("sex", [
             // same item for everybody: a body, a toy or a strap-on. Rough sex
             // is worded as what is done to a body, so that it stays apart
             // from dominating, which is a relation.
-            { key: "Sex_Kink_Sexting", dimension: "Kinkiness", text: "Sexting: sending each other explicit messages or pictures" }, // not a BKS category, ~65
-            { key: "Sex_Kink_Rough", dimension: "Kinkiness", text: "Rough sex, such as hair-pulling, biting or being pinned down" }, // Primal play, ~75
+            {
+                key: "Sex_Kink_Sexting",
+                dimension: "Kinkiness",
+                text: "Sexting: sending each other explicit messages and pictures",
+            }, // not a BKS category, ~65
+            {
+                key: "Sex_Kink_Rough",
+                dimension: "Kinkiness",
+                text: "Rough sex, such as hair-pulling, biting or being pinned down",
+            }, // Primal play, ~75
             ...sided(
                 "Anal",
                 "Giving anal sex<br /><small>With your body, or with a toy or a strap-on.</small>",
@@ -359,26 +724,66 @@ defineBlock("sex", [
             ), // Anal sex, 73
             ...sided("Power", "Dominating someone", "Being dominated"), // Power dynamics, 58
             ...sided("Bondage", "Tying someone up", "Being tied up"), // Light bondage, 57
-            { key: "Sex_Kink_Toys", dimension: "Kinkiness", text: "Using sex toys" }, // Toys, 56
+            // With a partner, since "using sex toys" alone mostly asks whether
+            // somebody owns a vibrator, and every other rung is a thing done
+            // between people. Variety or rarer toys were weighed and left:
+            // they reach into what the anal and bondage items already ask.
+            {
+                key: "Sex_Kink_Toys",
+                dimension: "Kinkiness",
+                text: "Using sex toys with a partner",
+            }, // Toys, 56 (asked of any use there, so a little high for this)
 
             // The middle. The non-consent pair is a game agreed to, asked no
             // other way (THE BLOCKERS, 2).
-            { key: "Sex_Kink_Group", dimension: "Kinkiness", text: "A threesome, or sex with more than two people" }, // Multiple partners, 43
-            { key: "Sex_Kink_Public", dimension: "Kinkiness", text: "Sex in public, where you might be seen" }, // Exhibitionism: me, 41
+            {
+                key: "Sex_Kink_Group",
+                dimension: "Kinkiness",
+                text: "A threesome, or sex with more than two people",
+            }, // Multiple partners, 43
+            {
+                key: "Sex_Kink_Public",
+                dimension: "Kinkiness",
+                text: "Sex in public, where you might be seen",
+            }, // Exhibitionism: me, 41
             ...sided(
                 "Resisting",
                 "Pretending to take someone against their will, as a game you have both agreed to",
                 "Pretending to be taken against your will, as a game you have both agreed to",
             ), // Nonconsent, 37
-            ...sided("Pain", "Giving pain", "Receiving pain"), // Sadomasochism, 35
+            // Pain as the point rather than a side effect of roughness, which
+            // `Sex_Kink_Rough` asks: "intense" sets the strength, where
+            // examples set a kind and were always too narrow or too mild
+            // (spanking drew in everybody thinking of the playful sort; a
+            // whip, a cane or clamps named three things out of many). "Because
+            // you both enjoy it" says it is wanted without the legal tone of
+            // "(with consent)". Not named BDSM or sadomasochism, which are
+            // labels people go by or do not, where every item asks an act.
+            ...sided(
+                "Pain",
+                "Causing someone intense pain because you both enjoy it",
+                "Feeling intense pain because you enjoy it",
+            ), // Sadomasochism, 35 (asked of any pain there, so high for this)
 
             // The tail: rarer, and still things done between people. Orgasm
             // control and objectification are sided like the rest, so a Role
             // reading is eight pairs.
             ...sided("Humiliation", "Humiliating someone", "Being humiliated"), // Humiliation, 22
-            ...sided("OrgasmControl", "Denying your partner an orgasm, or making them wait for one", "Being denied an orgasm, or made to wait for one"), // Teasing, frustration (Eagerness), ~25
-            { key: "Sex_Kink_PartnerWatched", dimension: "Kinkiness", text: "Watching your partner have sex with someone else" }, // not a BKS category, ~15
-            ...sided("Object", "Treating someone as an object", "Being treated as an object"), // Objects, ~8
+            ...sided(
+                "OrgasmControl",
+                "Denying your partner an orgasm, or making them wait for one",
+                "Being denied an orgasm, or made to wait for one",
+            ), // Teasing, frustration (Eagerness), ~25
+            {
+                key: "Sex_Kink_PartnerWatched",
+                dimension: "Kinkiness",
+                text: "Watching your partner have sex with someone else",
+            }, // not a BKS category, ~15
+            ...sided(
+                "Object",
+                "Treating someone as an object",
+                "Being treated as an object",
+            ), // Objects, ~8
         ],
     },
 ])
@@ -461,19 +866,23 @@ defineBlock("sex", [
    third level whose norms are not invented.
 
    THE DIMENSIONS BEING CONSIDERED for what the level reads back (September
-   2026). Six, none asked now (Liking was, and is parked):
+   2026). Six (Liking was asked, and is parked):
 
      Libido              How much sexual wanting there is, against a quiet or
                          low libido; "Libido" for the psychoanalytic flavour.
-                         Nothing asks it now (the placeholder went). The
+                         NOW ASKED AS AROUSABILITY, the SIS/SES-SF's
+                         Excitation, with its two brakes beside it (DESIRE,
+                         below) — how readily somebody is turned on rather
+                         than how much they want, which is the SDI-2's
+                         (Spector et al., 1996; partnered and solitary), the
+                         alternative if wanting is ever wanted too. The
                          low end is NOT "asexual": asexuality is little or
                          no attraction to other people, an orientation, which
                          the orientation item's "Nobody, or hardly anybody"
                          already records, and asexual people can have a
                          libido. The SOI-R's Desire is desire for people one is
                          not committed to, which is sociosexuality and not
-                         libido; two or three items of the SDI-2 (Spector et
-                         al., 1996), partnered and solitary, would measure it
+                         libido
      Liking and Disgust  PARKED, as `liking` under SHELVED. How sexual things feel, warm or
                          aversive: erotophilia-erotophobia (Fisher et al.'s
                          Sexual Opinion Survey, 1988), measured as the TDDS
@@ -502,22 +911,209 @@ defineBlock("sex", [
                          middle. NOW THE SIDED ITEMS: the giving items' turn-ons
                          and the receiving items', two counts, read by nothing
                          on screen yet
-     Function            Sex as closeness or as pleasure: the BSAS (Hendrick
-                         et al., 2006), five items of Communion and five of
-                         Instrumentality, two scales that can both be high. It
-                         overlaps the SOI-R's Attitude, which is nearly an
-                         Instrumentality item and could stand in for it. The
-                         most SFW of the six, and the one where neither end is
-                         more of anything
+     Function            Why somebody has sex: closeness, pleasure, coping,
+                         approval. NEXT AFTER DESIRE, with frequency; see
+                         MOTIVES, below, for the two instruments and which
 
    All six at once would be 35-40 items, the longest level after the
-   HiTOP-BR's. The SIS/SES-SF (Carpenter et al., 2011; 14 items, sexual
-   excitation and two inhibitions, the dual-control "accelerator and brakes")
-   was considered and is largely Libido and Disgust measured again. Also
+   HiTOP-BR's. The SIS/SES-SF was first set aside here as "largely Libido and
+   Disgust measured again", and that was half wrong: Excitation is close to
+   libido, but neither brake is disgust (DESIRE, below). Also
    possible: the SOI-R's Behaviour facet (left out as three more counts beside
-   the two lifetime ones) and the README's "last sexual activity". Already in
+   the two lifetime ones) and the README's "last sexual activity", which
+   FREQUENCY, below, would take the place of. Already in
    the run and free to set against the level: the Lover on the archetype wheel,
    and `SelfPlacement_Attractiveness`, which the BKS asks too.
+
+   THE ORDER THINGS ARE COMING IN (September 2026): relationship status and
+   desire now; frequency and motives after, in either order; Liking stays
+   parked; satisfaction, if ever, analysis-only. Each is below.
+
+   RELATIONSHIP. Asked since September 2026 (`Sex_Relationship`), and asked
+   nowhere else in the run: without it, a "Never / not yet" in the kinks, a
+   quiet accelerator and (when it comes) a low frequency cannot be told from
+   an absence of anybody to have sex with. Status only. Still to decide:
+     - STRUCTURE, a second item: monogamous, open, polyamorous, still
+       working it out. Wanted beside the kinks especially (a threesome and
+       watching a partner with someone else read differently in an open
+       relationship), and kept out of the status item because "in more than
+       one relationship" there would cross two questions.
+     - HOW LONG, a third, asked of anybody in a relationship: desire and
+       frequency both fall with its length, which is one of the best-known
+       findings there is, and without it the fall reads as age.
+     - WHERE IT BELONGS. It is useful to the whole run (mood, health,
+       loneliness in the climb's Solitude), and `demographics3` is where it
+       would go; it is here because the `default` battery's demographics are
+       the group's shared set, which the ethics application says (A3), and a
+       move there is an amendment and a line in docs/build_slides.py's ROWS.
+
+   DESIRE: THE ACCELERATOR AND THE BRAKES (September 2026). Asked as the
+   SIS/SES-SF (`sisses`, above), for five reasons, in the order they matter:
+     - It separates DRIVE FROM BREADTH, which the kinks cannot. Kinkiness
+       counts what turns somebody on, and somebody with a strong accelerator
+       has more of the list turn them on for that reason alone; with
+       Excitation beside it, the analysis can ask whether kinkiness is a
+       taste or a temperature. The first thing to look at in the data.
+     - It is a PLANE and not a line: a strong accelerator with strong brakes
+       and a weak one with none are different people with the same net
+       arousal, which is the model's whole point and the kind of figure the
+       run does well (the temperament, Where You Stand).
+     - The brakes are not disgust. Performance (SIS1) is losing arousal to
+       distraction and to the fear of losing it; Consequences (SIS2) is
+       harm-avoidance, being seen, caught or infected. Expected: SIS1 with
+       Emotional Intensity and the PHQ-4, SIS2 with low Impulsivity and the
+       Order end of Where You Stand, Excitation with Impulsivity and with the
+       kinks, and — for this study the most distinctive — Excitation and
+       SIS1 with the MINT. There is a small literature on interoception and
+       sexual arousal (women's awareness of genital arousal, concordance);
+       nobody has the SIS/SES beside a multidimensional interoception measure.
+     - It is KNOWN. Nagoski's Come As You Are (2015) put "accelerator and
+       brakes" in front of a very large readership, so the reading arrives
+       already meaningful to many people, and it is not a verdict: neither
+       end of either pedal is the good one.
+     - It is SHORT, validated in both sexes and many countries, and has
+       published norms by sex (Carpenter et al., 2010, now written in, pooled;
+       Velten et al., 2018, a German population sample of 2,700, gives the
+       whole sample's sums, in a direction it does not state, and is not
+       used). That makes this the third level whose norms are not invented,
+       though they are young American students' and not a population's.
+   Still to do, before it is read back:
+     - WHOSE CROWD. The norms are pooled over the sexes; women score lower
+       on Excitation and higher on both brakes, so a woman read against the
+       pool lands lower on the accelerator than against women. Whether the
+       figure reads by sex is a decision for it (it should not have to: the
+       plane says more than a standing against either crowd), and the
+       by-sex figures are beside the norms.
+     - THE FIGURE, a PROTOTYPE (September 2026): How hot is your volcano?
+       (js/figures/volcano.js), the level's first section, before the
+       kinks. An island volcano at dusk in cross-section, ABOVE the water
+       rather than under it, for clarity (lava reads against a sky; the sea
+       at its foot keeps the descent), its size and shape FIXED for
+       everybody, the cleft at its crest included, and one channel doing
+       one thing: Excitation the colour of the magma, Performance the width
+       of the conduit, Consequences how far lava spills down the flanks —
+       never an explosion, which would read a strong brake as pressure
+       building. Each a standing against the pooled norms. Kept off the
+       taste of the level on the way on and the fork cards. Weighed and
+       left: bubbles or lightning beside the colour (two things a channel);
+       a crust sealing the cleft; watchers round the vent for the risk
+       brake; heat escaping as a shimmer where no lava spills; the net of
+       accelerator and brakes as the cleft's glow (a fourth thing, and no
+       dimension of its own); and the car's two pedals. The rules it keeps:
+       one thing a channel, and nothing that makes the quiet end look
+       lesser — the cool volcano is dormant, not dead.
+     - STILL TO TRY on the figure (September 2026, after the first
+       pictures of it):
+         SUBMERSION, a fourth channel: how much of the volcano stands
+         above the sea, the volcano itself unchanged and only the sea
+         level moving, the water a light tint so the whole shape still
+         shows (mocked up, not built). It keeps size out of it — the shape
+         never changes, only how much of it is in the air — and "above the
+         surface" against "beneath it" is the one metaphor the other three
+         channels do not use. What it could read: SEXUAL OPENNESS, how much
+         of somebody's sex life others see or hear about (a short
+         self-disclosure or sexual communication scale — Byers & Demmons,
+         1999; Catania, 1986 — or a few custom items), or its reverse,
+         PRIVACY; perhaps SHAME AND GUILT, as what is kept under; or, with
+         no new items, the share of the kinks' turn-ons lived out (above
+         the water what has been acted on, below what stays in the
+         imagination). THE CAVEAT, whichever it is: a volcano mostly under
+         water must never read as something to fix. Privacy is a
+         preference and not a symptom, a seamount is as much a volcano as
+         an island, and shame in particular is the reading most likely to
+         turn a submerged volcano into a problem — the psychoanalytic
+         register this level refuses (the volcano's rules, below: no
+         "repressed", no "bottled up"). Whatever drives it, the lava wants
+         to stop where the water starts (or carry on under it as pillow
+         lava), or a high sea shortens the spill and two channels tangle.
+         A STALL IN THE CONDUIT, for the distraction brake: instead of the
+         channel narrowing, the magma rising only part of the way up it,
+         held by a plug of cooled rock, so that a strong brake leaves it
+         stopped about halfway and a light one lets it reach the cleft.
+         Still one thing (how high it gets rather than how wide), and
+         nearer the construct than width: arousal lost to distraction is
+         arousal that stops on the way. The care it wants: the chamber
+         must still glow, so a stalled volcano is held and not cold, and
+         the words stay "held", never "blocked". It would also leave the
+         cleft without magma in it, which then says the same as the risk
+         brake's spill, so the two would want telling apart.
+         THE SPILL was the weakest channel as first drawn, tracing the lips
+         of the cleft like the outline lit up. Redrawn (September 2026) as
+         a tongue of lava on each flank, thick at the lip and tapering to a
+         round toe, the range spent on the flank rather than the lip, and
+         steaming where it reaches the sea.
+     - WORDS. "Brakes" must not read as a fault: a brake on arousal when
+       somebody might walk in is working, not broken. "Held" and "kept",
+       never "blocked" (the volcano's rule, below). The participant reads
+       Heat, Focus and Caution (September 2026; Accelerator and two Brakes
+       before), each worded to sit well at either end and none of them
+       reversed, since the brakes are systems of their own and a reversed
+       name (Daring) would make the cautious end the lesser one; the file
+       says Excitation and Inhibition.
+     - LICENCE. The chapter carries no copyright notice or terms of use,
+       and the Handbook prints its measures for research; the SIS/SES is
+       also distributed by the Kinsey Institute. Worth a line to the
+       authors (Janssen) before `default` asks it.
+     - ATTENTION CHECK. The level has none; `SISSES_AttentionCheck`, asking
+       for "Strongly disagree" (off the agreeing end the Consequences items
+       pull to), would be the natural one if the level wants one.
+
+   FREQUENCY, after desire. Three or four items worded as Natsal-3 asked
+   them (the third National Survey of Sexual Attitudes and Lifestyles,
+   2010-12, about 15,000 people in Britain aged 16-74; data on the UK Data
+   Service), for REAL, REPRESENTATIVE BRITISH NORMS — the one place on this
+   level the app could have them:
+     - partnered sex in the last four weeks (occasions)
+     - masturbation in the last four weeks
+     - whether somebody would like sex more often, less often or about as
+       often as now, which gives the gentlest reading on the level (wanting
+       more or less than one has is common either way and says nothing is
+       wrong) and the discrepancy the SIS/SES cannot give. Check Natsal-3's
+       own wording and whether it asks this; Natsal-2 did something like it.
+     - perhaps "how often do you think about sex", the question everybody
+       has heard a myth about, if there is a norm to read it against.
+   Read against RELATIONSHIP (above), or it is uninterpretable. NOT DURATION:
+   how long sex lasts assumes it is penetrative and ends when a man does,
+   is estimated badly by everybody, and is the item likeliest to make
+   somebody feel measured against a standard. Frequency is Article 9 data
+   like the rest, and no more identifying than the partner counts.
+
+   MOTIVES, after desire: why somebody has sex. Two instruments:
+     - Cooper, Shapiro & Powers (1998), six motives: intimacy, enhancement
+       (pleasure), self-affirmation, coping, partner approval, peer approval.
+       Twenty-nine items; two a motive, adapted as the control questionnaire
+       on Mind & Heart is, would be twelve. PREFERRED, because COPING — sex to
+       manage a bad feeling — sits beside the CERQ on Mind & Heart and the
+       HiTOP-BR's spectra, and self-affirmation beside the self-esteem single
+       on level 1, and because approach and avoidance motives are what the
+       relationship literature (Impett, Gable) predicts outcomes from.
+     - The BSAS's Communion and Instrumentality (Hendrick et al., 2006; five
+       items each, two scales that can both be high), shorter and
+       overlapping the SOI-R's Attitude, which is nearly an Instrumentality
+       item. The fallback if twelve items is too many.
+   Worth doing for one reason beyond the science: it is THE ONE READING ON
+   THIS LEVEL SOMEBODY COULD SHARE COMFORTABLY. Why somebody has sex says
+   much less about them than what they are into, so it is a partial answer
+   to THE BLOCKERS, 4 — a level whose share button carries the motives and
+   never the kinks. A wheel or a compass of six, read against each other
+   (the archetypes' rule), would need no norms at all.
+
+   LIKING, STILL PARKED, and now for a second reason: much of it is covered
+   twice. The grid's "It disgusts me" column is a disgust count across the
+   kinks, and its "It's not for me" column an aversion count, and the accelerator is the approach side of ordinary cues. What
+   Liking would still add is the disgust end of ordinary sex and its link
+   to the Order end of Where You Stand, which is an analysis question
+   rather than a reading. Comes back only if the pilot shows the two
+   proxies do not do its job.
+
+   SATISFACTION, if ever, ANALYSIS-ONLY (`results: false`). The GMSEX
+   (Lawrance & Byers, 1995: five bipolar adjectives, good-bad,
+   pleasant-unpleasant… — each a slider) or the NSSS-S (Štulhofer et al.,
+   2010, twelve items). It goes with everything in the run and would be
+   worth having, but read back it is a verdict — "less satisfied than 80% of
+   people" — which is exactly what the climb is drawn to avoid. And asked
+   only of somebody with a sex life to be satisfied with, which is a
+   `showIf` on RELATIONSHIP or the partner counts.
 
    THE LIKING CUES, what was tried and taken out (September 2026):
 
@@ -627,7 +1223,7 @@ defineBlock("sex", [
    with both words in it. The sided kinks are two items each, so Role comes
    out as two scores rather than one line with the switch and the indifferent
    on the same point. Read back: the count, the crowd, how many of the count
-   have been lived, the rarest. In the file for the analysis and nowhere on
+   have been lived, and never which. In the file for the analysis and nowhere on
    screen: the accommodating count (fine with it, done), done without wanting
    (not for me, many times), Role, and a skip told from a no.
 

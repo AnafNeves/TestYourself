@@ -46,6 +46,126 @@ level_names <- vapply(codebook$levels, function(one) one$name, "")
 ```
 
 ```{r}
+#| label: screen
+
+# **Runs that are not a participant**, found before anything is counted and
+# left out of everything below. `preprocess.R` already drops what says it is a
+# test (`test_mode`, `test_` in the name); these are the ones that do not say
+# so: somebody opening the test to see that it works and going, the author
+# trying a battery out, a browser driven by a script. Each rule is one line
+# and a run may break several. Nothing here is a judgement of the answers of
+# somebody who took the test seriously — that is the attention checks' job,
+# at analysis time.
+GLANCE_ITEMS <- 10    # stopped, nothing finished, fewer answers than this...
+GLANCE_MINUTES <- 3   # ...all given inside this long
+FAST_MS <- 1000       # a median answer quicker than this is not reading
+STEADY_CV <- 0.15     # answer times this even (SD over mean) are a script
+MIN_TIMED <- 5        # the two above want this many timed answers to go on
+KEEP_FLAGGED <- FALSE # TRUE draws the page over every run, flagged or not
+
+# What an answer is: an item of a questionnaire, given. Briefings and level
+# screens belong to no questionnaire.
+given <- long[!is.na(long$questionnaire) & !is.na(long$response), ]
+finished_levels <- grep("^QC_.+_TimeFinished$", names(wide), value = TRUE)
+random_said <- Filter(function(item) item$key == "Demographics_SurveyAccuracy", codebook$items)
+random_said <- if (length(random_said)) {
+  unlist(lapply(random_said[[1]]$options, function(one) if (identical(as.numeric(one$value), 0)) one$text))
+} else character()
+
+runs <- do.call(rbind, lapply(seq_len(nrow(wide)), function(row) {
+  one <- wide$participant[row]
+  answers <- given[given$participant == one, ]
+  shown <- long[long$participant == one, ]
+  times <- answers$rt_ms[!is.na(answers$rt_ms)]
+  span <- if (nrow(shown) && any(!is.na(shown$time_response)))
+    as.numeric(difftime(max(when(shown$time_response), na.rm = TRUE), min(when(shown$time_onset), na.rm = TRUE), units = "mins")) else NA
+  walked <- length(strsplit(wide$levels_walked[row], SEP, fixed = TRUE)[[1]])
+  data.frame(
+    participant = one,
+    source = wide$source[row],
+    started = substr(wide$time_start[row], 1, 16),
+    completed = wide$completed[row],
+    answers = nrow(answers),
+    minutes = span,
+    median_s = if (length(times)) median(times) / 1000 else NA,
+    cv = if (length(times) >= MIN_TIMED) sd(times) / mean(times) else NA,
+    finished = sum(!is.na(unlist(wide[row, finished_levels]))),
+    headless = identical(as.numeric(wide$viewport_width[row]), 0),
+    battery = wide$battery[row],
+    subset = walked < length(level_keys),
+    random = "Demographics_SurveyAccuracy" %in% names(wide) && wide$Demographics_SurveyAccuracy[row] %in% random_said,
+    stringsAsFactors = FALSE
+  )
+}))
+
+flags <- list(
+  "empty" = runs$answers == 0,
+  "glance" = runs$answers > 0 & !runs$completed & runs$finished == 0 & runs$answers < GLANCE_ITEMS &
+    !is.na(runs$minutes) & runs$minutes < GLANCE_MINUTES,
+  "speeding" = !is.na(runs$median_s) & runs$answers >= MIN_TIMED & runs$median_s * 1000 < FAST_MS,
+  "scripted" = runs$headless | (!is.na(runs$cv) & runs$cv < STEADY_CV),
+  "tryout" = runs$battery %in% "all" | runs$subset,
+  "said random" = runs$random
+)
+runs$flags <- vapply(seq_len(nrow(runs)), function(i) paste(names(flags)[vapply(flags, `[`, TRUE, i)], collapse = ", "), "")
+flagged <- runs[runs$flags != "", ]
+
+if (!KEEP_FLAGGED) {
+  wide <- wide[!wide$participant %in% flagged$participant, ]
+  long <- long[long$participant %in% wide$participant, ]
+}
+```
+
+## Runs set aside
+
+`r nrow(runs)` runs out of the deposit (test runs already left out by `preprocess.R`); `r nrow(flagged)` of them look like somebody checking the test rather than taking it, and `r if (KEEP_FLAGGED) "are kept in everything below all the same (<code>KEEP_FLAGGED</code>)" else "are left out of everything below"`. A run is set aside when it is
+
+- **empty**: Start pressed, nothing answered;
+- **glance**: stopped with no level finished, after fewer than `r GLANCE_ITEMS` answers given inside `r GLANCE_MINUTES` minutes;
+- **speeding**: a median answer quicker than `r FAST_MS / 1000` s, over at least `r MIN_TIMED` answers;
+- **scripted**: a headless browser (a window 0 pixels wide) or answer times too even for a person (SD under `r STEADY_CV` of the mean);
+- **tryout**: the `all` battery, which nobody is sent, or a hand-picked subset of the levels (`?only=`, `?skip=`);
+- **said random**: answered "`r if (length(random_said)) random_said[1] else "No"`" to whether they took it seriously.
+
+```{r}
+#| label: screen-plot
+#| fig-width: 7
+#| fig-height: 4.2
+
+timed_runs <- runs[runs$answers > 0 & !is.na(runs$median_s), ]
+if (nrow(timed_runs)) {
+  set_aside <- timed_runs$flags != ""
+  par(mar = c(4, 4.5, 1, 1))
+  plot(timed_runs$answers, timed_runs$median_s, log = "xy", bty = "n", las = 1,
+       pch = 21, cex = 1.5, col = "white", bg = ifelse(set_aside, "#d9534180", "#5b3fd6"),
+       xlab = "Answers given", ylab = "Median answer (s)")
+  abline(h = FAST_MS / 1000, v = GLANCE_ITEMS, col = "grey80", lty = 2)
+  legend("bottomright", c("kept", "set aside"), pch = 21, pt.bg = c("#5b3fd6", "#d9534180"), col = "white",
+         pt.cex = 1.5, bty = "n", cex = 0.85)
+}
+```
+
+```{r}
+#| label: screen-table
+
+if (nrow(flagged)) {
+  knitr::kable(data.frame(
+    Run = flagged$participant,
+    Source = flagged$source,
+    Started = sub("T", " ", flagged$started),
+    Answers = flagged$answers,
+    Minutes = ifelse(is.na(flagged$minutes), "", sprintf("%.1f", flagged$minutes)),
+    `Median (s)` = ifelse(is.na(flagged$median_s), "", sprintf("%.2f", flagged$median_s)),
+    Levels = flagged$finished,
+    Why = flagged$flags,
+    check.names = FALSE
+  ), align = "lllrrrrl")
+} else {
+  cat("Nothing set aside.")
+}
+```
+
+```{r}
 #| label: levels
 
 # Which level an item was on: each level screen (`Level_<N>`) follows the last
@@ -137,7 +257,7 @@ stopped_on <- done[!paste(done$participant, done$level) %in% left, ]
 reading$closed <- as.integer(table(factor(stopped_on$level, levels = table$level)))
 ```
 
-`r nrow(wide)` runs: `r sum(wide$completed)` finished, `r sum(!wide$completed)` stopped partway.
+`r nrow(wide)` runs `r if (KEEP_FLAGGED) "in all" else "kept"`: `r sum(wide$completed)` finished, `r sum(!wide$completed)` stopped partway.
 
 ## How long a level takes
 

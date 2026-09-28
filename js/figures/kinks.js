@@ -1,6 +1,6 @@
 /* =========================================================================
    How kinky — what the Sexuality level (the `sex` block) feeds back: one
-   dimension and one sentence, kept that simple on purpose.
+   dimension, kept that simple on purpose.
 
    The dimension is Kinkiness, vanilla to kinky: how many of the items in
    content/block_sex.js — a kink, or one side of one — turn somebody on,
@@ -21,15 +21,13 @@
    asks whether each was done beside whether it appeals, and the share acted
    on is the number people will want to share. It says nothing about which.
 
-   The sentence is the taboo reading. Kinky and taboo are one thing in the
-   BKS — how many somebody likes and how rare they are go together (NOTES in
-   the block file) — so rarity is not a second axis but a line: the rarest of
-   the kinks that turn somebody on, and how many people share it.
-
-   The rarest kink is the one thing on the level that says which, so it is
-   never in a shared link (a link carries scores and not answers, so the
-   sentence is simply not there for a visitor) and never in the picture of the
-   level (`.kinks__rarest` is among what results.js leaves out of it).
+   NOTHING ON IT SAYS WHICH KINKS, and that is the rule to keep. A sentence
+   naming the rarest kink that turned somebody on (the taboo reading, with how
+   many people share it) was written and taken out, September 2026: it was
+   the most engaging line on the level, and the one thing on it that gave an
+   answer away — on a screen read over a shoulder, in a level's picture, and
+   in whatever is later shared or compared. Counts and a standing can travel;
+   a named kink cannot.
    ========================================================================= */
 
 function makeKinks(shared) {
@@ -55,39 +53,6 @@ function makeKinks(shared) {
     // own to name.
     const CROWD = "people"
 
-    // Each item's share of the BKS's adults who find its nearest BKS interest
-    // arousing at all (>= 1 of 5; BKSPublic.csv, September 2026), and what it
-    // is called in the sentence. Keyed by item, and has to move with the list
-    // in content/block_sex.js. The BKS does not split a kink into its sides,
-    // so both sides carry the kink's share — a guide, like the rest — and
-    // where the two tie the giving side, written first, is the one named.
-    // Five are estimates (marked `~`), the BKS having no such item: the
-    // app's own data replace them.
-    const SHARES = {
-        Sex_Kink_Rough: [75, "rough sex"], // ~
-        Sex_Kink_Sexting: [65, "sexting"], // ~
-        Sex_Kink_Anal_Giving: [73, "giving anal sex"],
-        Sex_Kink_Anal_Receiving: [73, "receiving anal sex"],
-        Sex_Kink_Power_Giving: [58, "dominating"],
-        Sex_Kink_Power_Receiving: [58, "being dominated"],
-        Sex_Kink_Bondage_Giving: [57, "tying someone up"],
-        Sex_Kink_Bondage_Receiving: [57, "being tied up"],
-        Sex_Kink_Toys: [56, "sex toys"],
-        Sex_Kink_Group: [43, "group sex"],
-        Sex_Kink_Public: [41, "sex in public"],
-        Sex_Kink_Resisting_Giving: [37, "consensual non-consent, as the one taking"],
-        Sex_Kink_Resisting_Receiving: [37, "consensual non-consent, as the one taken"],
-        Sex_Kink_Pain_Giving: [35, "giving pain"],
-        Sex_Kink_Pain_Receiving: [35, "receiving pain"],
-        Sex_Kink_OrgasmControl_Giving: [25, "denying someone an orgasm"], // ~
-        Sex_Kink_OrgasmControl_Receiving: [25, "being denied an orgasm"], // ~
-        Sex_Kink_Humiliation_Giving: [22, "humiliating"],
-        Sex_Kink_Humiliation_Receiving: [22, "being humiliated"],
-        Sex_Kink_PartnerWatched: [15, "watching your partner with someone else"], // ~
-        Sex_Kink_Object_Giving: [8, "treating someone as an object"], // ~
-        Sex_Kink_Object_Receiving: [8, "being treated as an object"], // ~
-    }
-
     // The crowd's colours, vanilla to kinky: cream to the level's pink to a
     // deep plum.
     const VANILLA = "#f3e2bf"
@@ -105,8 +70,6 @@ function makeKinks(shared) {
     const TOP = 30 // the top of the topmost band
     const BASE = 290 // the foot of the lowest band
     const GAP = 1.6
-
-    const NUMBERS = ["no one", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
 
     /* ------------------------------ the values ---------------------------- */
 
@@ -143,18 +106,6 @@ function makeKinks(shared) {
             if (counts !== 1) continue
             const cell = question.options.find((one) => one.value === given)
             found.push({ key: question.key, down: cell ? cell.down : 0 })
-        }
-        return found
-    }
-
-    // The rarest of them, as its item key: null when none does.
-    function rarest() {
-        const on = turnOns()
-        if (on === undefined) return undefined
-        let found = null
-        for (const one of on) {
-            if (!SHARES[one.key]) continue
-            if (!found || SHARES[one.key][0] < SHARES[found][0]) found = one.key
         }
         return found
     }
@@ -256,7 +207,7 @@ function makeKinks(shared) {
 
         if (locked) holder.appendChild(text("span", "result__lock", "Locked"))
         else {
-            const tip = () => showTip(figure, "Each band is how many " + CROWD + " are turned on by that many of the " + items().length + " kinks, from none at the foot to all of them at the top. The gold one is you.")
+            const tip = () => showTip(figure, "Each band is how many " + CROWD + " are turned on by that many of the " + items().length + " kinks. The gold one is you.")
             figure.addEventListener("mouseenter", tip)
             figure.addEventListener("mouseleave", hideTip)
 
@@ -272,21 +223,25 @@ function makeKinks(shared) {
 
     /* ------------------------------- the words ---------------------------- */
 
+    // "Turn you on" is held together by non-breaking spaces, so that a count
+    // wrapping onto two lines breaks before it rather than leaving "on" alone
+    // on the second.
     function counted(count) {
         const said = text("p", "kinks__count")
         const of = items().length
+        const on = (verb) => " " + verb + " you on"
         if (count === 0) {
-            said.append("None of these " + of + " kinks turns you on")
+            said.append("None of these " + of + " kinks" + on("turns"))
             return said
         }
         if (count === of) {
             said.append("All ")
             said.appendChild(text("strong", "", String(count)))
-            said.append(" of these kinks turn you on")
+            said.append(" of these kinks" + on("turn"))
             return said
         }
         said.appendChild(text("strong", "", String(count)))
-        said.append(" of these " + of + " kinks " + (count === 1 ? "turns" : "turn") + " you on")
+        said.append(" of these " + of + " kinks" + on(count === 1 ? "turns" : "turn"))
         return said
     }
 
@@ -323,29 +278,6 @@ function makeKinks(shared) {
         return said
     }
 
-    // How many people a share is, in words a sentence can carry.
-    function howMany(share) {
-        if (share >= 50) return "most people (" + share + "%)"
-        if (share >= 40) return "nearly half of people"
-        const one = Math.round(100 / share)
-        return "about one person in " + (one <= 10 ? NUMBERS[one] : one)
-    }
-
-    function rarestLine() {
-        const key = rarest()
-        if (key === undefined) return null
-        const said = text("p", "kinks__rarest")
-        if (key === null) {
-            said.textContent = "None of the " + items().length + " turns you on, so there is no rarest to name."
-            return said
-        }
-        const [share, name] = SHARES[key]
-        said.append("Your rarest turn-on is ")
-        said.appendChild(text("strong", "", name))
-        said.append(", which turns on " + howMany(share) + ".")
-        return said
-    }
-
     function vote(ask) {
         const holder = text("div", "kinks__vote")
         holder.appendChild(text("p", "kinks__ask", ask))
@@ -356,8 +288,8 @@ function makeKinks(shared) {
     /* ------------------------------ the section --------------------------- */
 
     // A title, the crowd with the count, how many of it have been lived out
-    // and where it stands beside it, the rarest kink, and a vote. Locked, the title and the crowd
-    // from the tease, blurred, and nothing else — the preview is what
+    // and where it stands beside it, and a vote. Locked, the title and the
+    // crowd from the tease, blurred, and nothing else — the preview is what
     // finishing will show.
     function renderKinks(locked) {
         const all = document.createDocumentFragment()
@@ -365,14 +297,11 @@ function makeKinks(shared) {
         const count = countOf(value)
 
         const headline = text("header", "kinks__head")
-        headline.appendChild(text("h3", "kinks__title", "Vanilla or kinky?"))
+        headline.appendChild(text("h3", "kinks__title", "How kinky are you?"))
         all.appendChild(headline)
 
         all.appendChild(stage(count, locked, value))
         if (locked) return all
-
-        const line = rarestLine()
-        if (line) all.appendChild(line)
 
         all.appendChild(vote("Does this match how kinky you are?"))
         return all

@@ -35,7 +35,8 @@ const source = files.map((file) => fs.readFileSync(path.join(ROOT, file), "utf8"
 const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, TIMELINE, BATTERIES, WATER_SHARE, formatMint }")()
 
 // The `default` battery, which is what a link naming none asks: the blocks
-// still being written are on the timeline but asked only by `all`, and what
+// the ethics application does not yet cover are on the timeline but asked
+// only by `all` (or, the Hyborian Age, by no battery at all), and what
 // this describes — the deck's Content table, a synthetic run — is the test as
 // it is sent to people. A level left with no block is dropped, as app.js
 // drops it, so the numbering stays that of a default run.

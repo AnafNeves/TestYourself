@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- A way into the test that opens on the sexuality level, with a preview of its own.
+     A crawler reads the tags below and runs no script, so a link to this page
+     unfurls with the level's card (assets/preview/sexuality.jpg, photographed
+     from sexuality.html by make.py there) rather than the test's; a person is
+     sent straight on to the test with ?start=sex, and whatever else the
+     link carried (?source=, ?sub=, ?battery=, ?test=) goes with them. Nothing
+     of the app is loaded here. Like the root page, no og:url, on purpose; the
+     image's ?v= is raised whenever the picture changes, or the apps that cache
+     a preview by its address go on showing the old one. -->
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>How kinky are you? · The Abyss Test</title>
+        <meta name="description" content="Twenty-two kinks, from common to rare: see where you fall among other people." />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="The Abyss Test" />
+        <meta property="og:title" content="How kinky are you? · The Abyss Test" />
+        <meta property="og:description" content="Twenty-two kinks, from common to rare: see where you fall among other people. Research-grade measures, immediate results, entirely anonymous." />
+        <meta property="og:image" content="https://realitybendinglab.com/TestYourself/assets/preview/sexuality.jpg?v=2" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="The Abyss: how kinky are you? A crowd of people stood on end from vanilla to kinky, with one band picked out in gold" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script>
+            const query = new URLSearchParams(location.search)
+            query.set("start", "sex")
+            location.replace("../../?" + query.toString())
+        </script>
+        <style>
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: grid;
+                place-items: center;
+                background: #05070d;
+                color: #d2d8e7;
+                font-family: ui-sans-serif, system-ui, sans-serif;
+            }
+
+            a {
+                color: #f3e3c3;
+            }
+        </style>
+    </head>
+    <body>
+        <p><a href="../../?start=sex">Take the Abyss Test</a></p>
+    </body>
+</html>

@@ -460,7 +460,7 @@ function makeStance(shared) {
 
         const headline = document.createElement("header")
         headline.className = "stance__head"
-        headline.appendChild(text("h3", "stance__title", "Where you stand"))
+        headline.appendChild(text("h3", "stance__title", "What do you stand for?"))
         all.appendChild(headline)
 
         all.appendChild(map(at, locked))

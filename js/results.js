@@ -372,6 +372,8 @@ function makeResults(engine) {
     const heads = makeHeads(shared)
     const stance = makeStance(shared)
     const kinks = makeKinks(shared)
+    const volcano = makeVolcano(shared)
+    const hyborian = makeHyborian(shared)
 
     // The climb is one section for two questionnaires, rendered where the
     // first of them falls in the run and skipped where the other would; the
@@ -656,11 +658,32 @@ function makeResults(engine) {
                 continue
             }
 
-            // The sexuality level's crowd and the rarest kink under it.
+            // The sexuality level's volcano, drawn from the Desire items.
+            // Never in the taste of the level (`teaser`, the way on and the
+            // fork cards): see the head of js/figures/volcano.js.
+            if (name === volcano.VOLCANO_OF) {
+                if (teaser || !onLevel(dimensionsOf(name), level)) continue
+                if (!locked && !volcano.ready()) continue
+                openSection(into, "Desire", colourOf(volcano.DIMENSION), locked).body.appendChild(volcano.renderVolcano(locked))
+                continue
+            }
+
+            // The sexuality level's crowd.
             if (name === kinks.KINKS_OF) {
                 if (!onLevel(dimensionsOf(name), level)) continue
                 if (!locked && !kinks.ready()) continue
                 openSection(into, "Vanilla or Kinky", colourOf(kinks.DIMENSION), locked).body.appendChild(kinks.renderKinks(locked))
+                continue
+            }
+
+            // The Hyborian Age's two cards carry no norms, so they go
+            // through `dimensionsIn` like the wheel; the section is bare,
+            // the cards being boxes enough.
+            if (name === hyborian.HYBORIAN_OF) {
+                if (!onLevel(dimensionsIn(name), level) || (!locked && !hyborian.ready())) continue
+                const opened = openSection(into, titleOf(name), colourOf(hyborian.HERO_ON[0]), locked)
+                opened.section.classList.add("result--bare")
+                opened.body.appendChild(hyborian.renderHyborian(locked))
                 continue
             }
 
@@ -1149,9 +1172,7 @@ function makeResults(engine) {
 
     // Left out of a picture, and hidden on a visitor's page: what asks for an
     // answer, and what the picture is being taken with.
-    // The rarest kink is the one reading on the Sexuality level that says
-    // which, and a picture travels further than its owner means it to.
-    const NOT_SHOWN = ".votes, [class*='__ask'], [class*='__vote'], .rating, .levelshare, .result__lock, .kinks__rarest"
+    const NOT_SHOWN = ".votes, [class*='__ask'], [class*='__vote'], .rating, .levelshare, .result__lock"
 
     function nameOfLevel(key) {
         const entry = TIMELINE.find((one) => one.key === key)
@@ -1461,6 +1482,12 @@ function makeResults(engine) {
                 const at = stance.youAt().map((one) => Math.min(250, Math.max(70, one)))
                 return crop(figureIn(stance.renderStance(false), "svg.stance__plane"), at[0], at[1], 140)
             }
+            // The summit of the volcano: the cleft, what pools in it and
+            // whatever spills over its lips.
+            if (name === volcano.VOLCANO_OF) {
+                if (!volcano.ready()) continue
+                return crop(figureIn(volcano.renderVolcano(false)), volcano.VENT[0], volcano.VENT[1] + 36, 160)
+            }
             // The person's band in the crowd, and its neighbours above and
             // below, kept inside the figure.
             if (name === kinks.KINKS_OF) {
@@ -1471,6 +1498,11 @@ function makeResults(engine) {
             if (name === archetype.ARCHETYPE_OF) {
                 if (!archetype.aiArchetype()) continue
                 return archetype.badge()
+            }
+            // The god's emblem: the level's figures are emblems already.
+            if (name === hyborian.HYBORIAN_OF) {
+                if (!hyborian.ready()) continue
+                return hyborian.badge()
             }
             if (name === wheel.WHEEL_OF) {
                 if (!wheel.leading().length) continue
@@ -1555,8 +1587,13 @@ function makeResults(engine) {
                     add(stance.STANCE_KEY, stance.STANCE_KEY)
                     add(stance.BELIEFS_KEY, stance.BELIEFS_KEY)
                 }
-            } else if (name === kinks.KINKS_OF) add(kinks.KINKS_KEY, kinks.KINKS_KEY)
+            } else if (name === volcano.VOLCANO_OF) add(volcano.VOLCANO_KEY, volcano.VOLCANO_KEY)
+            else if (name === kinks.KINKS_OF) add(kinks.KINKS_KEY, kinks.KINKS_KEY)
             else if (name === archetype.ARCHETYPE_OF) add(archetype.ARCHETYPE_KEY, archetype.ARCHETYPE_KEY)
+            else if (name === hyborian.HYBORIAN_OF) {
+                add(hyborian.HERO_KEY, hyborian.HERO_KEY)
+                add(hyborian.GOD_KEY, hyborian.GOD_KEY)
+            }
             else if (name === wheel.WHEEL_OF) add(wheel.WHEEL_KEY, wheel.WHEEL_KEY)
             else if (name === reasoning.REASONING_OF) add(reasoning.REASONING_KEY, reasoning.REASONING_KEY)
             else if (name === sea.SEA) add(sea.SEA_KEY, sea.SEA_KEY)

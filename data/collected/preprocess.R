@@ -385,6 +385,20 @@ if (length(paths) == 0) {
   stop("Nothing to read in ", raw_dir, call. = FALSE)
 }
 
+# A test run is known to be one before it is opened: the app names it `test_`
+# (`download.py` reads `test-` as one too). It is dropped here, unread, so that
+# nothing downstream ever has to set it aside — and a test partial with no
+# items does not turn up among the complaints either. `testMode` inside the
+# file is checked again below, for a test run whose name does not say so.
+named_test <- grepl("^test[_-]", basename(paths))
+if (!include_test && any(named_test)) {
+  cat(sprintf("  %d test run(s) left out by name (--include-test keeps them)\n", sum(named_test)))
+  paths <- paths[!named_test]
+}
+if (length(paths) == 0) {
+  stop("Nothing but test runs in ", raw_dir, call. = FALSE)
+}
+
 cat(sprintf("Reading %d file(s) from %s\n", length(paths), raw_dir))
 
 runs <- list()
@@ -427,7 +441,7 @@ for (file in superseded) {
 }
 runs <- runs[!names(runs) %in% superseded]
 
-# Test and synthetic runs are not data and are kept out unless asked for.
+# A test run its name did not give away, and synthetic runs, are not data either.
 is_not_data <- vapply(runs, function(one) isTRUE(one$run$testMode) || !is.null(one$run$synthetic), logical(1))
 if (!include_test && any(is_not_data)) {
   cat(sprintf("  %d test/synthetic run(s) left out (--include-test keeps them)\n", sum(is_not_data)))

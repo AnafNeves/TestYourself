@@ -1870,26 +1870,136 @@ h1 {
    and a header a row down the left, and a cell where each pair meets. A cell
    carries no words of its own — its words are the two headers it stands
    under — so it is a ring, filled when chosen, and the headers a cell is read
-   against light up as it is hovered or focused. The table takes the whole
-   width the scale gives it, the row headers taking what they need first. */
+   against light up as it is hovered or focused. The row headers take what
+   they need first and the columns up to 150px each, the table centred in the
+   width the scale gives it, so that it comes out about as wide as the item
+   over it without a cell so wide that the eye has far to go from a ring to
+   the headers it stands under. */
 .options--grid {
-    grid-template-columns: minmax(0, max-content) repeat(var(--across, 3), minmax(0, 1fr));
+    grid-template-columns: minmax(0, max-content) repeat(var(--across, 3), minmax(0, 150px));
     gap: 6px;
     align-items: stretch;
-    justify-content: stretch;
+    justify-content: center;
+    /* The beams are placed on the table's own lines (an absolutely placed
+       grid item takes its grid area as its containing block) and drawn under
+       everything in it, through the cells' glass. */
+    position: relative;
+    isolation: isolate;
 }
 
+/* A table takes the whole width of the item rather than the narrower room
+   a row of circles is given, and it has no anchors to leave room for. */
+.scale:has(> .options--grid) {
+    max-width: none;
+    column-gap: 0;
+}
+
+/* The two questions the table is the product of, written as notes in its
+   margin: in a hand, a little off the level, each with an arrow curling off
+   it to the headers it asks. The hand is whichever the device has — no web
+   font is fetched for it — and falls back to the browser's cursive. The
+   arrows are drawn out over the table's edge (absolutely, off the words),
+   so they take no room from it. */
+.grid__ask {
+    position: relative;
+    font-family: "Segoe Print", "Bradley Hand", "Noteworthy", "Chalkboard SE", cursive;
+    font-size: 13px;
+    line-height: 1.2;
+    color: color-mix(in srgb, var(--selected) 65%, #ffffff);
+    text-wrap: balance;
+    pointer-events: none;
+}
+
+.grid__said {
+    display: inline-block;
+}
+
+/* Top left and highest, over the corner and running a little past it over
+   the first column, its arrow dropping from under the words and hooking
+   right onto the first column header. */
+.grid__ask--across {
+    grid-column: 1;
+    align-self: end;
+    justify-self: end;
+    text-align: right;
+    margin-right: -40px;
+    padding: 0 0 4px 0;
+    white-space: nowrap;
+}
+
+.grid__ask--across .grid__said {
+    transform: rotate(-4deg);
+    transform-origin: right bottom;
+}
+
+/* The rest of the row the across question is written in, left empty. */
+.grid__rest {
+    grid-column: span var(--across, 3);
+}
+
+/* In the corner itself, under the across one and left of it, its arrow
+   falling off the end of the words onto the first row header. The padding
+   under the words is the room the arrow falls through. */
+.grid__ask--down {
+    align-self: end;
+    justify-self: end;
+    text-align: right;
+    max-width: 130px;
+    padding: 0 34px 20px 0;
+}
+
+.grid__ask--down .grid__said {
+    transform: rotate(-4deg);
+    transform-origin: right bottom;
+}
+
+.grid__arrow {
+    position: absolute;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+}
+
+/* The two arrows keep to lanes of their own in the corner, so that neither
+   crosses the other's words: this one drops down the corner's right edge,
+   from under the end of its words (which run 40px past that edge) to a tip
+   just past it, short of the first column header's words and level with
+   them. */
+.grid__ask--across .grid__arrow {
+    width: 32px;
+    height: 46px;
+    right: 26px;
+    top: calc(100% - 4px);
+}
+
+/* And this one falls from under the end of its words, which stop short of
+   that lane, to a tip in the gap over the first row header. */
+.grid__ask--down .grid__arrow {
+    width: 20px;
+    height: 28px;
+    right: 22px;
+    bottom: -4px;
+}
+
+/* The size a labelled scale set in a row is written at (`.options--row`),
+   which is what the table is: two of them, crossed. */
 .grid__head {
-    font-size: 13.5px;
+    font-size: 14px;
     line-height: 1.3;
     color: var(--muted);
     transition: color 0.15s;
 }
 
+/* Held narrower than the column, so that each of the four short sentences
+   breaks onto two lines and the header row is even. */
 .grid__head--across {
     align-self: end;
     text-align: center;
-    padding: 0 4px 6px;
+    text-wrap: balance;
+    padding: 0 12px 6px;
 }
 
 .grid__head--down {
@@ -1901,6 +2011,126 @@ h1 {
 
 .grid__head--lit {
     color: var(--text);
+}
+
+/* The two headers an answer stands under, lit with it and held a little
+   larger — by a transform, so the table does not reflow round them — each
+   growing out of the edge it faces the cells from. */
+.grid__head--across,
+.grid__head--down {
+    transition: color 0.15s, transform 0.15s;
+}
+
+.grid__head--across {
+    transform-origin: center bottom;
+}
+
+.grid__head--down {
+    transform-origin: right center;
+}
+
+.grid__head--chosen {
+    color: #ffffff;
+    text-shadow: 0 0 12px var(--selected);
+    transform: scale(1.08);
+}
+
+/* An answer as the meeting of its row and its column: a beam along the row
+   out of the row header, one down the column out of the column header, each
+   brightening towards the cell. Sweeping in on the press, standing still on
+   an answer come back to. */
+.grid__beam {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.options--crossed .grid__beam {
+    display: block;
+}
+
+.grid__beam--across {
+    background: linear-gradient(to right, color-mix(in srgb, var(--selected) 16%, transparent), color-mix(in srgb, var(--selected) 72%, transparent));
+    transform-origin: left center;
+}
+
+.grid__beam--down {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--selected) 16%, transparent), color-mix(in srgb, var(--selected) 72%, transparent));
+    transform-origin: center top;
+}
+
+.options--sweeping .grid__beam--across {
+    animation: grid-beam-across 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.options--sweeping .grid__beam--down {
+    animation: grid-beam-down 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* The cell under the pointer (or focused) traced back to its two headers by
+   the same pair of beams, a good deal fainter than an answer's and fading in
+   rather than sweeping, so that pointing reads as a question and pressing as
+   the answer. The answer's pair is drawn over it. */
+.options--grid .grid__beam--trace {
+    display: block;
+    opacity: 0;
+    animation: none;
+    transition: opacity 0.18s;
+}
+
+.options--tracing .grid__beam--trace {
+    opacity: 1;
+}
+
+.grid__beam--trace.grid__beam--across {
+    background: linear-gradient(to right, color-mix(in srgb, var(--selected) 6%, transparent), color-mix(in srgb, var(--selected) 38%, transparent));
+}
+
+.grid__beam--trace.grid__beam--down {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--selected) 6%, transparent), color-mix(in srgb, var(--selected) 38%, transparent));
+}
+
+/* The headers pop as their beams leave them, and the cell as the beams
+   arrive. */
+.options--sweeping .grid__head--chosen {
+    animation: grid-head 0.42s ease-out both;
+}
+
+.option--cell.option--met {
+    animation: grid-meet 0.32s 0.24s ease-out both;
+}
+
+@keyframes grid-beam-across {
+    from { transform: scaleX(0); opacity: 0.4; }
+    to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes grid-beam-down {
+    from { transform: scaleY(0); opacity: 0.4; }
+    to { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes grid-head {
+    0% { color: var(--muted); text-shadow: none; transform: scale(1); }
+    45% { transform: scale(1.22); text-shadow: 0 0 18px var(--selected), 0 0 4px var(--selected); }
+    100% { transform: scale(1.08); }
+}
+
+@keyframes grid-meet {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.12); box-shadow: 0 0 44px 2px var(--selected); }
+    100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .options--sweeping .grid__beam,
+    .options--sweeping .grid__head--chosen,
+    .option--cell.option--met {
+        animation: none;
+    }
 }
 
 .options--grid .option--cell {
@@ -2161,10 +2391,24 @@ h1 {
     height: var(--thumb);
     margin: 0;
     background: transparent;
-    cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
+    /* The line round it takes the pointer (`renderSlider`). */
+    pointer-events: none;
+}
+
+/* What is pressed: the range's own row, reaching a little above and below it
+   so that a finger need not land on a six-pixel track. */
+.slider__line {
+    position: relative;
+    cursor: pointer;
     touch-action: none;
+}
+
+.slider__line::before {
+    content: "";
+    position: absolute;
+    inset: -12px 0;
 }
 
 .slider__range:focus-visible {
@@ -2299,7 +2543,7 @@ h1 {
     position: absolute;
     bottom: calc(100% + 10px);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(calc(var(--over, 0.5) * -100%));
     font-size: 14px;
     font-weight: 600;
     white-space: nowrap;
@@ -2329,12 +2573,16 @@ h1 {
     pointer-events: none;
 }
 
-/* Over the thumb's centre, which travels the width less one thumb. */
+/* Over the thumb's centre, which travels the width less one thumb — centred
+   on it in the middle of the line and leaning inwards towards the ends, so
+   that "100%" at the top of the scale is not cut off by the edge of a phone.
+   `--lean` is how far across itself the reading is pulled back. */
 .slider__reading {
+    --lean: calc(var(--at, 0.5) * -100%);
     position: absolute;
     top: 0;
     left: calc(var(--thumb) / 2 + var(--at, 0.5) * (100% - var(--thumb)));
-    transform: translateX(-50%);
+    transform: translateX(var(--lean));
     font-size: 19px;
     font-weight: 600;
     color: var(--text);
@@ -2349,7 +2597,7 @@ h1 {
 /* Lifted, and in the answer's colour, while it is being dragged. */
 .slider--held .slider__reading {
     color: color-mix(in srgb, var(--tint) 55%, #ffffff);
-    transform: translateX(-50%) translateY(-4px) scale(1.12);
+    transform: translateX(var(--lean)) translateY(-4px) scale(1.12);
 }
 
 .slider__hint {
@@ -2786,20 +3034,84 @@ h1 {
         text-align: right;
     }
 
-    /* More than seven circles do not fit on one row. */
+    /* Under the row, the anchors go back out to its ends: the rule drawing
+       them in against the circles beside the row is two classes deep and
+       would otherwise put both in the middle, under the wrong circles. */
+    .scale--circles .anchor--left {
+        justify-self: start;
+    }
+
+    .scale--circles .anchor--right {
+        justify-self: end;
+    }
+
+    /* More than seven circles do not fit on one row, so they take two, the
+       second ending under the first so that the highest point is at the right
+       edge like the first row's. The low anchor then goes over the first row,
+       by the lowest point, and the high one under the second, by the highest,
+       rather than both under the second row and neither by its end. */
     .options--wide {
         grid-template-columns: repeat(6, minmax(0, 62px));
     }
 
-    /* Smaller headers, so that three columns and their row headers share
-       a phone's width. */
+    .options--wide > .option:nth-child(7):nth-last-child(5) {
+        grid-column-start: 2;
+    }
+
+    .options--wide > .option:nth-child(7):nth-last-child(4) {
+        grid-column-start: 3;
+    }
+
+    .options--wide > .option:nth-child(7):nth-last-child(3) {
+        grid-column-start: 4;
+    }
+
+    .options--wide > .option:nth-child(7):nth-last-child(2) {
+        grid-column-start: 5;
+    }
+
+    .scale:has(> .options--wide) .anchor--left {
+        order: -2;
+    }
+
+    /* Smaller headers and narrower columns, so that four columns and their
+       row headers share a phone's width without the row headers, and the
+       question over them, being squeezed to a word a line. */
+    .options--grid {
+        grid-template-columns: minmax(0, max-content) repeat(var(--across, 3), minmax(0, 56px));
+        gap: 5px;
+    }
+
     .grid__head {
         font-size: 12px;
     }
 
+    .grid__head--across {
+        padding: 0 1px 6px;
+    }
+
     .grid__head--down {
         padding-right: 6px;
-        max-width: 96px;
+        max-width: 104px;
+    }
+
+    .grid__ask {
+        font-size: 11px;
+    }
+
+    .grid__ask--down {
+        padding-right: 30px;
+        max-width: 112px;
+    }
+
+    .grid__ask--down .grid__arrow {
+        right: 18px;
+    }
+
+    /* The first column header's words fill its narrow column on a phone, so
+       the tip stops at the corner's edge rather than just past it. */
+    .grid__ask--across .grid__arrow {
+        right: 36px;
     }
 
     .options--grid .option--cell {

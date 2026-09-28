@@ -319,7 +319,13 @@ const TIMELINE = [
     shuffle([
         { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 2, minutes: 8 },
         { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2, minutes: 3 },
-        { key: "MoodHealth", name: "Mood & Health", blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(), fork: 2, minutes: 8 },
+        {
+            key: "MoodHealth",
+            name: "Mood & Health",
+            blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(),
+            fork: 2,
+            minutes: 8,
+        },
     ]),
     shuffle([
         { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
@@ -328,12 +334,19 @@ const TIMELINE = [
         { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
         { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
         { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
-        // Work in progress, asked only by the `all` battery below; `default`
-        // leaves the level out and the fork is the six above. A fork's slots
-        // must be scored levels, which is the whole reason one of its items
-        // carries a dimension (see content/block_sex.js). Its minutes are a
-        // guess, nobody having taken it.
-        { key: "Sexuality", name: "Sexuality", blocks: ["sex"], fork: 3, minutes: 4 },
+        // Asked by the `all` battery below and not by `default`, which the
+        // ethics application does not yet cover it for; `default` leaves the
+        // level out and the fork is the six above. A fork's slots must be
+        // scored levels, which is the whole reason one of its items carries
+        // a dimension (see content/block_sex.js). Its minutes are a guess,
+        // nobody having taken it.
+        { key: "Sexuality", name: "Sexuality", blocks: ["sex"], fork: 3, minutes: 6 },
+        // Asked by no battery at all: a level on the philosophy of Howard's
+        // Hyborian Age, written to be shared in the fandom, reached only by a
+        // link naming it (`?start=hyborian`, which asks a block whatever the
+        // battery says) and then walked first, ahead of General (see
+        // content/block_hyborian.js and ASIDE below). Its minutes are a guess.
+        { key: "Hyborian", name: "The Hyborian Age", blocks: ["hyborian"], fork: 3, minutes: 3 },
     ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
@@ -348,15 +361,21 @@ const TIMELINE = [
 // ends through it.
 //
 // **A link with no battery, or naming one that is not here, asks `default`**:
-// the whole timeline but the blocks still being written, which are what the
-// ethics application covers. `all` is everything on the timeline, those
-// included, and is for trying them out and for nothing a participant is sent.
-// `test` is an example, to be edited or replaced when a study is designed.
-const WORK_IN_PROGRESS = ["sex"]
+// the timeline as the ethics application covers it, which is everything but
+// NOT_YET_COVERED — blocks finished and on the timeline that the application
+// does not cover yet (the sexuality level). `all` is `default` and those,
+// and is for trying them out and for nothing a participant is sent.
+// **ASIDE is asked by no battery**: a level on the timeline, so that it has
+// a place, a key and a name, that a run meets only when a link names it —
+// `?start=hyborian` asks a block whatever the battery says and walks that
+// level first. Both lists are subtracted from the timeline rather than the
+// batteries being written out, so a block added to the timeline is in
+// `default` unless it is written into one of them.
+const NOT_YET_COVERED = ["sex"]
+const ASIDE = ["hyborian"]
 const BATTERIES = {
-    default: TIMELINE.flatMap((level) => level.blocks).filter((name) => WORK_IN_PROGRESS.indexOf(name) === -1),
-    all: TIMELINE.flatMap((level) => level.blocks),
-    test: ["icar", "regulation"],
+    default: TIMELINE.flatMap((level) => level.blocks).filter((name) => NOT_YET_COVERED.indexOf(name) === -1 && ASIDE.indexOf(name) === -1),
+    all: TIMELINE.flatMap((level) => level.blocks).filter((name) => ASIDE.indexOf(name) === -1),
 }
 
 // Blocks that come and go together, because one figure is drawn from both:

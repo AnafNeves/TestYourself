@@ -71,7 +71,9 @@ Every level closes on results of its own. Each link below starts the test on tha
 
 The pictures are drawn from stand-in scores, not anybody's answers, by `assets/readme/make.py`; rerun it when a figure changes.
 
-**Work in progress: Sexuality.** Asked only by the `all` battery, since it is not covered by the ethics application, and with no results of its own yet. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=sex&battery=all&source=README).
+**Sexuality.** Asked only by the `all` battery, since it is not yet covered by the ethics application. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=sex&battery=all&source=README).
+
+**The Hyborian Age.** A short level on the philosophy of Robert E. Howard's world, closing on which of its heroes you would have been and which of its gods would have claimed you. Asked by no battery: a link naming it walks it first, ahead of the rest of the test. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=hyborian&source=README).
 
 ## Includes
 
@@ -90,7 +92,7 @@ Everything a link can say about a run goes after the address, e.g.
 |---|---|---|
 | `?source=` | Where the link was handed out (a project, an experimenter, a page). Written into the saved file and its name, never shown. A link without one is saved as `Unknown`. | `?source=Prolific-Pilot` |
 | `?sub=` | The participant's code, for a prewritten list or a platform's own id. Only `A-Z a-z 0-9 _ -` survive, 32 characters at most; otherwise a code is made up. | `?sub=P0042` |
-| `?battery=` | Ask a named preset of blocks out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run asks `default`: the whole test but the blocks still being written. `all` asks those too (currently the sexuality block, which is not covered by the ethics application). | `?battery=all` |
+| `?battery=` | Ask a named preset of blocks out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run asks `default`: the test as the ethics application covers it. `all` asks the sexuality block too, which the application does not cover yet. The Hyborian Age is in neither, and is reached only by `?start=hyborian`. | `?battery=all` |
 | `?only=` | Ask exactly these blocks (comma-separated), for testing. Applied over `battery`. | `?only=mint,icar` |
 | `?skip=` | Ask everything but these blocks. Applied after `only`. | `?skip=opinions` |
 | `?start=` | Bring the levels holding these blocks to the front, in the order named; the rest follow as usual. Moves whole levels and asks nothing the battery left out. | `?start=icar` |
@@ -101,7 +103,7 @@ Everything a link can say about a run goes after the address, e.g.
 Options combine with `&`. The blocks, in timeline order, are `demographics1`, `fipi`, `singles` (General);
 `demographics2`, `mint` (Brain-Body Axis); `bait` (AI Expertise & Usage); `demographics3`, `mood`, `health`, `hitop`
 (Mood & Health); `hexaco` (Character); `archetypes`; `primals` (The World); `icar` (How You Think); `regulation`
-(Mind & Heart); `opinions` (Where You Stand); `sex` (Sexuality, asked only by `battery=all`); and `closing`, which is
+(Mind & Heart); `opinions` (Where You Stand); `sex` (Sexuality, asked only by `battery=all`); `hyborian` (The Hyborian Age, asked by no battery and reached only by `start=hyborian`); and `closing`, which is
 always asked. `mood` and `hitop` are asked or
 skipped together.
 
