@@ -4,7 +4,8 @@
      unfurls with the level's card (assets/preview/opinions.jpg, photographed
      from opinions.html by make.py there) rather than the test's; a person is
      sent straight on to the test with ?start=opinions, and whatever else the
-     link carried (?source=, ?sub=, ?battery=, ?test=) goes with them. Nothing
+     link carried (?source=, ?sub=, ?battery=, ?test=) goes with them, and a
+     ?start= of its own is kept behind this level. Nothing
      of the app is loaded here. Like the root page, no og:url, on purpose; the
      image's ?v= is raised whenever the picture changes, or the apps that cache
      a preview by its address go on showing the old one. -->
@@ -26,7 +27,9 @@
         <meta name="twitter:card" content="summary_large_image" />
         <script>
             const query = new URLSearchParams(location.search)
-            query.set("start", "opinions")
+            // This level first, then any the link names after it: start/opinions/?start=a,b is ?start=opinions,a,b.
+            const after = (query.get("start") || "").split(",").filter((name) => name && name !== "opinions")
+            query.set("start", ["opinions"].concat(after).join(","))
             location.replace("../../?" + query.toString())
         </script>
         <style>
