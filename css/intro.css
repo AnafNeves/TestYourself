@@ -194,6 +194,54 @@ body[data-screen="intro"] #app {
     margin: 0 4px;
 }
 
+/* A run left partway through on this device, offered back under the name
+   before anything else is read: carrying on skips the form, which was agreed
+   to the first time. */
+.resume {
+    position: relative;
+    margin: clamp(26px, 5vh, 44px) 0 0;
+    padding: 18px 24px 20px;
+    max-width: 440px;
+    background: var(--surface);
+    border: 1px solid rgba(217, 164, 65, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 18px 50px -24px rgba(217, 164, 65, 0.5);
+    animation: surface 1.6s 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.resume__head {
+    margin: 0;
+    font-size: 11.5px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.resume__note {
+    margin: 8px 0 16px;
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+.resume__ways {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.resume__ways .btn + .btn {
+    margin-left: 0;
+}
+
+/* The offer is the way on while it is up, and the cue under it would crowd it
+   on a short window. "Start again" takes the offer away and the cue comes back. */
+.hero:has(.resume:not([hidden])) .hero__cue {
+    display: none;
+}
+
 /* The way down, and the invitation to take it. */
 .hero__cue {
     position: absolute;
@@ -775,6 +823,7 @@ body.sinking #screen-intro::after {
     .hero__sub,
     .hero__meta,
     .hero__cue,
+    .resume,
     .gaze__eye,
     .gaze__pupil {
         animation: none;

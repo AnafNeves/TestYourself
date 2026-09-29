@@ -6,10 +6,10 @@
 
        bun data/synthetic/codebook.js > codebook.json
 
-   `synthesize.py` calls it for you. It walks the `default` battery (see
+   `synthesize.py` calls it for you. It walks the `mint` battery (see
    below). It loads `content/timeline.js` and then every `content/block_*.js`
    that `index.html` names, in that order, inside one function so that the globals they share (`defineBlock`, `QUESTIONNAIRES`,
-   `BLOCKS`, `TIMELINE`, `formatMint`) resolve exactly as they do on the page,
+   `BLOCKS`, `BATTERIES`, `formatMint`) resolve exactly as they do on the page,
    and then walks the four lists the way `app.js` does — levels, blocks,
    entries, items — so that the codebook can never disagree with the run.
 
@@ -32,18 +32,16 @@ const files = [...html.matchAll(/<script src="(content\/[^"]+)"><\/script>/g)].m
 if (!files.length) throw new Error("no content scripts found in index.html")
 
 const source = files.map((file) => fs.readFileSync(path.join(ROOT, file), "utf8")).join("\n;\n")
-const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, TIMELINE, BATTERIES, WATER_SHARE, formatMint }")()
+const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, BATTERIES, ASIDE, WATER_SHARE, formatMint }")()
 
-// The `default` battery, which is what a link naming none asks: the blocks
-// the ethics application does not yet cover are on the timeline but asked
-// only by `all` (or, the Hyborian Age, by no battery at all), and what
+// The `mint` timeline, which is what a link naming no battery walks, and what
 // this describes — the deck's Content table, a synthetic run — is the test as
-// it is sent to people. A level left with no block is dropped, as app.js
-// drops it, so the numbering stays that of a default run.
-const asked = new Set(content.BATTERIES.default.concat("closing"))
-const timeline = content.TIMELINE.map((entry) => Object.assign({}, entry, { blocks: entry.blocks.filter((name) => asked.has(name)) })).filter(
-    (entry) => entry.blocks.length,
-)
+// it is sent to people. Anything ASIDE is taken off it, as app.js takes it
+// off, and a level left with no block is dropped, so the numbering stays that
+// of a `mint` run.
+const timeline = content.BATTERIES.mint
+    .map((entry) => Object.assign({}, entry, { blocks: entry.blocks.filter((name) => content.ASIDE.indexOf(name) === -1) }))
+    .filter((entry) => entry.blocks.length)
 
 // The app version, so a synthetic file says which code its codebook came from.
 const app = fs.readFileSync(path.join(ROOT, "js", "app.js"), "utf8")

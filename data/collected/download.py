@@ -325,7 +325,9 @@ def report(names):
             other.append(name)
 
     print("\n  %-28s %d" % ("complete runs", len(runs)))
-    print("  %-28s %d" % ("stopped partway", len(partials)))
+    # A run left twice — carried on in the same browser in between — leaves a
+    # partial a session under one name, and is one person for all that.
+    print("  %-28s %d" % ("stopped partway", len(set(partials))))
     if tests or test_partials:
         print("  %-28s %d complete, %d partial   (not data)" % ("test runs", len(tests), len(test_partials)))
     if other:
@@ -343,6 +345,12 @@ def report(names):
     orphans = sorted(set(partials) - set(runs))
     if orphans:
         print("\n  %d partial(s) with no complete file: somebody who stopped and did not come back." % len(orphans))
+
+    twice = sorted(base for base in set(partials) if partials.count(base) > 1)
+    if twice:
+        print("\n  %d run(s) left, carried on and left again, a partial a session; the fullest is the run:" % len(twice))
+        for base in twice:
+            print("      %s" % base)
 
 
 def main():

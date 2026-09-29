@@ -81,3 +81,8 @@ assets/theories/source/*.jpg
 # again from TemplateFlow by assets/mint/source/cut.py whenever it is missing.
 # What it cuts, assets/mint/brain.jpg, is committed.
 assets/mint/source/*.nii.gz
+
+# The Hyborian Age's hero pictures as generated, four to five megabytes each.
+# Nothing fetches them again, so they live in Dropbox alone; what
+# assets/hyborian/source/cut.py cuts them into is committed.
+assets/hyborian/source/*.jpg

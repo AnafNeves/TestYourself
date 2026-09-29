@@ -9,7 +9,7 @@
 // `shuffle()` in timeline.js hands back the written order: the codebook reads
 // this file too, and it should describe one fixed scale, not a new one per run.
 const MINT_FORMATS = ["sequential7", "symmetric7", "slider"]
-const formatMint = typeof window === "undefined" ? MINT_FORMATS[0] : MINT_FORMATS[Math.floor(Math.random() * MINT_FORMATS.length)]
+const formatMint = typeof window === "undefined" ? MINT_FORMATS[0] : MINT_FORMATS[Math.floor(chance() * MINT_FORMATS.length)]
 
 defineBlock("mint", [
     {

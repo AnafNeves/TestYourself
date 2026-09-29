@@ -163,6 +163,18 @@
                         Research-grade measures <i aria-hidden="true">·</i> immediate results <i aria-hidden="true">·</i> entirely anonymous
                     </p>
 
+                    <!-- A run left partway through on this device, offered back:
+                         filled in and uncovered by app.js (`offerResume`) and
+                         only when there is one. -->
+                    <div class="resume" id="resume" hidden>
+                        <p class="resume__head">Welcome back</p>
+                        <p class="resume__note" id="resume-note"></p>
+                        <div class="resume__ways">
+                            <button class="btn" id="resume-go">Carry on where you left off</button>
+                            <button class="btn btn--ghost" id="resume-drop">Start again</button>
+                        </div>
+                    </div>
+
                     <a class="hero__cue" href="#gate"><span>Scroll to descend</span><i aria-hidden="true"></i></a>
                 </div>
 
@@ -450,6 +462,20 @@
             </div>
         </div>
 
+        <!-- Asked when a reload picks up a run kept in this browser: carry on
+             with it, or, for somebody else at the same screen, begin afresh.
+             `welcomeBack` in app.js. -->
+        <div class="welcome" id="welcome" hidden>
+            <div class="welcome__card" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+                <p class="welcome__step">Welcome back</p>
+                <h2 class="welcome__title" id="welcome-title">You are where you left off</h2>
+                <div class="welcome__ways">
+                    <button class="btn" id="welcome-go">Continue where I left off</button>
+                    <button class="btn btn--ghost" id="welcome-again">Not you? Take the test from the start</button>
+                </div>
+            </div>
+        </div>
+
         <!-- The line the test is named after, shown once, on the way in. -->
         <div class="gaze" id="gaze" role="presentation" hidden>
             <div class="gaze__eye" aria-hidden="true"><span class="gaze__pupil"></span></div>
@@ -543,6 +569,11 @@
              code that was reviewed. Nothing below reads it at load; `app.js`
              asks for it by name when the test begins. -->
         <script src="js/vendor/datapipe-client.js"></script>
+
+        <!-- A run left partway through and kept in this browser, and the seed
+             every draw of the run comes off: it has to be known before the
+             timeline draws anything, so it comes before content/. -->
+        <script src="js/resume.js"></script>
 
         <!-- How a question is written, then the running order, then the blocks
              of questions themselves — a file each — then everything that reads

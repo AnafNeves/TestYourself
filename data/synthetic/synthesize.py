@@ -587,9 +587,9 @@ def write_file(book, persona, given, bio, provenance):
 
     file = {"version": book["version"], "participant": persona["code"], "testMode": False}
     file["synthetic"] = dict(provenance, seed=persona["seed"], flavours=persona["flavours"], bio=bio, generated=now)
-    # The default battery, in its written order, which is what a synthetic run
+    # The mint battery, in its written order, which is what a synthetic run
     # walks (codebook.js reads no other): every level and questionnaire as written.
-    file["battery"] = "default"
+    file["battery"] = "mint"
     file["source"] = "Synthetic"  # the app writes a string here always, "Unknown" where the link named none
     # Answered on no screen at all.
     for field in ("device", "touchscreen", "screenLayout", "screenLayouts", "viewport", "screen"):

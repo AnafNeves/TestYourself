@@ -4426,53 +4426,288 @@
 }
 
 /* ------------------------------ the Hyborian Age ------------------------------
-   Two cards on level 1's pattern (js/figures/hyborian.js, borrowing `.theories`
-   and `.theory`): an emblem on a round plate for a figure, each card voting in
-   its own colour, and under the pair the seven dimensions as bars on the
-   climb's pattern, the hero's three and the god's four. Locked, the emblems
-   are blurred by `.blank` on the figure itself, since they sit in no
-   `.result__chart`. */
-.hyborian__card {
-    --plate: #0b1020;
+   A hand of two cards (js/figures/hyborian.js): the hero's painting, and
+   beside it the card's back on the same stock, carrying the person's stats,
+   what the hero is said to be and the flavour text, the way a trading card's
+   back does. The two are one size, a painting's own proportions, as large as
+   half the section will give them, and the corners are rounded to the
+   painted card's so that its white margin does not show. Everything on the
+   back is sized in `cqw`, a share of the card's own width, so the back is
+   the same card at any size rather than words rattling in a larger box; it
+   grows taller rather than cut them off. Stacked on a phone. Locked, the
+   painting is blurred on itself, since it sits in no `.result__chart`, and
+   so is everything earned on the back. */
+.hyborian {
+    --stock: #efe4cb;
+    --ink: #2b2118;
+    --bronze: #9a6a2a;
+    --rubric: #8e2a1e;
+    display: grid;
+    justify-items: center;
+    gap: 24px;
+    margin: 4px 0 8px;
 }
 
-.hyborian__card .theory__figure {
-    max-width: 150px;
-    color: var(--chart);
+.hyborian__intro {
+    max-width: 62ch;
+}
+
+.hyborian__hand {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    width: 100%;
+}
+
+.hyborian__front,
+.hyborian__back {
+    flex: none;
+    width: clamp(240px, calc(50% - 14px), 390px);
+    aspect-ratio: 640 / 901;
+    border-radius: 4.2% / 3%;
+    animation: hyborian-deal 0.7s var(--ease) both;
+}
+
+.hyborian__back {
+    animation-delay: 0.18s;
+}
+
+@keyframes hyborian-deal {
+    from {
+        opacity: 0;
+        transform: translateY(18px) rotate(-2deg);
+    }
+}
+
+.hyborian__front.blank {
+    filter: blur(10px);
+}
+
+.hyborian__painting {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    box-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.55),
+        0 0 50px color-mix(in srgb, var(--chart) 18%, transparent);
+}
+
+.hyborian__painting img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* A hero with no painting yet: its emblem on a card of the same stock. */
+.hyborian__painting--drawn {
+    --plate: #140f0a;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    border: 11px solid var(--stock);
+    color: #d6a45c;
+    background: radial-gradient(circle at 50% 42%, #4a3219, #140f0a 72%);
+}
+
+.hyborian__painting .hyborian__emblem {
+    width: 62%;
+    height: auto;
+    filter: drop-shadow(0 0 18px rgba(214, 164, 92, 0.35));
+}
+
+/* The back: card stock with a bronze rule inside its edge, printed in ink. */
+.hyborian__back {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    container-type: inline-size;
+    height: auto;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.35), transparent 70%),
+        radial-gradient(circle at 50% 50%, transparent 55%, rgba(120, 84, 40, 0.22)),
+        var(--stock);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+    text-align: center;
+}
+
+/* The padding is on a box inside, since `cqw` on the card's own padding
+   would be read off the section rather than off the card. */
+.hyborian__back > * {
+    margin-inline: 8.5cqw;
+}
+
+.hyborian__back > :first-child {
+    margin-top: 8cqw;
+}
+
+.hyborian__back > :last-child {
+    margin-bottom: 7cqw;
+}
+
+.hyborian__back::before {
+    content: "";
+    position: absolute;
+    inset: 3.5cqw;
+    margin: 0;
+    border: 1.5px solid var(--bronze);
+    border-radius: 2.7cqw;
+    box-shadow: inset 0 0 0 3px var(--stock), inset 0 0 0 4px color-mix(in srgb, var(--bronze) 55%, transparent);
+    pointer-events: none;
+}
+
+/* A lead-in to the name rather than a label, so in the name's own serif. */
+.hyborian__kind {
+    margin-block: 0;
+    font-family: var(--serif);
+    font-size: 5cqw;
+    font-style: italic;
+    color: var(--bronze);
+}
+
+.hyborian__name {
+    margin-block: 1.6cqw 0;
+    font-family: var(--serif);
+    font-size: 8.8cqw;
+    font-weight: 600;
+    line-height: 1.12;
+    color: var(--ink);
+}
+
+.hyborian__label {
+    margin-block: 4.2cqw 2cqw;
+    padding-top: 3.2cqw;
+    border-top: 1px solid color-mix(in srgb, var(--bronze) 45%, transparent);
+    font-size: 4cqw;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bronze);
+}
+
+.hyborian__stats {
+    display: grid;
+    gap: 2cqw;
+    margin-block: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hyborian__stat {
+    display: grid;
+    grid-template-columns: 5.6em 1fr 1.6em;
+    align-items: center;
+    gap: 0.6em;
+    font-size: 5cqw;
+    border-radius: 4px;
     outline: none;
     cursor: help;
-    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--chart) 35%, transparent));
 }
 
-.hyborian__card .theory__figure.blank {
-    filter: blur(4.5px);
+.hyborian__stat:hover,
+.hyborian__stat:focus-visible {
+    background: rgba(154, 106, 42, 0.14);
 }
 
-.hyborian__card .theory__figure:focus-visible {
-    outline: 2px solid var(--chart);
-    outline-offset: 6px;
-    border-radius: 50%;
+.hyborian__stat-name {
+    text-align: left;
+    font-family: var(--serif);
+    font-weight: 600;
+}
+
+.hyborian__pips {
+    display: flex;
+    justify-content: space-between;
+}
+
+.hyborian__pips i {
+    width: 3.1cqw;
+    height: 3.1cqw;
+    transform: rotate(45deg);
+    border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
+.hyborian__pips .hyborian__pip--on {
+    border-color: var(--rubric);
+    background: var(--rubric);
+    animation: hyborian-pip 0.35s var(--ease) calc(0.5s + var(--beat) * 60ms) both;
+}
+
+@keyframes hyborian-pip {
+    from {
+        background: transparent;
+        transform: rotate(45deg) scale(0.4);
+    }
+}
+
+.hyborian__stat-worth {
+    font-family: var(--serif);
+    font-size: 1.25em;
+    text-align: right;
+    color: var(--rubric);
+}
+
+.hyborian__traits {
+    margin-block: 0;
+    font-family: var(--serif);
+    font-size: 5.4cqw;
+    line-height: 1.4;
+}
+
+.hyborian__flavour {
+    margin-block: auto 0;
+    padding-top: 3.4cqw;
+    font-family: var(--serif);
+    font-size: 4.8cqw;
+    font-style: italic;
+    line-height: 1.42;
+    color: color-mix(in srgb, var(--ink) 78%, transparent);
 }
 
 .hyborian__vote {
     display: grid;
     justify-items: center;
     gap: 8px;
-    margin-top: 10px;
-}
-
-.hyborian__bars {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    max-width: 680px;
-    gap: 10px;
 }
 
 .hyborian__note {
+    margin-top: 0;
     text-align: center;
 }
 
-@media (max-width: 560px) {
-    .hyborian__bars {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+@media (max-width: 600px) {
+    .hyborian__hand {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hyborian__front,
+    .hyborian__back {
+        width: min(100%, 360px);
+    }
+}
+
+/* The badge: the top of the hero's painting, cut to a square. The card is
+   drawn a fifth wider than the badge and moved up and left by a tenth of it,
+   which is past its stock and its bronze frame (about 7% of its width), so
+   the square is the painting alone. */
+.hyborian__badge {
+    position: absolute;
+    left: -10%;
+    top: -10%;
+    width: 120%;
+    max-width: none;
+    height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hyborian__front,
+    .hyborian__back,
+    .hyborian__pips .hyborian__pip--on {
+        animation: none;
     }
 }

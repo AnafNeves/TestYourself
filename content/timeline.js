@@ -6,7 +6,8 @@
 
    FOUR LISTS, each knowing only the one under it:
 
-     TIMELINE            the levels, asked top to bottom
+     TIMELINE_MINT,      the levels, asked top to bottom — one timeline a
+     TIMELINE_ALL        battery, `BATTERIES` naming them
        level             the blocks of that level, in order — and a `key`,
                          what the saved file is written under, beside a `name`,
                          what the gauge, the level screen and the results panel
@@ -19,7 +20,7 @@
 
    A block is one stretch of the run that moves as a piece — a file of its own,
    `content/block_<name>.js`. Moving one between levels is moving its name from
-   one line of TIMELINE to another, and a block named nowhere here is never
+   one line of a timeline to another, and a block named nowhere here is never
    asked however completely it is written.
 
    A questionnaire is the unit of shuffling and the only one: its items may
@@ -192,7 +193,7 @@ function answerKey(key, value) {
 
 // Fisher–Yates, in place: sorting by a coin flip is a biased shuffle, however
 // short the list. Used on the blocks of a level asked in a random order, and
-// on a run of levels asked in one (see TIMELINE).
+// on a run of levels asked in one (see the timelines below).
 //
 // **Outside a browser it draws nothing and hands the written order back.**
 // This file is also read by `data/synthetic/codebook.js`, and through it by
@@ -201,10 +202,14 @@ function answerKey(key, value) {
 // has to be the same every time the table is built, or the published table
 // changes under a link that points at it. A shuffle says these may come in
 // any order, and the written one is the representative of all of them.
+//
+// In a browser the draw comes off `chance()` (js/resume.js, loaded before
+// this file), which is seeded, so that a run carried on after the tab was
+// closed is drawn again exactly as it was.
 function shuffle(arr) {
     if (typeof window === "undefined") return arr
     for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
+        const j = Math.floor(chance() * (i + 1))
         ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
     return arr
@@ -244,7 +249,7 @@ function shuffle(arr) {
 //
 // **A fork is a run of levels written one after another with the same `n`.**
 // Two runs side by side with different numbers are two forks, each put in
-// order among itself and never across: the core below is `fork: 2` and the
+// order among itself and never across: in `mint` the core is `fork: 2` and the
 // rest `fork: 3`, so the core is finished before any of the rest is offered.
 // `n` is only how many are offered at once. Three levels at `fork: 2` are a
 // choice of two, then a choice between the one passed over and the third,
@@ -255,7 +260,7 @@ function shuffle(arr) {
 // the person rather than *by* them: their order is drawn once, when the file
 // is read, and nothing about it is ever offered or chosen. It is the same
 // call that puts two blocks of a level in a random order, at the list above
-// theirs, which is why TIMELINE ends `.flat()` — and why what is drawn or
+// theirs, which is why a timeline ends `.flat()` — and why what is drawn or
 // chosen is visible in the shape of the list rather than written as a word on
 // every line.
 //
@@ -314,7 +319,18 @@ const WATER_SHARE = 2 / 3
 // that most people find broken. Rewrite them when there is more data. As of
 // 27 September 2026 they stand on one to five finished runs a level, and
 // How You Think, which nobody had finished, is a guess.
-const TIMELINE = [
+// **There is a timeline per battery**, each written out in full rather than
+// one derived from the other, so that what a battery asks and in what order is
+// read off its own list at a glance. The cost is that a level on both is
+// written twice: a `name` or `minutes` rewritten on one wants rewriting on the
+// other. A level's `key` must be the same wherever it is written, since it is
+// the same level in the saved file whichever battery asked it.
+//
+// `mint` is the study the ethics application is being written for, asked
+// only by a link that says `?battery=mint`: General, then the core (the MINT,
+// the BAIT and the HiTOP-BR) as a drawn fork of two, then the rest as a drawn
+// fork of three.
+const TIMELINE_MINT = [
     { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"], minutes: 3 },
     shuffle([
         { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 2, minutes: 8 },
@@ -334,49 +350,62 @@ const TIMELINE = [
         { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
         { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
         { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
-        // Asked by the `all` battery below and not by `default`, which the
-        // ethics application does not yet cover it for; `default` leaves the
-        // level out and the fork is the six above. A fork's slots must be
-        // scored levels, which is the whole reason one of its items carries
-        // a dimension (see content/block_sex.js). Its minutes are a guess,
-        // nobody having taken it.
+    ]),
+    { key: "Closing", name: "Closing", blocks: ["closing"] },
+].flat()
+
+// `all` is everything, and what a link naming no battery walks. It has no
+// core: General, then every other level in one drawn fork of three, then the
+// closing.
+const TIMELINE_ALL = [
+    { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"], minutes: 3 },
+    shuffle([
+        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 3, minutes: 8 },
+        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 3, minutes: 3 },
+        {
+            key: "MoodHealth",
+            name: "Mood & Health",
+            blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(),
+            fork: 3,
+            minutes: 8,
+        },
+        { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
+        { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
+        { key: "World", name: "The World", blocks: ["primals"], fork: 3, minutes: 6 },
+        { key: "Reasoning", name: "How You Think", blocks: ["icar"], fork: 3, minutes: 7 },
+        { key: "Regulation", name: "Mind & Heart", blocks: ["regulation"], fork: 3, minutes: 7 },
+        { key: "Opinions", name: "Where You Stand", blocks: ["opinions"], fork: 3, minutes: 5 },
+        // Not in `mint`, which the ethics application does not cover it for.
+        // A fork's slots must be scored levels, which is the whole reason one
+        // of its items carries a dimension (see content/block_sex.js). Its
+        // minutes are a guess, nobody having taken it.
         { key: "Sexuality", name: "Sexuality", blocks: ["sex"], fork: 3, minutes: 6 },
-        // Asked by no battery at all: a level on the philosophy of Howard's
-        // Hyborian Age, written to be shared in the fandom, reached only by a
-        // link naming it (`?start=hyborian`, which asks a block whatever the
-        // battery says) and then walked first, ahead of General (see
-        // content/block_hyborian.js and ASIDE below). Its minutes are a guess.
+        // Written here so that it has a place, a key and a name, but ASIDE
+        // below: a level on the philosophy of Howard's Hyborian Age, written to
+        // be shared in the fandom, reached only by a link naming it
+        // (`?start=hyborian`) and then walked first, ahead of General (see
+        // content/block_hyborian.js). Its minutes are a guess.
         { key: "Hyborian", name: "The Hyborian Age", blocks: ["hyborian"], fork: 3, minutes: 3 },
     ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
 
-// Batteries: named subsets of the timeline's blocks. A link with
-// `?battery=<name>` asks the blocks named here and nothing else, in the
-// timeline's own order — the list says what is asked and never where — so a
-// study's battery is written in the repository, under a version, rather than
-// in a URL somebody pasted. `?only=a,b` and `?skip=a,b` do the same by hand,
-// for testing, and `?start=a,b` brings the levels holding those blocks to the
-// front. `closing` need not be written: it is always asked, since the run
-// ends through it.
+// Batteries: the timelines above by name. A link with `?battery=<name>` walks
+// that one, so a study's battery is written in the repository, under a
+// version, rather than in a URL somebody pasted, and **a link naming none, or
+// one that is not here, walks `all`** — so a link for the MINT study has to
+// say `?battery=mint`. `?only=a,b` and `?skip=a,b` ask a part
+// of it by hand, for testing, and `?start=a,b` brings the levels holding those
+// blocks to the front — from whichever timeline has them, so `?start=sex`
+// under `mint` walks the sexuality level first and `mint` after it. `closing`
+// is always asked, since the run ends through it.
 //
-// **A link with no battery, or naming one that is not here, asks `default`**:
-// the timeline as the ethics application covers it, which is everything but
-// NOT_YET_COVERED — blocks finished and on the timeline that the application
-// does not cover yet (the sexuality level). `all` is `default` and those,
-// and is for trying them out and for nothing a participant is sent.
-// **ASIDE is asked by no battery**: a level on the timeline, so that it has
-// a place, a key and a name, that a run meets only when a link names it —
-// `?start=hyborian` asks a block whatever the battery says and walks that
-// level first. Both lists are subtracted from the timeline rather than the
-// batteries being written out, so a block added to the timeline is in
-// `default` unless it is written into one of them.
-const NOT_YET_COVERED = ["sex"]
+// **ASIDE is asked by no battery**: blocks on a timeline, so that their level
+// has a place, a key and a name, that a run meets only when a link names them
+// — `?start=hyborian` asks a block whatever the battery says and walks that
+// level first.
+const BATTERIES = { mint: TIMELINE_MINT, all: TIMELINE_ALL }
 const ASIDE = ["hyborian"]
-const BATTERIES = {
-    default: TIMELINE.flatMap((level) => level.blocks).filter((name) => NOT_YET_COVERED.indexOf(name) === -1 && ASIDE.indexOf(name) === -1),
-    all: TIMELINE.flatMap((level) => level.blocks).filter((name) => ASIDE.indexOf(name) === -1),
-}
 
 // Blocks that come and go together, because one figure is drawn from both:
 // the climb reads the PHQ-4 out of `mood` and the HiTOP-BR out of `hitop`,

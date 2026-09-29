@@ -44,7 +44,7 @@
 #
 #                  the run       participant, file, completed, version,
 #                                test_mode, synthetic, battery, source,
-#                                format_mint, time_start
+#                                format_mint, time_start, time_resumed
 #                  sequences     levels_walked, order_walked (see below)
 #                  Feedback_*    one a reading: agree, disagree or nothing
 #                  Rating_*      one a level: the stars its results were given
@@ -275,6 +275,10 @@ participant_rows <- function(run, file, completed) {
     screen_height = as.numeric(run$screen[2] %||% NA),
     format_mint = as.character(run$formatMint %||% NA),
     time_start = as.character(run$timeStart %||% NA),
+    # When a run left partway was carried on in the same browser (js/resume.js),
+    # joined the way the sequence columns are; empty for a run taken in one go,
+    # NA in files from before it could be.
+    time_resumed = if (is.null(run$timeResumed)) NA_character_ else paste(unlist(run$timeResumed), collapse = SEP),
     stringsAsFactors = FALSE
   )
 }
@@ -440,6 +444,24 @@ for (file in superseded) {
   grumble(file, "partial of a run that also finished", "dropped; the complete file is the run")
 }
 runs <- runs[!names(runs) %in% superseded]
+
+# A run left, then carried on in the same browser (js/resume.js), is staged into
+# a second session under the same name, and that session stages everything
+# already answered again before going on: left a second time, its partial holds
+# all of the first one's and more. Where no complete file stands over them, the
+# fullest partial is the run and the others are earlier copies of it.
+open_files <- names(runs)[!vapply(runs, function(one) one$completed, logical(1))]
+open_bases <- vapply(open_files, base_of, character(1))
+earlier <- character(0)
+for (base in unique(open_bases[duplicated(open_bases)])) {
+  same <- open_files[open_bases == base]
+  held <- vapply(same, function(file) length(runs[[file]]$run$items %||% list()), numeric(1))
+  for (file in same[-which.max(held)]) {
+    grumble(file, "earlier partial of a run carried on", "dropped; the fullest partial is the run")
+    earlier <- c(earlier, file)
+  }
+}
+runs <- runs[!names(runs) %in% earlier]
 
 # A test run its name did not give away, and synthetic runs, are not data either.
 is_not_data <- vapply(runs, function(one) isTRUE(one$run$testMode) || !is.null(one$run$synthetic), logical(1))

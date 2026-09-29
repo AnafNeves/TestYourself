@@ -104,7 +104,7 @@ flags <- list(
     !is.na(runs$minutes) & runs$minutes < GLANCE_MINUTES,
   "speeding" = !is.na(runs$median_s) & runs$answers >= MIN_TIMED & runs$median_s * 1000 < FAST_MS,
   "scripted" = runs$headless | (!is.na(runs$cv) & runs$cv < STEADY_CV),
-  "tryout" = runs$battery %in% "all" | runs$subset,
+  "tryout" = runs$subset,
   "said random" = runs$random
 )
 runs$flags <- vapply(seq_len(nrow(runs)), function(i) paste(names(flags)[vapply(flags, `[`, TRUE, i)], collapse = ", "), "")
@@ -124,7 +124,7 @@ if (!KEEP_FLAGGED) {
 - **glance**: stopped with no level finished, after fewer than `r GLANCE_ITEMS` answers given inside `r GLANCE_MINUTES` minutes;
 - **speeding**: a median answer quicker than `r FAST_MS / 1000` s, over at least `r MIN_TIMED` answers;
 - **scripted**: a headless browser (a window 0 pixels wide) or answer times too even for a person (SD under `r STEADY_CV` of the mean);
-- **tryout**: the `all` battery, which nobody is sent, or a hand-picked subset of the levels (`?only=`, `?skip=`);
+- **tryout**: a hand-picked subset of the levels (`?only=`, `?skip=`);
 - **said random**: answered "`r if (length(random_said)) random_said[1] else "No"`" to whether they took it seriously.
 
 ```{r}

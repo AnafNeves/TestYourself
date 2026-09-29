@@ -36,7 +36,7 @@ FADE = 160
 # ends so that nothing reads as a floor or a ceiling.
 STAND_INS = """
 ([key, from, to]) => {
-    const level = TIMELINE.find((one) => one.key === key)
+    const level = BATTERIES.all.find((one) => one.key === key)
     const setting = (item, questionnaire, name) => (item[name] !== undefined ? item[name] : questionnaire[name])
     const reach = (name) => {
         let hash = 0x811c9dc5
@@ -98,7 +98,7 @@ def main():
         browser = p.chromium.launch(channel="msedge")
         page = browser.new_page(viewport={"width": WIDTH, "height": 900}, device_scale_factor=2)
         page.goto(base)
-        levels = page.evaluate("TIMELINE.map((one) => one.key)")
+        levels = page.evaluate("BATTERIES.all.map((one) => one.key)")
         wanted = sys.argv[1:]
         unknown = [key for key in wanted if key not in levels]
         if unknown:

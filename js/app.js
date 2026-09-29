@@ -31,6 +31,10 @@
     // it was handed out, and whether it is a real one at all. A shared card is read out of the URL by
     // results.js; nothing else here comes from it.
     const query = new URLSearchParams(location.search)
+    // The link as the page was loaded with it, which is what a run carried on
+    // has to be loaded with again (js/resume.js): leaving a shared card puts
+    // the address back to bare, but the run was built from what it said.
+    const loadedSearch = location.search
     // `?test` or `?test=true`. The saved file still calls it `testMode`, which
     // is a field of the data and not a word of the link.
     const testMode = ["", "true", "1"].indexOf(query.get("test")) !== -1
@@ -48,8 +52,11 @@
 
     // A code out of the URL is somebody else's text: only the characters a code
     // is made of survive it, and only so many of them. What is left of an empty
-    // or impossible one is a code of our own.
-    const participant = (query.get("sub") || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || madeCode()
+    // or impossible one is a code of our own. A run carried on is the same
+    // participant it was, whatever made the code.
+    const participant = RESUMED
+        ? RESUMED.participant
+        : (query.get("sub") || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || madeCode()
 
     // Where the link was handed out (`?source=`): a project, an experimenter,
     // a page it was posted on. It is only ever written into the file, never put
@@ -66,13 +73,14 @@
             .trim()
             .slice(0, 200) || UNKNOWN_SOURCE
 
-    // Which blocks this run asks — its battery. `?battery=<name>` picks a
-    // preset out of BATTERIES (content/timeline.js), which is what a study
+    // Which timeline this run walks — its battery. `?battery=<name>` picks
+    // one out of BATTERIES (content/timeline.js), which is what a study
     // links with, and a link naming none, or one that is not there, gets
-    // `default` — the timeline as the ethics application covers it.
-    // `?only=a,b` asks exactly those blocks and `?skip=a,b` everything
+    // `all` — everything. The study the ethics application is written for
+    // is `?battery=mint`, and its links have to say so.
+    // `?only=a,b` asks exactly those of its blocks and `?skip=a,b` everything
     // but those, for testing. Battery first, `only` over it, `skip` off it,
-    // and whatever `?start=` names back onto it.
+    // and whatever `?start=` names back onto it — from any timeline.
     // The names are somebody else's text: only the characters a name is made
     // of survive, and a name that is no block is dropped with a word in the
     // console and nothing on screen — the participant never sees any of
@@ -84,13 +92,19 @@
         return (query.get(param) || "").replace(/[^A-Za-z0-9_,-]/g, "").slice(0, 400).split(",").filter(Boolean)
     }
 
-    const named = TIMELINE.flatMap((entry) => entry.blocks)
-    const DEFAULT_BATTERY = "default"
+    const DEFAULT_BATTERY = "all"
     const wanted = namesIn("battery")[0] || DEFAULT_BATTERY
     const battery = BATTERIES[wanted] ? wanted : DEFAULT_BATTERY
     if (wanted !== battery) console.warn("No battery called " + wanted + " in content/timeline.js; asking " + DEFAULT_BATTERY)
 
-    const asked = new Set(BATTERIES[battery])
+    // Everything below reads this run's timeline, and a link bringing a level
+    // it does not hold finds that level on another (`elsewhere`).
+    const TIMELINE = BATTERIES[battery]
+    const named = TIMELINE.flatMap((entry) => entry.blocks)
+    const everywhere = Object.values(BATTERIES).flat()
+    const elsewhere = (name) => everywhere.find((entry) => entry.blocks.indexOf(name) !== -1)
+
+    const asked = new Set(named.filter((name) => ASIDE.indexOf(name) === -1))
     const only = namesIn("only")
     if (only.length) {
         asked.clear()
@@ -103,23 +117,27 @@
     }
     // A block named in `?start=` is asked whatever the battery, `only` or
     // `skip` said, since a link asking to open on something is asking for it:
-    // `?start=sex` opens on a block `default` leaves out. `closing` is the one
-    // it cannot bring, and is refused below.
+    // `?start=sex` under `mint` opens on a block that timeline does not hold,
+    // taking its level off the one that does. `closing` is the one it cannot bring, and is
+    // refused below.
     // A shared level's link (`?card=1&level=<key>`, `levelShare` in
     // results.js) brings its level in the same way, or a level the battery
     // leaves out could be shared and never shown: the visitor's run would have
     // no level under that key to draw it on, and the link would fall through to
     // the landing page. "Take the test yourself" then opens on it by `?start=`.
     const sharedLevel =
-        query.get("card") === "1" && query.get("s") ? TIMELINE.find((entry) => entry.key === query.get("level")) : undefined
+        query.get("card") === "1" && query.get("s") ? everywhere.find((entry) => entry.key === query.get("level")) : undefined
     const brought = namesIn("start").concat(sharedLevel ? sharedLevel.blocks : [])
     for (const name of brought) {
-        if (name === "closing" || named.indexOf(name) === -1) continue
+        if (name === "closing" || !elsewhere(name)) continue
         const group = HELD_TOGETHER.find((one) => one.indexOf(name) !== -1) || [name]
         for (const one of group) asked.add(one)
     }
     asked.add("closing")
-    for (const name of asked) if (named.indexOf(name) === -1) console.warn("No block called " + name + " on the timeline; ignored")
+    for (const name of asked) {
+        if (named.indexOf(name) !== -1 || brought.indexOf(name) !== -1) continue
+        console.warn(elsewhere(name) ? name + " is not on the " + battery + " timeline; ignored" : "No block called " + name + " on any timeline; ignored")
+    }
 
     // The timeline as this run walks it: each level's blocks that are asked,
     // and no level left with none. Everything below reads this and never
@@ -134,7 +152,12 @@
     // walking to it. It moves whole levels, never a block out of its level
     // (a level is what carries the key its ratings and quality control are
     // filed under). A block it names is asked even where the battery left it
-    // out (it was added to `asked` above); `closing`, which the run ends
+    // out (it was added to `asked` above), and a level this timeline does not
+    // hold is taken off the one that does — it has no place here to be asked
+    // in otherwise, and is written nowhere on this one (`written: -1`). A
+    // shared level's link brings its level to the front the same way when it
+    // is not on this timeline, so that the visitor's run has it to draw it on.
+    // `closing`, which the run ends
     // through, is dropped with a word in the console. A level brought forward is taken
     // out of the fork, since it has been given its place by the link rather
     // than left for the person to choose; the rest of the fork still forks.
@@ -146,13 +169,19 @@
 
         const starts = namesIn("start").filter((name) => {
             if (name === "closing") console.warn("closing is where the run ends, so it cannot start it; ignored")
-            else if (named.indexOf(name) === -1) console.warn("No block called " + name + " on the timeline; ignored")
+            else if (!elsewhere(name)) console.warn("No block called " + name + " on any timeline; ignored")
             else return true
             return false
         })
+        if (sharedLevel && TIMELINE.indexOf(sharedLevel) === -1) starts.push(sharedLevel.blocks[0])
         const first = []
         for (const name of starts) {
-            const entry = plan.find((one) => one.blocks.indexOf(name) !== -1)
+            let entry = plan.find((one) => one.blocks.indexOf(name) !== -1)
+            if (!entry) {
+                const level = elsewhere(name)
+                entry = first.find((one) => one.key === level.key) ||
+                    Object.assign({}, level, { blocks: level.blocks.filter((one) => asked.has(one)), written: -1 })
+            }
             if (first.indexOf(entry) === -1) first.push(entry)
         }
         const led = first.map((entry) => {
@@ -247,10 +276,12 @@
         window.scrollTo({ top: top, behavior: "instant" })
     }
 
+    // Off the run's seeded draws (`chance`, js/resume.js), so that a run carried
+    // on after its tab was closed deals its items in the order it first did.
     function shuffle(array) {
         const a = array.slice()
         for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
+            const j = Math.floor(chance() * (i + 1))
             ;[a[i], a[j]] = [a[j], a[i]]
         }
         return a
@@ -469,6 +500,20 @@
     }
     settle()
 
+    // The run as it was dealt, before any fork has moved a level: what a kept
+    // run is checked against before it is carried on. The same seed deals the
+    // same run only out of the same content, so a test changed in between —
+    // an item added, a block moved, a new deploy — deals another, and answers
+    // kept against the old one would land on the wrong items. Such a run is
+    // let go of and the page loaded again, afresh.
+    const dealt = formatMint + " " + questions.map((question) => question.key).join(" ")
+    if (RESUMED && RESUMED.dealt !== dealt) {
+        console.warn("The run kept in this browser was taken on another version of the test; starting afresh")
+        forgetRun()
+        location.reload()
+        throw new Error("a kept run no longer matches the test")
+    }
+
     const responses = {} // key -> value, what the scoring reads
     const log = {} // key -> when it was shown, when it was answered, with what
     // Every reading that can be agreed with -> "agree" | "disagree" | null,
@@ -486,7 +531,13 @@
     // taken. Saved on that level's entry in `levels`, null where there was none.
     const choices = {}
     const levelTimes = {} // level -> when its last remaining item was answered
-    const timeStart = new Date().toISOString()
+    const timeStart = RESUMED ? RESUMED.timeStart : new Date().toISOString()
+    // When the run was carried on after being left, if it was: a gap in the
+    // times, and a second session in the deposit, that the file owns up to.
+    const timeResumed = RESUMED ? RESUMED.timeResumed.concat(new Date().toISOString()) : []
+    // Every fork choice as the two places it swapped, in order, which is what
+    // a run carried on replays to stand its levels where they stood.
+    const swaps = []
 
     // What the run was answered on, since a reaction time on a phone is not one
     // on a computer and a figure read on a narrow screen is laid out differently.
@@ -502,8 +553,9 @@
     const display = {
         device: deviceKind(),
         touchscreen: window.matchMedia("(pointer: coarse)").matches,
-        screenLayout: layoutNow(),
-        screenLayouts: [layoutNow()],
+        // A run carried on keeps the layout it began in.
+        screenLayout: RESUMED ? RESUMED.screenLayout : layoutNow(),
+        screenLayouts: RESUMED ? RESUMED.screenLayouts.slice() : [layoutNow()],
         viewport: [window.innerWidth, window.innerHeight],
         screen: [window.screen.width, window.screen.height],
     }
@@ -560,13 +612,13 @@
         const options = pool.length || question.type === "slider" ? pool : offered(question)
         // Several answers may be true at once, and one of them stands in for
         // the rest.
-        if (question.type === "multi") return [options[Math.floor(Math.random() * options.length)].value]
+        if (question.type === "multi") return [options[Math.floor(chance() * options.length)].value]
         // Anything with a range and no options to pick from — a typed number,
         // a place on a curve — is answered somewhere inside that range.
         if (!options.length) {
-            return question.lowest + Math.floor(Math.random() * (question.highest - question.lowest + 1))
+            return question.lowest + Math.floor(chance() * (question.highest - question.lowest + 1))
         }
-        return options[Math.floor(Math.random() * options.length)].value
+        return options[Math.floor(chance() * options.length)].value
     }
 
     // An item marked `auto` is answered here, once, and never shown: `shown()`
@@ -775,6 +827,7 @@
             }),
             questionnaires: RUN.slice(),
             timeStart: timeStart,
+            timeResumed: timeResumed.slice(),
         }
 
         for (const level of levels) file["timeLevel" + level] = levelTimes[level] || null
@@ -1854,6 +1907,7 @@
         // the gap to the response it produced stays meaningful.
         if (!log[question.key]) log[question.key] = {}
         log[question.key].timeOnset = new Date().toISOString()
+        keep()
     }
 
     // The last few answers before a level opens are counted down under the
@@ -2305,6 +2359,11 @@
     // It is reconciled rather than rebuilt: a badge costs a whole section to
     // draw and throw away, this runs on every answer, and a badge nobody
     // touched should not be replaced under the pointer.
+    // The first time the shelf is drawn, whatever is already finished is put
+    // on it without a strike: that is a run carried on, whose badges were
+    // earned before, and they are found there rather than won again.
+    let shelved = false
+
     function renderShelf() {
         const wrap = $("badges")
 
@@ -2321,8 +2380,9 @@
                 had.classList.toggle("shelf__badge--open", panel === "results" && openLevel === level)
                 continue
             }
-            place(wrap, mintBadge(level))
+            place(wrap, mintBadge(level, !shelved))
         }
+        shelved = true
 
         // The way into the profile is at the head of this bar, and it is a
         // badge like the rest: a ring round it filled to how much of the
@@ -2359,7 +2419,7 @@
         return document.querySelector('.sidebar__level[data-level="' + level + '"]')
     }
 
-    function mintBadge(level) {
+    function mintBadge(level, quiet) {
         const badge = document.createElement("button")
 
         badge.type = "button"
@@ -2392,7 +2452,7 @@
         // The class comes off again on `animationend` — its last frame would
         // otherwise hold the badge against the lift it gets on hover — and
         // only its own animation ends it, the figure inside having its own.
-        if (!still()) {
+        if (!still() && !quiet) {
             badge.classList.add("shelf__badge--minted")
             badge.addEventListener("animationend", (event) => {
                 if (event.target === badge) badge.classList.remove("shelf__badge--minted")
@@ -2628,6 +2688,7 @@
         // behind it. The frame goes again when the screen is left, with
         // whatever was voted and starred on it.
         stageFrame()
+        keep()
 
         $("level-title").textContent = "Level " + level + " Unlocked"
         $("level-name").textContent = levelName(level)
@@ -2780,7 +2841,10 @@
         const words = [PLAN[side - 1].name].concat(passed.map((one) => PLAN[one - 1].name))
         choices[screen.level] = { offered: shown.offered, recommended: shown.recommended, chosen: PLAN[side - 1].key }
 
-        if (side !== target) swapLevels(target, side)
+        if (side !== target) {
+            swapLevels(target, side)
+            swaps.push([target, side])
+        }
 
         screen.response = words
         screen.timeResponse = new Date().toISOString()
@@ -2830,6 +2894,7 @@
         // Into the staged copy: this answer, and any a closing branch has just
         // taken away with it.
         stageItems([question.key].concat(pruned))
+        keep()
 
         markSelection(value)
         renderSidebar() // every answer moves the descent on, including the last one
@@ -2881,6 +2946,10 @@
         // same moment, and the last screen says whether they got there.
         if (next === -1) {
             locked = true // there is nothing after this, and nothing to answer
+            // Nothing is left to carry on, and what was kept is somebody's
+            // answers on a device others may use.
+            keeping = false
+            forgetRun()
             saved("sending")
             save().then(
                 () => saved("done"),
@@ -2934,8 +3003,8 @@
     }
 
     // The browser's own back button is a thumb going for the item before this
-    // one, not for the way off the site — and a run is held in memory alone, so
-    // leaving is losing it. Once the survey is up it keeps one spare history
+    // one, not for the way off the site — and leaving is at best a reload of
+    // the page to carry on from (`keep`). Once the survey is up it keeps one spare history
     // entry under itself and puts that entry straight back whenever the button
     // eats it, which is the whole of the mechanism: back is then the previous
     // item, and at the first item it is nothing at all rather than the end of
@@ -3106,6 +3175,7 @@
     function noted() {
         clearTimeout(noting)
         noting = setTimeout(stageNoted, NOTED_DELAY)
+        keep()
     }
 
     function stageNoted() {
@@ -3127,6 +3197,196 @@
             const entry = items.find((one) => one.key === key)
             if (entry) stage("item", entry)
         }
+    }
+
+    /* ----------------------------- carrying on ---------------------------- */
+
+    // Where the run has got to, kept in this browser as it goes, so that a tab
+    // closed halfway down — or reloaded — can be picked back up on the same
+    // device (js/resume.js reads it back at load). It is written at the same
+    // moments the run is staged, and on every item put on screen, and it is
+    // small: the seed the run was dealt from, the answers as values, the fork
+    // choices as swaps, where the run is and the times. Nothing is kept before
+    // the test begins or after it ends, when the copy is let go of.
+    //
+    // It is not a second record of the run. What counts is what reaches the
+    // deposit; this is only what the person needs to carry on, and a browser
+    // that will not store it (a private window, full storage) takes the test
+    // exactly as before, unkept.
+    let keeping = false
+
+    function keep() {
+        if (!keeping) return
+        const kept = {
+            shape: RESUME_SHAPE,
+            keptAt: new Date().toISOString(),
+            seed: RUN_SEED,
+            search: loadedSearch,
+            dealt: dealt,
+            participant: participant,
+            timeStart: timeStart,
+            timeResumed: timeResumed,
+            screenLayout: display.screenLayout,
+            screenLayouts: display.screenLayouts,
+            // What the landing page says when it offers the run back.
+            done: scoredLevels.filter((level) => levelProgress(level).unlocked).length,
+            of: scoredLevels.length,
+            index: index,
+            levelShowing: levelShowing,
+            levelLeft: levelLeft,
+            swaps: swaps,
+            forks: FORKS.map((fork) => fork.at),
+            auto: questions.filter((question) => question.auto).map((question) => question.key),
+            responses: responses,
+            log: log,
+            feedback: feedback,
+            ratings: ratings,
+            choices: choices,
+            levelTimes: levelTimes,
+            screens: levelItems.map((item) => ({
+                level: item.level,
+                response: item.response,
+                timeOnset: item.timeOnset,
+                timeResponse: item.timeResponse,
+            })),
+            sounded: sounded,
+        }
+        try {
+            localStorage.setItem(RESUME_KEY, JSON.stringify(kept))
+            sessionStorage.setItem(RESUME_TAB, "1")
+        } catch (e) {} // refused or full: the run goes on, unkept
+    }
+
+    // A kept run put back: the forks replayed onto the plan, so every level
+    // stands where it stood, then the answers, the times, the votes and the
+    // stars, and where the run had got to. The run was dealt from the same
+    // seed out of the same content (`dealt`, checked above), so every key
+    // kept is an item of this run.
+    function restore(kept) {
+        for (const [target, side] of kept.swaps) {
+            swapLevels(target, side)
+            swaps.push([target, side])
+        }
+        kept.forks.forEach((at, n) => {
+            if (FORKS[n]) FORKS[n].at = at
+        })
+        const auto = new Set(kept.auto)
+        for (const question of questions) if (question.auto || auto.has(question.key)) question.auto = auto.has(question.key)
+
+        Object.assign(responses, kept.responses)
+        Object.assign(log, kept.log)
+        Object.assign(choices, kept.choices)
+        Object.assign(levelTimes, kept.levelTimes)
+        // Only the readings and levels this run has, which is all of them.
+        for (const key in feedback) if (key in kept.feedback) feedback[key] = kept.feedback[key]
+        for (const key in ratings) if (key in kept.ratings) ratings[key] = kept.ratings[key]
+        for (const one of kept.screens) {
+            const screen = levelItem(one.level)
+            if (screen) Object.assign(screen, { response: one.response, timeOnset: one.timeOnset, timeResponse: one.timeResponse })
+        }
+
+        index = kept.index
+        levelShowing = kept.levelShowing
+        levelLeft = kept.levelLeft
+        sounded = kept.sounded || 0
+    }
+
+    // The run carried on, on a page loaded to do it. A new session is opened
+    // for it — the first one was closed with the tab — and everything already
+    // answered is staged into it again, so that its partial, should this one be
+    // left too, is the whole run so far rather than the part answered since.
+    // Consent was given when the run began and is not asked again. Then the
+    // run is put back where it was: the level screen it was left on, or the
+    // item.
+    function carryOn() {
+        keeping = true
+        openSession()
+        // Not what a test run answered for itself, which is never staged.
+        const standIns = new Set(questions.filter((question) => question.auto).map((question) => question.key))
+        stageItems(
+            container()
+                .items.filter((entry) => entry.response !== null && !standIns.has(entry.key))
+                .map((entry) => entry.key),
+        )
+
+        if (levelShowing !== null && !levelLeft) {
+            locked = true
+            completeLevel(levelShowing)
+            showScreen("level") // under the water from the start, not the landing page
+        } else {
+            showScreen("survey")
+            renderQuestion()
+        }
+        jump(0)
+        renderSidebar()
+        keep()
+
+        // The back button is held once somebody has done something on the
+        // page: Chrome skips over an entry pushed without a gesture behind it.
+        for (const kind of ["pointerdown", "keydown"]) document.addEventListener(kind, trapHistory, { once: true })
+        if (!RESUME_CHOSEN) welcomeBack()
+    }
+
+    // Asked as a reload brings the run back up: whose run this is. A reload
+    // carries on without a word, and the screen may be in front of somebody
+    // else by then — a shared computer, a tab left open — so the page is held
+    // behind one card until the question is answered. Carrying on takes the
+    // card away and starts the clock on what it covered again, since the time
+    // spent reading it is no reaction to the item. Starting from the start
+    // lets the kept run go and loads the link the run began from without any
+    // shared card in it, as a page that never saw the run; what was already
+    // answered stays in the deposit as the partial of a run left, like any
+    // closed tab. Not asked after "Carry on" on the landing page, which is
+    // this question answered already (`RESUME_CHOSEN`).
+    let welcoming = false
+
+    function welcomeBack() {
+        $("welcome").hidden = false
+        welcoming = true
+        $("welcome-go").focus()
+
+        $("welcome-go").addEventListener("click", () => {
+            $("welcome").hidden = true
+            welcoming = false
+            const now = new Date().toISOString()
+            if (screen === "survey" && log[questions[index].key]) log[questions[index].key].timeOnset = now
+            const reading = levelShowing !== null && !levelLeft ? levelItem(levelShowing) : null
+            if (reading && reading.timeOnset && reading.timeResponse === null) reading.timeOnset = now
+        })
+        $("welcome-again").addEventListener("click", () => {
+            keeping = false // or hiding the page would keep the run again on the way out
+            forgetRun()
+            const query = new URLSearchParams(loadedSearch)
+            for (const name of ["card", "level", "s", "m", "d"]) query.delete(name)
+            const rest = query.toString()
+            location.replace(location.origin + location.pathname + (rest ? "?" + rest : ""))
+        })
+    }
+
+    // A run kept in this browser, offered back on the landing page: carrying
+    // it on loads the link it began from with this tab marked, and the page
+    // that comes up picks it up (js/resume.js); starting again lets it go.
+    function offerResume() {
+        if (!KEPT_RUN) return
+        const left = new Date(KEPT_RUN.keptAt)
+        const days = Math.round((new Date().setHours(0, 0, 0, 0) - new Date(left).setHours(0, 0, 0, 0)) / 86400000)
+        const when = days <= 0 ? "earlier today" : days === 1 ? "yesterday" : days + " days ago"
+        $("resume-note").textContent =
+            KEPT_RUN.done > 0
+                ? "You left the test " + when + ", with " + KEPT_RUN.done + " of its " + KEPT_RUN.of + " levels finished."
+                : "You left the test " + when + ", partway through the first level."
+        $("resume").hidden = false
+
+        $("resume-go").addEventListener("click", () => {
+            try {
+                sessionStorage.setItem(RESUME_TAB, "chosen") // carried on by choice: no need to ask again
+            } catch (e) {}
+            location.replace(location.origin + location.pathname + KEPT_RUN.search)
+        })
+        $("resume-drop").addEventListener("click", () => {
+            forgetRun()
+            $("resume").hidden = true
+        })
     }
 
     // The end of the run. The whole file goes under the session — which is what
@@ -3277,12 +3537,26 @@
 
     // A tab hidden is the last moment a page can be sure of being able to do
     // anything, so a vote still waiting to be staged goes now.
+    // So is keeping where the run has got to.
     document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") stageNoted()
+        if (document.visibilityState !== "hidden") return
+        stageNoted()
+        keep()
     })
 
     document.addEventListener("keydown", (e) => {
         if (e.metaKey || e.ctrlKey || e.altKey) return
+
+        // Nothing behind the welcome card is answered while it is up. Tab goes
+        // between its two buttons and nowhere else, and Enter or Space press
+        // the one that has focus, as a button does.
+        if (welcoming) {
+            if (e.key === "Tab") {
+                e.preventDefault()
+                ;(document.activeElement === $("welcome-go") ? $("welcome-again") : $("welcome-go")).focus()
+            } else if (e.key !== "Enter" && e.key !== " ") e.preventDefault()
+            return
+        }
 
         // A panel takes the keyboard: the survey behind it is not being read.
         // It says `aria-modal`, so Tab is held inside it too — off the end of
@@ -3516,8 +3790,13 @@
     // into it while the quote closes over the top.
     $("start").addEventListener("click", () => {
         // Consent has been given and the run is about to begin, which is where
-        // the answers start going out as they are given rather than at the end.
+        // the answers start going out as they are given rather than at the end,
+        // and where it is kept as it goes. A run kept from before is let go of:
+        // this one takes its place.
         openSession()
+        $("resume").hidden = true
+        keeping = true
+        keep()
 
         document.body.classList.add("sinking")
         // Reading the height settles the water that class just opened, so the
@@ -3566,6 +3845,7 @@
         // settled, and a run abandoned further down still carries it.
         if (screen) stageItems([screen.key])
         stageFrame()
+        keep()
 
         suckLevel(levelShowing, () => {
             const resume = () => {
@@ -3625,6 +3905,10 @@
         $("banner").appendChild(mark)
     }
 
+    // A run being carried on is put back before the bars are drawn, so that
+    // they are drawn with it.
+    if (RESUMED) restore(RESUMED)
+
     buildSidebar()
     renderSidebar()
     showcase() // a taste of the far end, beside the case for making one
@@ -3632,8 +3916,15 @@
     // A shared card is the whole page when there is one: the test is still
     // underneath it, waiting behind "Take the test yourself". Either the whole
     // profile web, or one level's results.
-    const visitingLevel = results.readLevelLink()
-    const visiting = !visitingLevel && results.readCardLink()
-    if (visitingLevel) results.showLevelVisit(visitingLevel)
-    else if (visiting) results.showVisit(visiting)
+    //
+    // A run being carried on comes before either: it was begun from this very
+    // link, a shared one included, and is picked up where it was left.
+    const visitingLevel = !RESUMED && results.readLevelLink()
+    const visiting = !RESUMED && !visitingLevel && results.readCardLink()
+    if (RESUMED) carryOn()
+    else {
+        offerResume()
+        if (visitingLevel) results.showLevelVisit(visitingLevel)
+        else if (visiting) results.showVisit(visiting)
+    }
 })()

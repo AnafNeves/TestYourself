@@ -12,12 +12,14 @@
    WHAT IS ASKED: one briefing and one questionnaire of twenty-one custom
    statements, unvalidated, on a seven-point agreement scale, under seven
    dimensions. Three say how somebody would live in that world and four say
-   what they take the world to be, and the level closes on two cards read
-   from those two sets separately (js/figures/hyborian.js): which HERO the
-   first three make them, out of eight, and which GOD the other four would
-   have claim them, out of five. The two are read from disjoint dimensions
-   on purpose, so that the pair says something — a Thief claimed by Mitra is
-   news, where two readings of the same numbers would mostly agree.
+   what they take the world to be. The level closes on the first three
+   (js/figures/hyborian.js): which HERO they make somebody, out of eight,
+   shown as the hero's painted card with the person's three stats on a card
+   beside it. The other four were written to read which GOD would claim
+   them, out of five, from dimensions disjoint from the hero's so that the
+   pair would say something — a Thief claimed by Mitra is news — and THE GOD
+   IS NOT SHOWN FOR NOW (September 2026): the four are still asked and saved,
+   and the reading is kept in the figure file, drawn by nothing.
 
      The hero, three dimensions, each a corner of a cube:
        Burning     intensity over safety; vitalism. After Conan's creed in
@@ -88,8 +90,7 @@ defineBlock("hyborian", [
             "their own strength, its gods mostly did not listen, and its cities were softer than the wilds " +
             "around them.</p>" +
             "<p>The next statements are about that philosophy: what the world is, and how to live in it. There " +
-            "is no right answer. At the end you will find out which of its heroes you would have been, and which " +
-            "of its gods would have claimed you.</p>",
+            "is no right answer. At the end you will find out which of its heroes you would have been.</p>",
     },
 
     {
@@ -250,3 +251,379 @@ defineBlock("hyborian", [
         ],
     },
 ])
+
+/* ==========================================================================
+   PICTURES — prompts for the cards, being tried out and not decided on.
+
+   The hero cards are these pictures, cut for the page by
+   assets/hyborian/source/cut.py; a hero without one (the Frontiersman) is
+   drawn as its emblem on a card of the same shape. These are the prompts (Gemini, Grok
+   Imagine), one a hero and one a god, thirteen in the end — each drawn as a
+   vintage collectible card, the way a fantasy trading card or a character
+   card of an old fantasy board game looks, but all picture: an ornate border
+   round a painting that fills it, and none of the name bar, text box, cost
+   or numbers such a card would carry. The name, "It predicts…" and the vote
+   stay the page's own, under the card. Two are written, the Pirate Queen and
+   Crom — a hero and a god, a figure and a place — so that styles can be
+   compared on a pair before the other eleven are written.
+
+   A prompt is three parts put together: a STYLE, then the SUBJECT, then the
+   FRAME. Only the style changes between tries, so two pictures of one
+   subject differ in the thing being judged; the frame is what the card needs
+   whatever the style. Neither generator takes a negative prompt, so what to
+   avoid is written into the subject as words.
+
+   Named in no prompt, on purpose: Conan (a live trademark), Bêlit herself
+   (the name pulls a generator towards the comics' drawing of her), and every
+   later likeness — Frazetta, Buscema, Brundage's covers, the films. That is
+   the rights note at the head of this file, and it is why the cards' own
+   emblems are not faces. Painters dead more than seventy years may be named.
+   A generated face is still worth looking at for somebody's likeness before
+   it goes on a card.
+
+     PROMPT:
+     -------
+
+     BELIT
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A pirate queen of an ancient sea stands at the prow of her long, 
+     sleek black galley, seen full length, one foot on the rail 
+     and one hand resting near a jeweled dagger sheathed at her hip.
+     She is young, tall, and fierce, formed like a goddess: lithe, alluring, 
+     with ivory-white skin and a mass of midnight-black hair blown back by the hot wind. 
+     Her dark eyes burn with untamed intensity. In true Shemite reaver fashion, 
+     she wears a wide, jeweled girdle of heavy crimson silk, heavy gold armlets, and bare feet. 
+     Beyond the low-waisted war vessel lies a sinister jungle coastline where a black, sluggish river empties into the sea under a copper, hazy sunset. 
+     Ancient Near Eastern antiquity, not a seventeenth-century pirate: no tricornes, no cutlasses, no eye patches.
+
+     -----
+     CONAN (the young swordsman of The Tower of the Elephant)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A young barbarian from the northern hills stands full length on a
+     windswept ridge of grey-green heather, the point of a long straight
+     broadsword resting on the rock in front of him, both hands on the hilt.
+     He is tall and rangy rather than bulky, built like a hunting cat, with a
+     square-cut mane of black hair, sun-darkened skin marked with old scars
+     and smouldering blue eyes under a heavy brow. He wears a plain shirt of
+     dark ring-mail over a rough wool kilt, a wide leather belt with a long
+     knife, and worn fur-lined boots. Far below and behind him, on a hazy
+     golden plain, lies a walled city of domes and towers that he looks at
+     with contempt. Low grey clouds over the hills behind, sunlight on the
+     plain ahead. Ancient, not Viking and not medieval: no horned helmet, no
+     fur loincloth, no bodybuilder muscles, no pile of skulls or bodies at
+     his feet, no likeness of any actor.
+
+    -----
+     Valeria (after Valeria of the Red Brotherhood, in Red Nails)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A woman mercenary stands full length in the shade of a great stone
+     gateway of a crowded caravan city, one shoulder against a carved
+     pillar, one hand resting easily on the hilt of a straight sword, a
+     heavy purse of coin at her belt. She is tall, lean and strong, in her early thirties, 
+     with wild fair hair tied back and
+     cool, steady grey eyes that miss nothing. She is free and independent. Still beautiful and attractive. 
+     She wears a plain loose white tunic with a leather belt and a light chainmail, and a travelling cloak thrown
+     back. Legs gleaming in the heat, with high laced sandals. Behind her, through the gate, a noon-bright bazaar of striped
+     awnings, camels, merchants and guards of a dozen lands. At ease
+     anywhere, owned by nobody. Ancient Near Eastern antiquity, not
+     medieval: no red hair, no plate armour.
+
+    -----
+     THE THIEF (the thieves' quarter of The Tower of the Elephant)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A thief crouches full length on the edge of a flat rooftop at
+     night, poised to jump, above a sprawling ancient city of domes, towers
+     and lamp-lit alleys. He is quick, with a sharp, clever
+     face half in shadow, a crooked grin and bright dark eyes; The rogue wears
+     close-fitting dark cloth, soft leather slippers, a coil of silk rope
+     over one shoulder and a slim curved knife at his hip. Across the city,
+     rising above everything, stands one tall, slender tower of pale stone
+     with a single red jewel glowing at its top, and he is looking at it.
+     A thin moon, deep blue night, warm lamplight below. Ancient Near
+     Eastern antiquity, not medieval: no hooded modern assassin, no mask, no
+     bow or crossbow, no Robin Hood hat.
+
+
+     -----
+     THE KING (the barbarian on the throne of The Phoenix on the Sword)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A barbarian who became a king sits full length on a massive throne of
+     dark carved wood in a vast pillared hall, a long plain broadsword laid
+     across his knees and one scarred fist resting on it. He is broad and
+     powerful in late middle age, his square-cut black hair and short beard
+     going grey, his face lined and weathered, his blue eyes hard and
+     watchful. He wears plain black mail under a heavy crimson cloak and a
+     simple narrow band of gold on his brow, nothing more. Behind the
+     throne hangs a great banner with a golden lion on black; in the shadows
+     between the pillars, courtiers in rich silks whisper among themselves,
+     and he pays them no mind. Torchlight, deep reds and golds. Ancient, not
+     medieval and not Viking: no horned helmet or crown of spikes, no
+     ornate fantasy plate armour, no likeness of any actor.
+
+     -----
+     THE SORCERER (the priest of the serpent, after Thoth-Amon in The
+     Phoenix on the Sword)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A sorcerer-priest stands full length in a temple of black stone,
+     between columns carved as coiling serpents, a great serpent coiled at
+     his feet with its head raised beside his hand. He is tall and gaunt,
+     shaven-headed, of no fixed age, with a still, clever face and eyes that
+     glitter in the dark; he wears long black robes worked with faint
+     silver, and on one finger a copper ring shaped like a coiled snake. A
+     single green lamp burns on an altar behind him, and through a high
+     doorway the black shape of a pyramid stands against a starless sky.
+     Patient, learned, bound by nothing. Colours of black, bronze and a
+     sickly green. Antiquity older than Egypt. No white beard, 
+     no staff with a crystal, no glowing magic effects.
+
+     -----
+     THE WITCH (after Zelata, the wise-woman of the hills, in The Hour of
+     the Dragon)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration. 
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     An old wise-woman stands full length at the door of a low stone hut
+     high on a snowy mountainside at night, a tall staff of dark wood in one
+     hand, a great grey wolf sitting at her side. She is tall and straight
+     for her age, still magnetic and alluring, with long iron-grey hair, a strong lined face and calm,
+     dark, knowing eyes; she wears a plain robe of dark undyed wool and a
+     heavy shawl, a string of bones and amber at her neck. A small fire
+     glows inside the doorway behind her. Far below, in the valley, lie the
+     scattered lights of a kingdom's towns, and above the peaks hangs a thin
+     crescent moon. Unhurried, watchful, outside every law. Deep blues and
+     firelight. Ancient, not a fairy-tale witch: no pointed hat, no
+     broomstick, no cauldron, no green skin, no cackling crone.
+
+     ------- GODS -----------------------------------
+     CROM
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple cold pale silver-blue border decoration.
+
+     STYLE: 
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     No figure. A vast grey
+     mountain fills the height of the card, rising out of dark, pine-covered
+     hills under a low sky of storm cloud, its summit lost in mist. High in
+     its rock, so large it could be taken for the mountain itself, the
+     very faint suggestion, almost not visible, of a stern, bearded face
+     with its eyes closed, turned a little away, paying no attention to
+     anything below. On a shoulder of the mountain, very small, a ring of
+     twelve standing stones round one taller stone. Grey mist fills the
+     valleys. Cold, sunless light in greys and cold blue. The mood is
+     indifference, not menace: no glowing eyes, no lightning from the sky, no
+     worshippers, no throne, no horned helmet.
+
+
+     
+
+     THE FRONTIERSMAN (after Balthus and his dog, in Beyond the Black River)
+
+     SUBJECT:
+     A young settler stands full length at the edge of a forest clearing at
+     dusk, an axe on his shoulder, a great shaggy grey hound at his side
+     with its hackles up. He is sturdy, sandy-haired and open-faced, not a
+     warrior by trade but steady and brave, looking out into the trees with
+     wary respect. He wears a homespun wool tunic, leather leggings and
+     moccasin-like shoes, a hunting knife and a horn at his belt. Behind him
+     stands a stockade fort of sharpened logs with a thread of smoke rising;
+     in front of him a dark, sluggish river, and beyond it an endless
+     primeval forest, black and silent, where something is watching. Deep
+     green and amber light fading to night. Ancient antiquity, not colonial
+     America: no muskets, no coonskin cap, no tricorne.
+
+     
+
+
+
+   STYLES, one at the front of the prompt, for the painting inside the
+   border. The first two are the cards' own; the rest are the looks
+   written first, which a card can carry as well:
+
+     Card        An early-1990s fantasy trading card painting: oil and
+                 gouache, rich but slightly muddy colour, dramatic lighting,
+                 a painterly background that stays readable behind the
+                 figure, the look of the first years of the hobby.
+     Board game  A 1980s fantasy board game character card painting: bright
+                 flat gouache, crisp outlines, a sunlit storybook landscape
+                 behind a figure standing full length, the whole figure
+                 clear at a glance across a table.
+     Woodcut     A hand-coloured sixteenth-century German woodcut: bold black
+                 lines and cross-hatching, flat washes of a few watercolours,
+                 on aged, browning paper. Level 1's pictures are prints of
+                 this kind, so the run would share one look.
+     Engraving   A copperplate engraving printed in white ink on black paper,
+                 fine line and stipple, one accent colour — warm bronze for a
+                 hero, pale cold blue for a god. Level 1's night side, and the
+                 card's own two colours.
+     Pulp        A 1930s pulp magazine cover painting in gouache: saturated
+                 colour, hard rim light, a low dramatic angle, the brush
+                 visible. Where the stories were first printed.
+     Symbolist   A late nineteenth-century Symbolist oil painting in the
+                 manner of Arnold Böcklin: muted, brooding, luminous dusk,
+                 very still.
+     Ancient     The subject as the art of its own world would have made it:
+                 for the Pirate Queen a Minoan fresco (flat ochre, red and
+                 blue on cracked plaster, the figure in profile); for Crom a
+                 weathered Pictish standing stone carved in low relief, lit
+                 from the side. Nearest the real ancient art the gods were
+                 meant to have.
+     Tarot       An early twentieth-century tarot card illustration: clean ink
+                 outlines, flat colour, symbolic props, the figure posed
+                 frontally, as in the Rider-Waite deck, without its title.
+
+
+   ========================================================================== */

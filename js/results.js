@@ -676,7 +676,7 @@ function makeResults(engine) {
                 continue
             }
 
-            // The Hyborian Age's two cards carry no norms, so they go
+            // The Hyborian Age's hero card carries no norms, so it goes
             // through `dimensionsIn` like the wheel; the section is bare,
             // the cards being boxes enough.
             if (name === hyborian.HYBORIAN_OF) {
@@ -1175,7 +1175,7 @@ function makeResults(engine) {
     const NOT_SHOWN = ".votes, [class*='__ask'], [class*='__vote'], .rating, .levelshare, .result__lock"
 
     function nameOfLevel(key) {
-        const entry = TIMELINE.find((one) => one.key === key)
+        const entry = Object.values(BATTERIES).flat().find((one) => one.key === key)
         return entry ? entry.name : key
     }
 
@@ -1499,7 +1499,7 @@ function makeResults(engine) {
                 if (!archetype.aiArchetype()) continue
                 return archetype.badge()
             }
-            // The god's emblem: the level's figures are emblems already.
+            // The hero's face, out of the top of its painting.
             if (name === hyborian.HYBORIAN_OF) {
                 if (!hyborian.ready()) continue
                 return hyborian.badge()
@@ -1590,10 +1590,8 @@ function makeResults(engine) {
             } else if (name === volcano.VOLCANO_OF) add(volcano.VOLCANO_KEY, volcano.VOLCANO_KEY)
             else if (name === kinks.KINKS_OF) add(kinks.KINKS_KEY, kinks.KINKS_KEY)
             else if (name === archetype.ARCHETYPE_OF) add(archetype.ARCHETYPE_KEY, archetype.ARCHETYPE_KEY)
-            else if (name === hyborian.HYBORIAN_OF) {
-                add(hyborian.HERO_KEY, hyborian.HERO_KEY)
-                add(hyborian.GOD_KEY, hyborian.GOD_KEY)
-            }
+            // The god's card is not shown for now, so it files no vote.
+            else if (name === hyborian.HYBORIAN_OF) add(hyborian.HERO_KEY, hyborian.HERO_KEY)
             else if (name === wheel.WHEEL_OF) add(wheel.WHEEL_KEY, wheel.WHEEL_KEY)
             else if (name === reasoning.REASONING_OF) add(reasoning.REASONING_KEY, reasoning.REASONING_KEY)
             else if (name === sea.SEA) add(sea.SEA_KEY, sea.SEA_KEY)

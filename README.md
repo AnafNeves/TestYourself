@@ -92,10 +92,10 @@ Everything a link can say about a run goes after the address, e.g.
 |---|---|---|
 | `?source=` | Where the link was handed out (a project, an experimenter, a page). Written into the saved file and its name, never shown. A link without one is saved as `Unknown`. | `?source=Prolific-Pilot` |
 | `?sub=` | The participant's code, for a prewritten list or a platform's own id. Only `A-Z a-z 0-9 _ -` survive, 32 characters at most; otherwise a code is made up. | `?sub=P0042` |
-| `?battery=` | Ask a named preset of blocks out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run asks `default`: the test as the ethics application covers it. `all` asks the sexuality block too, which the application does not cover yet. The Hyborian Age is in neither, and is reached only by `?start=hyborian`. | `?battery=all` |
+| `?battery=` | Walk a named timeline out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run walks `all`: everything, the sexuality level included, with General first and every other level in one fork of three. `mint` is the test as the ethics application covers it, General, then the core (MINT, BAIT, HiTOP-BR), then the rest, and is asked only when named. The Hyborian Age is asked by neither, and is reached only by `?start=hyborian`. | `?battery=all` |
 | `?only=` | Ask exactly these blocks (comma-separated), for testing. Applied over `battery`. | `?only=mint,icar` |
 | `?skip=` | Ask everything but these blocks. Applied after `only`. | `?skip=opinions` |
-| `?start=` | Bring the levels holding these blocks to the front, in the order named; the rest follow as usual. Moves whole levels and asks nothing the battery left out. | `?start=icar` |
+| `?start=` | Bring the levels holding these blocks to the front, in the order named; the rest follow as usual. Moves whole levels, and brings a level the battery does not hold off the timeline that does. | `?start=icar` |
 | `?test=true` | Test mode (or a bare `?test`): each questionnaire shrinks to one item, the rest are answered at random, and the consent gate opens unread. Still sends a real file, prefixed `test_`. | `?test=true&start=opinions` |
 | `?card=1&s=` | Show somebody's whole-run profile web rather than the test. Made by the profile's "Copy share link", not by hand. | `?card=1&s=Curiosity~3.8,…` |
 | `?card=1&level=&s=` | Show one level's results out of a shared link, with `m=` and `d=` (a birth month and a stand-in day) for level 1's star sign. Made by a level's "Copy link". | `?card=1&level=Character&s=…` |

@@ -1,23 +1,30 @@
 /* =========================================================================
-   The Hyborian Age, as two cards side by side on level 1's pattern: which of
-   Howard's heroes the person would have been, and which of his gods would
-   have claimed them. The two are read from disjoint dimensions — the hero
-   from how somebody would live (Burning, the Code, Barbarism), the god from
-   what they take the world to be (Indifference, Afterlife, the Gift at
-   Birth, Sacred Pleasure) — so the pair says something the cards alone do
-   not: a Thief claimed by Mitra, a King who answers to Crom.
+   The Hyborian Age, as a hand of two cards: which of Howard's heroes the
+   person would have been, the hero's painted card, and beside it the card's
+   back, which carries the person's own stats — the three dimensions the hero
+   was read from — with what the hero is said to be and who it is modelled
+   on, the way a trading card's back does.
 
-   The hero is the nearest corner of a cube: each of its three dimensions is
-   a reach along its own scale, high or low, and all eight corners have a
-   face. The god is the nearest of five written profiles on the other four.
-   Nothing is read against other people, so the questionnaire carries no
-   norms and goes through `dimensionsIn`, the wheel's exception: what is
-   compared is the person's answers with a handful of fictional lives.
+   The hero is the nearest corner of a cube: each of its three dimensions
+   (Burning, the Code, Barbarism) is a reach along its own scale, high or
+   low, and all eight corners have a face. Nothing is read against other
+   people, so the questionnaire carries no norms and goes through
+   `dimensionsIn`, the wheel's exception: what is compared is the person's
+   answers with a handful of fictional lives.
 
-   The pictures are emblems and not faces, on purpose: "Conan" is a live
-   trademark and every likeness since Howard is somebody's copyright, so the
-   heroes are archetypes drawn as what they carry (a sword, a key, a crown)
-   and the gods as what they are (a mountain, a sun, a serpent).
+   THE GOD IS NOT SHOWN, FOR NOW. The other four dimensions (Indifference,
+   Afterlife, the Gift at Birth, Sacred Pleasure) are still asked and saved,
+   and GODS and `god()` below still read which of five would claim somebody,
+   but nothing draws it and nothing files a vote on it (`GOD_KEY` is out of
+   `feedbackKeys`). Bringing it back is a second pair of cards in
+   `renderHyborian` and the key back in `feedbackKeys`.
+
+   The pictures are generated paintings, cut for the page by
+   assets/hyborian/source/cut.py (`picture` on each of HEROES). No hero is
+   named after a character: "Conan" is a live trademark and every likeness
+   since Howard is somebody's copyright. A hero with no picture yet is drawn
+   as its emblem on a card of the same shape, so a missing picture costs the
+   painting and nothing else.
    ========================================================================= */
 
 function makeHyborian(shared) {
@@ -38,20 +45,24 @@ function makeHyborian(shared) {
     const HERO_ON = ["Burning", "The Code", "Barbarism"]
     const GOD_ON = ["Indifference", "Afterlife", "The Gift at Birth", "Sacred Pleasure"]
 
-    // The colour each card votes and draws in: bronze for the hero, the
-    // questionnaire's own, and a cold blue for the gods.
+    // The colour the hero votes and draws in, the questionnaire's own; and
+    // a cold blue for the gods, drawn nowhere for now.
     const HERO_COLOUR = "#c0873a"
     const GOD_COLOUR = "#8aa7d6"
+
+    const PICTURES = "assets/hyborian/"
 
     // The eight heroes, one a corner of the cube (`at`, in the order of
     // HERO_ON: Burning, the Code, Barbarism; 1 is high). `keys` is what the
     // card says it predicts; `story` is who the archetype is modelled on,
-    // said in the tooltip in the third person and claiming nothing about the
-    // person. No hero is named after a character on screen.
+    // in the third person and claiming nothing about the person, which is
+    // the flavour text on the card's back. `picture` is the painting, where
+    // there is one.
     const HEROES = [
         {
             name: "The Barbarian",
             emblem: "sword",
+            picture: "barbarian.jpg",
             at: [1, 1, 1],
             keys: ["fierce", "straightforward", "untamed", "loyal to your own"],
             story: "The northern swordsman come down out of the hills: burning, plain-dealing, and sure that the cities have gone soft.",
@@ -59,6 +70,7 @@ function makeHyborian(shared) {
         {
             name: "The Free Blade",
             emblem: "blades",
+            picture: "free-blade.jpg",
             at: [1, 1, 0],
             keys: ["bold", "honourable", "your own master", "at home anywhere"],
             story: "The mercenary who sells her sword and keeps her word, and is at home in any city that will have her.",
@@ -66,6 +78,7 @@ function makeHyborian(shared) {
         {
             name: "The Pirate Queen",
             emblem: "sail",
+            picture: "pirate-queen.jpg",
             at: [1, 0, 1],
             keys: ["burning", "ruthless", "devoted", "wild"],
             story: "The queen of the Black Coast: no law but her own, a love that would drive her back from the dead, and the sea for a kingdom.",
@@ -73,6 +86,7 @@ function makeHyborian(shared) {
         {
             name: "The Thief",
             emblem: "key",
+            picture: "thief.jpg",
             at: [1, 0, 0],
             keys: ["quick", "cunning", "restless", "at home in the crowd"],
             story: "The prince of thieves in a city of towers: what the clever take, the strong cannot hold.",
@@ -80,6 +94,7 @@ function makeHyborian(shared) {
         {
             name: "The King",
             emblem: "crown",
+            picture: "king.jpg",
             at: [0, 1, 1],
             keys: ["steadfast", "just", "hard to move", "of the old ways"],
             story: "The barbarian who stayed: a throne won with a sword and kept with a code, and no love for the court around it.",
@@ -94,6 +109,7 @@ function makeHyborian(shared) {
         {
             name: "The Sorcerer",
             emblem: "eye",
+            picture: "sorcerer.jpg",
             at: [0, 0, 0],
             keys: ["patient", "calculating", "learned", "hungry for more"],
             story: "The priest of the serpent: patient, learned, bound by nothing, and after more than a life can hold.",
@@ -101,6 +117,7 @@ function makeHyborian(shared) {
         {
             name: "The Witch",
             emblem: "moon",
+            picture: "witch.jpg",
             at: [0, 0, 1],
             keys: ["watchful", "wily", "of the wild", "unhurried"],
             story: "The wise-woman of the hills with a wolf at her side: outside the law, unhurried, and older than the kingdom below her.",
@@ -112,7 +129,7 @@ function makeHyborian(shared) {
     // Afterlife is high where something comes after death, so Crom's grey
     // mist is its foot). `keys` is what believing in that god comes to, worded so
     // that the card's list reads as beliefs and not traits; `story` is who
-    // the god is borrowed from.
+    // the god is borrowed from. Not drawn for now (see the head of the file).
     const GODS = [
         {
             name: "Crom",
@@ -153,8 +170,10 @@ function makeHyborian(shared) {
 
     /* ------------------------------ reading -------------------------------- */
 
+    // The hero's three are what the section waits on; the god's four are
+    // asked but read by nothing on screen.
     function ready() {
-        return HERO_ON.concat(GOD_ON).every((dimension) => known(dimension) && score(dimension) !== undefined)
+        return HERO_ON.every((dimension) => known(dimension) && score(dimension) !== undefined)
     }
 
     // Each dimension as a reach along its own scale, hashed stand-ins when
@@ -163,34 +182,39 @@ function makeHyborian(shared) {
         return list.map((dimension) => reachOf(dimension, locked ? teaseValue(dimension) : score(dimension)))
     }
 
-    // Everything tied nearest to the point, on the wheel's rule: a tie names
-    // every one of them rather than picking, and is rare, wanting the point
-    // exactly as far from two profiles.
+    // The nearest of a list of profiles to the point, the first written
+    // where two are as near: a reading always names one.
     function nearest(list, point) {
         let best = Infinity
-        let found = []
+        let found = null
         for (const one of list) {
             const gap = one.at.reduce((sum, value, index) => sum + (value - point[index]) * (value - point[index]), 0)
             if (gap < best - 1e-9) {
                 best = gap
-                found = [one]
-            } else if (Math.abs(gap - best) < 1e-9) found.push(one)
+                found = one
+            }
         }
         return found
     }
 
-    function heroes(locked) {
-        return nearest(HEROES, reaches(HERO_ON, locked))
+    // The hero is the nearest corner of the cube, which is each reach taken
+    // as high or low. A reach of exactly a half — a mean of 4 on the seven
+    // points, which is not rare — is as near either corner, and counts as
+    // high, so that there is never a tie and always one hero.
+    function hero(locked) {
+        const corner = reaches(HERO_ON, locked).map((reach) => (reach >= 0.5 ? 1 : 0))
+        return HEROES.find((one) => one.at.every((value, index) => value === corner[index]))
     }
 
-    function gods(locked) {
+    function god(locked) {
         return nearest(GODS, reaches(GOD_ON, locked))
     }
 
     /* ------------------------------ drawing -------------------------------- */
 
     // Each emblem is a few strokes on a round plate, 120 across, in
-    // currentColor, so a card and a badge draw it in their own colour.
+    // currentColor, so a card and a badge draw it in their own colour. It is
+    // what a hero without a painting is drawn as, and the badge of one.
     const EMBLEMS = {
         sword: [["path", { d: "M60 12 L67 26 L66 74 L54 74 L53 26 Z", fill: "currentColor" }], ["path", { d: "M42 76 H78", "stroke-width": 6 }], ["path", { d: "M60 78 V98", "stroke-width": 7 }], ["circle", { cx: 60, cy: 103, r: 5, fill: "currentColor" }]],
         blades: [
@@ -208,7 +232,6 @@ function makeHyborian(shared) {
         star: [["path", { d: "M60 14 L66 46 L92 28 L74 54 L106 60 L74 66 L92 92 L66 74 L60 106 L54 74 L28 92 L46 66 L14 60 L46 54 L28 28 L54 46 Z", fill: "currentColor" }]],
         frost: [["path", { d: "M60 14 V106 M20 37 L100 83 M100 37 L20 83", "stroke-width": 6 }], ["path", { d: "M50 24 L60 34 L70 24 M50 96 L60 86 L70 96 M22 52 L36 46 L34 32 M98 52 L84 46 L86 32 M22 68 L36 74 L34 88 M98 68 L84 74 L86 88", "stroke-width": 5 }]],
         serpent: [["path", { d: "M32 92 C14 78 34 60 56 62 C80 64 96 48 76 32 C68 26 58 30 54 40", "stroke-width": 8 }], ["circle", { cx: 52, cy: 44, r: 7, fill: "currentColor" }]],
-        none: [],
     }
 
     function place(parent, spec) {
@@ -228,6 +251,12 @@ function makeHyborian(shared) {
         return figure
     }
 
+    function emblem(name) {
+        const figure = document.createElementNS(SVG, "svg")
+        figure.setAttribute("aria-hidden", "true")
+        return drawEmblem(figure, name)
+    }
+
     /* ------------------------------ the section ---------------------------- */
 
     function text(tag, className, words) {
@@ -237,149 +266,154 @@ function makeHyborian(shared) {
         return node
     }
 
-    // One of the two cards, on level 1's rows: what is being read, the
-    // emblem, the name, "It predicts…" over a few words, and the vote. Two
-    // tied at the top are named together and predict nothing, the star
-    // card's rule where the day was not given; more than two — answers in
-    // the middle of everything — name nobody, on an empty plate.
-    function card(kind, found, colour, ask, key, locked) {
-        const many = found.length > 2
-        const one = document.createElement("div")
-        one.className = "theory hyborian__card"
-        one.style.setProperty("--chart", colour)
-
-        one.appendChild(text("p", "theory__kind", kind))
-
-        const figure = document.createElementNS(SVG, "svg")
-        figure.setAttribute("role", "img")
-        figure.setAttribute("aria-label", locked ? kind + " still locked" : many ? "No one in particular" : found.map((it) => it.name).join(" or "))
-        figure.classList.add("theory__figure")
-        if (locked) figure.classList.add("blank")
-        drawEmblem(figure, many ? "none" : found[0].emblem)
-        if (!locked && !many) {
-            const told = found.map((it) => it.story).join(" ")
-            figure.tabIndex = 0
-            figure.addEventListener("mouseenter", () => showTip(figure, told))
-            figure.addEventListener("mouseleave", hideTip)
-            figure.addEventListener("focus", () => showTip(figure, told))
-            figure.addEventListener("blur", hideTip)
-        }
-        one.appendChild(figure)
-
-        const name = text("p", "theory__name" + (locked ? " blank" : ""), many ? "No one in particular" : found.map((it) => it.name).join(" or "))
-        one.appendChild(name)
-
-        if (found.length === 1) {
-            one.appendChild(text("p", "theory__predicts", key === HERO_KEY ? "It predicts that you are…" : "It predicts that you believe…"))
-            const list = document.createElement("ul")
-            list.className = "theory__keys" + (locked ? " blank" : "")
-            for (const word of found[0].keys) list.appendChild(text("li", "", word))
-            one.appendChild(list)
+    // The hero's painted card: the picture, or, where there is none yet, its
+    // emblem on a card of the same shape.
+    function front(hero, locked) {
+        const card = document.createElement("div")
+        card.className = "hyborian__front" + (locked ? " blank" : "")
+        card.setAttribute("role", "img")
+        card.setAttribute("aria-label", locked ? "Your hero, still locked" : hero.name)
+        const painting = document.createElement("div")
+        painting.className = "hyborian__painting"
+        if (hero.picture) {
+            const picture = document.createElement("img")
+            picture.src = PICTURES + hero.picture
+            picture.alt = ""
+            picture.decoding = "async"
+            painting.appendChild(picture)
         } else {
-            one.appendChild(text("p", "theory__why", many ? "Your answers sit in the middle of them all, and none can claim you." : "Your answers sit exactly between them."))
+            painting.classList.add("hyborian__painting--drawn")
+            painting.appendChild(emblem(hero.emblem))
         }
-
-        if (!locked) {
-            const vote = document.createElement("div")
-            vote.className = "hyborian__vote"
-            vote.appendChild(text("p", "climbview__ask", ask))
-            vote.appendChild(pickButtons(key, VOTES))
-            one.appendChild(vote)
-        }
-        return one
+        card.appendChild(painting)
+        return card
     }
 
-    // The seven dimensions as bars under the cards, on the climb's pattern:
-    // the hero's three in its colour and the god's four in theirs, each
-    // filled to the reach the card was read from, so the bars and the cards
-    // cannot disagree. The tooltip says what the dimension is, never a
-    // standing, since there is none.
+    // What each stat is, on hover or focus. Never a standing, since there is
+    // none.
     const ABOUT = {
         Burning: "intensity over safety: a short blazing life over a long careful one",
         "The Code": "honour and plain dealing over guile: keeping your word against getting round the rules",
         Barbarism: "civilisation as soft and passing: people were stronger when life was harder",
-        Indifference: "no god or fate is watching, and asking one is a way of doing nothing",
-        Afterlife: "something comes after death, and it matters to how you live",
-        "The Gift at Birth": "what you have was given at birth; the rest is what you do with it",
-        "Sacred Pleasure": "the body and its pleasures as holy rather than base",
     }
 
-    function bars(locked) {
-        const chart = document.createElement("div")
-        chart.className = "climbview__bars hyborian__bars"
-        chart.setAttribute("role", "list")
-        const groups = [
-            [HERO_ON, HERO_COLOUR],
-            [GOD_ON, GOD_COLOUR],
-        ]
-        for (const group of groups) {
-            const values = reaches(group[0], locked)
-            group[0].forEach((dimension, index) => {
-                const told = dimension + ": " + ABOUT[dimension]
-                const column = document.createElement("div")
-                column.className = "climbview__col"
-                column.setAttribute("role", "listitem")
-                column.setAttribute("aria-label", told)
-                column.tabIndex = 0
-                column.style.setProperty("--key", group[1])
-                column.innerHTML = '<span class="climbview__track" aria-hidden="true"><i class="climbview__fill"></i></span><b class="climbview__name"></b>'
-                column.querySelector(".climbview__fill").style.height = Math.round(values[index] * 100) + "%"
-                column.lastChild.textContent = dimension.replace(/^The /, "")
-                column.addEventListener("mouseenter", () => showTip(column.firstChild, told))
-                column.addEventListener("mouseleave", hideTip)
-                column.addEventListener("focus", () => showTip(column.firstChild, told))
-                column.addEventListener("blur", hideTip)
-                chart.appendChild(column)
-            })
+    const PIPS = 10
+
+    // A stat out of ten, as a trading card writes it: the reach along its own
+    // scale, rounded, and a row of pips filled that far. The number is the
+    // person's own position and no comparison with anybody.
+    function stat(dimension, reach, locked) {
+        const worth = Math.round(reach * PIPS)
+        const told = dimension + ": " + ABOUT[dimension]
+        const row = document.createElement("li")
+        row.className = "hyborian__stat"
+        row.tabIndex = 0
+        row.setAttribute("aria-label", locked ? dimension : told + ". " + worth + " out of " + PIPS)
+        row.appendChild(text("span", "hyborian__stat-name", dimension.replace(/^The /, "")))
+        const pips = document.createElement("span")
+        pips.className = "hyborian__pips" + (locked ? " blank" : "")
+        pips.setAttribute("aria-hidden", "true")
+        for (let at = 0; at < PIPS; at++) {
+            const pip = document.createElement("i")
+            if (at < worth) {
+                pip.className = "hyborian__pip--on"
+                pip.style.setProperty("--beat", at)
+            }
+            pips.appendChild(pip)
         }
-        return chart
+        row.appendChild(pips)
+        row.appendChild(text("b", "hyborian__stat-worth" + (locked ? " blank" : ""), locked ? "0" : String(worth)))
+        if (!locked) {
+            row.addEventListener("mouseenter", () => showTip(row, told))
+            row.addEventListener("mouseleave", hideTip)
+            row.addEventListener("focus", () => showTip(row, told))
+            row.addEventListener("blur", hideTip)
+        }
+        return row
     }
 
-    // Two sentences, the two cards, the bars they were read from and a line
-    // on what the bars are. Locked, the cards alone, with stand-in names and
-    // the emblems blurred and no votes: bars drawn from stand-in values would
-    // be seven readable numbers nobody earned.
+    // The back: who the hero is, the person's three stats, what the hero is
+    // said to be, and the flavour text.
+    function back(hero, locked) {
+        const card = document.createElement("div")
+        card.className = "hyborian__back"
+
+        card.appendChild(text("p", "hyborian__kind", "In the Hyborian Age, you would be"))
+        card.appendChild(text("h3", "hyborian__name" + (locked ? " blank" : ""), hero.name))
+
+        card.appendChild(text("p", "hyborian__label", "Your stats"))
+        const stats = document.createElement("ul")
+        stats.className = "hyborian__stats"
+        const values = reaches(HERO_ON, locked)
+        HERO_ON.forEach((dimension, index) => stats.appendChild(stat(dimension, values[index], locked)))
+        card.appendChild(stats)
+
+        card.appendChild(text("p", "hyborian__label", "It predicts that you are…"))
+        card.appendChild(text("p", "hyborian__traits" + (locked ? " blank" : ""), hero.keys.join(" · ")))
+        card.appendChild(text("p", "hyborian__flavour" + (locked ? " blank" : ""), hero.story))
+        return card
+    }
+
+    // A line, the two cards, the vote, and a line on what the stats are.
+    // Locked, the cards drawn from stand-in values with everything earned on
+    // them blurred, and no vote.
     function renderHyborian(locked) {
         const holder = document.createElement("div")
-        holder.className = "theories hyborian"
+        holder.className = "hyborian"
+        holder.style.setProperty("--chart", HERO_COLOUR)
 
-        const intro = document.createElement("p")
-        intro.className = "theories__intro"
-        intro.textContent =
-            "The Hyborian Age had a philosophy of its own: gods who mostly did not listen, heroes who trusted their own " +
-            "strength, and cities softer than the wilds around them. Read from your answers, here is who you would have been " +
-            "in it, and who would have claimed you."
-        holder.appendChild(intro)
+        holder.appendChild(
+            text(
+                "p",
+                "theories__intro hyborian__intro",
+                "The Hyborian Age had a philosophy of its own: gods who mostly did not listen, heroes who trusted their own " +
+                    "strength, and cities softer than the wilds around them. Here is where your answers would have put you.",
+            ),
+        )
 
-        const pair = document.createElement("div")
-        pair.className = "theories__pair"
-        pair.appendChild(card("Your hero is", heroes(locked), HERO_COLOUR, "Does this match you?", HERO_KEY, locked))
-        pair.appendChild(card("The god who would claim you is", gods(locked), GOD_COLOUR, "Does this match what you believe?", GOD_KEY, locked))
-        holder.appendChild(pair)
+        const drawn = hero(locked)
+        const hand = document.createElement("div")
+        hand.className = "hyborian__hand"
+        hand.appendChild(front(drawn, locked))
+        hand.appendChild(back(drawn, locked))
+        holder.appendChild(hand)
 
         if (locked) return holder
 
-        holder.appendChild(bars(false))
+        const vote = document.createElement("div")
+        vote.className = "hyborian__vote"
+        vote.appendChild(text("p", "climbview__ask", "Does this match you?"))
+        vote.appendChild(pickButtons(HERO_KEY, VOTES))
+        holder.appendChild(vote)
+
         holder.appendChild(
             text(
                 "p",
                 "climbview__note hyborian__note",
-                "The hero is read from the first three, the god from the other four. Each bar is how far along its own scale " +
-                    "your answers reach. Nothing here is compared with other people, only with a handful of lives that were never lived.",
+                "Each stat is how far along its own scale your answers reach, out of ten. Nothing here is compared with other " +
+                    "people, only with a handful of lives that were never lived.",
             ),
         )
         return holder
     }
 
-    // The badge is the god's emblem, in the god's colour, on the heads'
-    // pattern: a level with no drawing to crop hands back an emblem.
+    // The badge is the top of the hero's card, the whole width of it cut to
+    // a square, border and all, so it reads as the card itself on the shelf;
+    // a hero with no painting is its emblem, on the heads' pattern.
     function badge() {
+        const drawn = hero(false)
         const token = document.createElement("span")
         token.className = "shelf__badge-emblem"
-        const figure = document.createElementNS(SVG, "svg")
-        figure.setAttribute("aria-hidden", "true")
-        drawEmblem(figure, gods(false)[0].emblem)
-        figure.style.setProperty("--half", GOD_COLOUR)
+        if (drawn.picture) {
+            const picture = document.createElement("img")
+            picture.className = "hyborian__badge"
+            picture.src = PICTURES + drawn.picture
+            picture.alt = ""
+            token.appendChild(picture)
+            return token
+        }
+        const figure = emblem(drawn.emblem)
+        figure.style.setProperty("--half", HERO_COLOUR)
         token.appendChild(figure)
         return token
     }
