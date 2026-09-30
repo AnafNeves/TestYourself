@@ -100,6 +100,12 @@ const ITEMS = {
         "I can always accurately answer to the extreme left on this question to show that I am reading it [attention check]"
     ],
     "r14": [
+        "Which of these descriptions comes closest to how you feel about your household's financial situation today?"
+    ],
+    "r15": [
+        "Think of the ladder below as showing where people stand relative to other people in your country. At the top are people who have the most money, the most education and the most respected jobs. At the bottom are people who have the least money, the least education and the least respected jobs. Where would you place yourself on this ladder?"
+    ],
+    "r16": [
         "How knowledgeable do you consider yourself about Artificial Intelligence (AI) technology?",
         "How well do you understand the way modern AI systems actually work, technically? For instance, how large language models (LLMs) and generative AI produce the text or images they do.",
         "How frequently do you use Artificial Intelligence (AI) tools or technologies in your daily life? This includes tools like ChatGPT, image or art generators and AI assistants.",
@@ -127,12 +133,6 @@ const ITEMS = {
         "I am more likely to appreciate content when I know it is created by humans rather than AI",
         "I am more likely to trust content when I know it is created by a human rather than AI",
         "I can show that I am Human and not an AI by answering all the way to the right [attention check]"
-    ],
-    "r15": [
-        "Which of these descriptions comes closest to how you feel about your household's financial situation today?"
-    ],
-    "r16": [
-        "Think of the ladder below as showing where people stand relative to other people in your country. At the top are people who have the most money, the most education and the most respected jobs. At the bottom are people who have the least money, the least education and the least respected jobs. Where would you place yourself on this ladder?"
     ],
     "r17": [
         "Feeling nervous, anxious or on edge",
@@ -419,6 +419,11 @@ const ITEMS = {
         "How well a thing works matters more than how it looks"
     ],
     "r39": [
+        "Exposing someone to an idea that deeply upsets them can seriously damage their mental health",
+        "Vulnerable people should not be exposed to certain kinds of speech, as this might harm them",
+        "Some words can be hurtful, but people get over them in time"
+    ],
+    "r40": [
         "One last thing. Did you take the test seriously? (This won't impact your results, but will help us improve the test.)",
         "Is there anything you would like to share? Any feedback or thoughts about the test, or about what it told you, are very welcome. Please note that whatever you write here may be made publicly available (for instance as part of the published data), so do not include anything that could identify you or anybody else unless you are happy for it to be public."
     ]

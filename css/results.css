@@ -4428,13 +4428,15 @@
 /* ------------------------------ the Hyborian Age ------------------------------
    A hand of two cards (js/figures/hyborian.js): the hero's painting, and
    beside it the card's back on the same stock, carrying the person's stats,
-   what the hero is said to be and the flavour text, the way a trading card's
-   back does. The two are one size, a painting's own proportions, as large as
+   and what the hero is said to be, the way a trading card's back does. The two are one size, a painting's own proportions, as large as
    half the section will give them, and the corners are rounded to the
    painted card's so that its white margin does not show. Everything on the
    back is sized in `cqw`, a share of the card's own width, so the back is
-   the same card at any size rather than words rattling in a larger box; it
-   grows taller rather than cut them off. Stacked on a phone. Locked, the
+   the same card at any size rather than words rattling in a larger box, and
+   is sized to fit the painting's proportions with the longest hero's words
+   on it, four stats and all, centred down it: it would grow taller rather
+   than cut them off, so a hero given longer words or a fifth stat wants the
+   two cards measured again. Stacked on a phone. Locked, the
    painting is blurred on itself, since it sits in no `.result__chart`, and
    so is everything earned on the back. */
 .hyborian {
@@ -4448,8 +4450,42 @@
     margin: 4px 0 8px;
 }
 
-.hyborian__intro {
-    max-width: 62ch;
+/* The hero's line out of Howard over the hand, in the serif, and the story
+   it is from under it in the bronze of the card's rule. */
+.hyborian__epigraph {
+    max-width: 56ch;
+    margin: 0;
+    text-align: center;
+}
+
+.hyborian__epigraph-words {
+    white-space: pre-line;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--gold-pale);
+}
+
+.hyborian__epigraph-words::before {
+    content: "“";
+}
+
+.hyborian__epigraph-words::after {
+    content: "”";
+}
+
+.hyborian__epigraph-from {
+    margin-top: 8px;
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--chart);
+}
+
+.hyborian__epigraph-from cite {
+    font-style: normal;
 }
 
 .hyborian__hand {
@@ -4524,6 +4560,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     box-sizing: border-box;
     container-type: inline-size;
     height: auto;
@@ -4547,7 +4584,7 @@
 }
 
 .hyborian__back > :last-child {
-    margin-bottom: 7cqw;
+    margin-bottom: 8cqw;
 }
 
 .hyborian__back::before {
@@ -4599,7 +4636,7 @@
 
 .hyborian__stat {
     display: grid;
-    grid-template-columns: 5.6em 1fr 1.6em;
+    grid-template-columns: 5.2em 1fr 1.4em;
     align-items: center;
     gap: 0.6em;
     font-size: 5cqw;
@@ -4619,28 +4656,77 @@
     font-weight: 600;
 }
 
+/* The pips are rubies set in the card: each lit one a stone cut to a point,
+   its four facets lit from the upper left (a conic gradient round its middle,
+   the square being turned on its corner), a glint on the facet nearest the
+   light and a red glow round it; each one not lit an empty setting pressed
+   into the stock and rimmed in bronze. The glints catch the light in turn, a
+   stone at a time, the fifth loop a results card carries, held still under a
+   seal like the others. */
 .hyborian__pips {
     display: flex;
     justify-content: space-between;
+    padding-inline: 0.6cqw;
 }
 
 .hyborian__pips i {
-    width: 3.1cqw;
-    height: 3.1cqw;
+    position: relative;
+    width: 2.9cqw;
+    height: 2.9cqw;
+    border-radius: 0.3cqw;
     transform: rotate(45deg);
-    border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+    background: linear-gradient(135deg, rgba(90, 60, 25, 0.22), rgba(255, 250, 235, 0.5));
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--bronze) 70%, transparent),
+        inset 0.3cqw 0.3cqw 0.5cqw rgba(70, 45, 15, 0.35);
 }
 
 .hyborian__pips .hyborian__pip--on {
-    border-color: var(--rubric);
-    background: var(--rubric);
-    animation: hyborian-pip 0.35s var(--ease) calc(0.5s + var(--beat) * 60ms) both;
+    background: conic-gradient(from 45deg, #6a0a18 0 25%, #9c1426 25% 50%, #f25a6c 50% 75%, #c9243a 75% 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(70, 0, 12, 0.75),
+        0 0 1.2cqw rgba(214, 32, 58, 0.55),
+        0 0.3cqw 0.5cqw rgba(60, 10, 10, 0.35);
+    animation: hyborian-pip 0.45s var(--ease) calc(0.5s + var(--beat) * 70ms) both;
+}
+
+/* The table of the stone, where the four facets meet, and the glint on it. */
+.hyborian__pips .hyborian__pip--on::before {
+    content: "";
+    position: absolute;
+    inset: 32%;
+    background: linear-gradient(135deg, #ff97a2, #b81c32);
+    opacity: 0.85;
+}
+
+.hyborian__pips .hyborian__pip--on::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 22% 50%, rgba(255, 255, 255, 0.95) 0 9%, rgba(255, 255, 255, 0.35) 18%, transparent 34%);
+    animation: hyborian-glint 5.2s ease-in-out calc(1.4s + var(--beat) * 0.41s) infinite;
 }
 
 @keyframes hyborian-pip {
     from {
-        background: transparent;
-        transform: rotate(45deg) scale(0.4);
+        opacity: 0;
+        transform: rotate(45deg) scale(0.3);
+    }
+    70% {
+        transform: rotate(45deg) scale(1.25);
+    }
+}
+
+@keyframes hyborian-glint {
+    0%,
+    82%,
+    100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+    90% {
+        opacity: 1;
+        transform: scale(1.35);
     }
 }
 
@@ -4658,25 +4744,10 @@
     line-height: 1.4;
 }
 
-.hyborian__flavour {
-    margin-block: auto 0;
-    padding-top: 3.4cqw;
-    font-family: var(--serif);
-    font-size: 4.8cqw;
-    font-style: italic;
-    line-height: 1.42;
-    color: color-mix(in srgb, var(--ink) 78%, transparent);
-}
-
 .hyborian__vote {
     display: grid;
     justify-items: center;
     gap: 8px;
-}
-
-.hyborian__note {
-    margin-top: 0;
-    text-align: center;
 }
 
 @media (max-width: 600px) {
@@ -4707,7 +4778,8 @@
 @media (prefers-reduced-motion: reduce) {
     .hyborian__front,
     .hyborian__back,
-    .hyborian__pips .hyborian__pip--on {
+    .hyborian__pips .hyborian__pip--on,
+    .hyborian__pips .hyborian__pip--on::after {
         animation: none;
     }
 }

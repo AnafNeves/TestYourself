@@ -99,8 +99,10 @@
 
     // Everything below reads this run's timeline, and a link bringing a level
     // it does not hold finds that level on another (`elsewhere`).
+    // The demographics are on the timeline without being on any level of it
+    // (`DEMOGRAPHICS`, placed onto the plan below).
     const TIMELINE = BATTERIES[battery]
-    const named = TIMELINE.flatMap((entry) => entry.blocks)
+    const named = TIMELINE.flatMap((entry) => entry.blocks).concat(DEMOGRAPHICS)
     const everywhere = Object.values(BATTERIES).flat()
     const elsewhere = (name) => everywhere.find((entry) => entry.blocks.indexOf(name) !== -1)
 
@@ -158,10 +160,19 @@
     // shared level's link brings its level to the front the same way when it
     // is not on this timeline, so that the visitor's run has it to draw it on.
     // `closing`, which the run ends
-    // through, is dropped with a word in the console. A level brought forward is taken
+    // through, is dropped with a word in the console, and so is a demographics
+    // block, which is no level's. A level brought forward is taken
     // out of the fork, since it has been given its place by the link rather
     // than left for the person to choose; the rest of the fork still forks.
     // The saved file's `levels` says the order that was walked, as always.
+    //
+    // Then the demographics are put at the head of the places they open
+    // (`opening`, on each level of the plan): the first after any level a
+    // link started on, which is a hook and opens on its own questions, then
+    // the second, then the third, and never the closing level unless there is
+    // nowhere else. **`opening` belongs to the place and not to what is asked
+    // there**, so `swapLevels` leaves it where it is: the second level of the
+    // run opens on `demographics2` whichever level the fork puts there.
     const PLAN = (() => {
         const plan = TIMELINE.map((entry, at) =>
             Object.assign({}, entry, { blocks: entry.blocks.filter((name) => asked.has(name)), written: at }),
@@ -169,6 +180,7 @@
 
         const starts = namesIn("start").filter((name) => {
             if (name === "closing") console.warn("closing is where the run ends, so it cannot start it; ignored")
+            else if (DEMOGRAPHICS.indexOf(name) !== -1) console.warn(name + " opens a place, not a level, so it cannot start the run; ignored")
             else if (!elsewhere(name)) console.warn("No block called " + name + " on any timeline; ignored")
             else return true
             return false
@@ -189,8 +201,21 @@
             const blocks = leading.concat(entry.blocks.filter((name) => leading.indexOf(name) === -1))
             return Object.assign({}, entry, { blocks: blocks, fork: false })
         })
-        return led.concat(plan.filter((entry) => first.indexOf(entry) === -1))
+        const rest = plan.filter((entry) => first.indexOf(entry) === -1)
+        const walked = led.concat(rest)
+
+        for (const entry of walked) entry.opening = []
+        const places = rest.filter((entry) => entry.blocks.indexOf("closing") === -1)
+        if (!places.length) places.push(walked[walked.length - 1])
+        DEMOGRAPHICS.forEach((name, at) => {
+            if (asked.has(name)) places[Math.min(at, places.length - 1)].opening.push(name)
+        })
+        return walked
     })()
+
+    // Whether an item is one of the demographics at the head of its place,
+    // which a fork leaves where it is while the level after it moves.
+    const opens = (question) => DEMOGRAPHICS.indexOf(question.block) !== -1
 
     /* -------------------------------- forks ------------------------------- */
 
@@ -325,7 +350,7 @@
     PLAN.forEach((entry, at) => {
         const level = at + 1
 
-        for (const name of entry.blocks) {
+        for (const name of entry.opening.concat(entry.blocks)) {
             const block = BLOCKS[name]
             if (!block) throw new Error("timeline.js asks for a block that is not defined: " + name)
 
@@ -821,7 +846,7 @@
                 return {
                     key: entry.key,
                     name: entry.name,
-                    blocks: entry.blocks.slice(),
+                    blocks: entry.opening.concat(entry.blocks),
                     choice: choice ? Object.assign({}, choice, { offered: choice.offered.slice() }) : null,
                 }
             }),
@@ -2793,7 +2818,9 @@
     // held at once — the plan, the run, the order the questionnaires read,
     // and the `level` stamped on every item moved, which is what the scoring,
     // the gauge and the results read a level off. Nothing in either level has
-    // been answered when a choice is offered, so no answer moves.
+    // been answered when a choice is offered, so no answer moves. The
+    // demographics a place opens on are the place's (`opening`), and stay: the
+    // level coming in lands behind them.
     function swapLevels(one, other) {
         const low = Math.min(one, other)
         const high = Math.max(one, other)
@@ -2806,8 +2833,8 @@
             PLAN[high - 1][field] = held
         }
 
-        const up = questions.filter((question) => question.level === low)
-        const down = questions.filter((question) => question.level === high)
+        const up = questions.filter((question) => question.level === low && !opens(question))
+        const down = questions.filter((question) => question.level === high && !opens(question))
         const top = questions.indexOf(up[0])
         // The later run goes back first: splicing there leaves every index
         // before it where it was, so `top` still points at the earlier one.
@@ -2817,7 +2844,8 @@
         for (const question of down) question.level = low
 
         RUN.splice(0, RUN.length, ...questions.map((question) => question.questionnaire).filter((name, at, all) => name && all.indexOf(name) === at))
-        index = nextShown(top) // the first item of the place now being entered
+        // The first item of the place now being entered, its demographics first.
+        index = nextShown(questions.findIndex((question) => question.level === low))
         for (const button of $("levels").children) labelStop(button)
     }
 
@@ -3368,13 +3396,6 @@
     // that comes up picks it up (js/resume.js); starting again lets it go.
     function offerResume() {
         if (!KEPT_RUN) return
-        const left = new Date(KEPT_RUN.keptAt)
-        const days = Math.round((new Date().setHours(0, 0, 0, 0) - new Date(left).setHours(0, 0, 0, 0)) / 86400000)
-        const when = days <= 0 ? "earlier today" : days === 1 ? "yesterday" : days + " days ago"
-        $("resume-note").textContent =
-            KEPT_RUN.done > 0
-                ? "You left the test " + when + ", with " + KEPT_RUN.done + " of its " + KEPT_RUN.of + " levels finished."
-                : "You left the test " + when + ", partway through the first level."
         $("resume").hidden = false
 
         $("resume-go").addEventListener("click", () => {

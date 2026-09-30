@@ -25,10 +25,14 @@ HEROES = {
     "conan1": "barbarian",
     "valeria1": "free-blade",
     "belit1": "pirate-queen",
-    "thief1": "thief",
+    "taurus1": "thief",
     "king1": "king",
+    "frontiersman1": "frontiersman",
     "sorcerer1": "sorcerer",
     "witch1": "witch",
+    "yasmina1": "princess",
+    "yagkosha": "exile",
+    "shaman1": "shaman",
 }
 
 WIDTH = 640

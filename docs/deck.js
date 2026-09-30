@@ -1,7 +1,9 @@
 /* =========================================================================
-   Moving between the slides, and nothing else. A slide is a `<section
-   class="slide">` in index.html; this counts them and never looks at what is
-   inside one, so adding a slide is writing another section and nothing here.
+   Moving between the slides, and the few things on them that can be
+   pressed: a row of the Content table, a card on the study slide, a level on
+   its run, anything naming a slide to go to (`data-to`, the slide's id). A slide is a `<section class="slide">` in index.html; moving
+   counts them and never looks at what is inside one, so adding a slide is
+   writing another section and nothing here.
 
    The slide showing is in the address (`#2`), so a link holds its place and a
    reload comes back to it — which is the one thing a deck wants from a server
@@ -14,6 +16,9 @@
     const slides = [...document.querySelectorAll(".slide")]
     const count = document.getElementById("count")
     const through = document.getElementById("through")
+    // What a figure is enlarged into (see "a figure, larger", below). Made
+    // here, before anything that asks whether it is up.
+    const zoom = document.createElement("div")
     let at = 0
     let arrived = false // nothing has been shown yet, so nothing has a side to come from
 
@@ -32,6 +37,7 @@
         })
         slides[at].scrollTop = 0
         shut()
+        shrink()
         count.textContent = at + 1 + " / " + slides.length
         through.style.width = ((at + 1) / slides.length) * 100 + "%"
         // Written rather than assigned, so that moving does not stack an entry
@@ -52,6 +58,13 @@
     document.addEventListener("keydown", (event) => {
         if (event.metaKey || event.ctrlKey || event.altKey) return
         const key = event.key
+        // An enlarged figure has the keys to itself: the arrows scroll it.
+        if (!zoom.hidden) return
+        // A control on a slide keeps its own keys — the arrows move the MINT's
+        // scales on its slide, not the deck — and Space on a button that has
+        // focus presses it rather than moving on.
+        if (event.target.closest("input, textarea, select")) return
+        if (key === " " && event.target.closest("button")) return
         if (key === "ArrowRight" || key === "PageDown" || key === " ") show(at + 1)
         else if (key === "ArrowLeft" || key === "PageUp") show(at - 1)
         else if (key === "Home") show(0)
@@ -77,6 +90,8 @@
     document.addEventListener(
         "wheel",
         (event) => {
+            // The wheel is scrolling an enlarged figure, not the deck.
+            if (!zoom.hidden) return
             const slide = slides[at]
             const room = slide.scrollHeight - slide.clientHeight
             const down = event.deltaY > 0
@@ -108,18 +123,24 @@
     // and a list of forty-odd can be scrolled without the pointer having to
     // stay on the row it came from. Picking the same row again puts it away,
     // and so do Escape and leaving the slide.
+    //
+    // A card on the study slide opens the same list, for the row it names by
+    // questionnaire key (`data-opens`, against the row's
+    // `data-questionnaires`), so what it offers is the table's and not a copy.
+    // `picked` is whatever was pressed, the row or the card's button, since
+    // that is what is marked open and what pressing again puts away.
     const panel = document.getElementById("items")
     const rows = [...document.querySelectorAll("tr[data-items]")]
     let picked = null
 
     function open(row) {
-        const said = (typeof ITEMS === "object" && ITEMS[row.dataset.items]) || []
-        const many = said.length === 1 ? "1 item" : said.length + " items"
+        const those = said(row)
+        const many = those.length === 1 ? "1 item" : those.length + " items"
         panel.querySelector(".items__of").innerHTML = "<b></b> · " + many
         panel.querySelector(".items__of b").textContent = row.children[1].textContent
         const list = panel.querySelector(".items__list")
         list.innerHTML = ""
-        for (const one of said) {
+        for (const one of those) {
             const li = document.createElement("li")
             li.textContent = one
             list.appendChild(li)
@@ -135,12 +156,16 @@
         panel.hidden = true
     }
 
-    function pick(row) {
-        if (picked === row) return shut()
+    function pick(row, by = row) {
+        if (picked === by) return shut()
         shut()
-        picked = row
-        row.setAttribute("aria-expanded", "true")
+        picked = by
+        by.setAttribute("aria-expanded", "true")
         open(row)
+    }
+
+    function said(row) {
+        return (typeof ITEMS === "object" && ITEMS[row.dataset.items]) || []
     }
 
     for (const row of rows) {
@@ -159,16 +184,135 @@
     // Escape puts the list away, from anywhere.
     document.addEventListener("keydown", (event) => event.key === "Escape" && shut())
 
+    for (const button of document.querySelectorAll("[data-opens]")) {
+        const row = rows.find((one) => (one.dataset.questionnaires || "").split(" ").includes(button.dataset.opens))
+        if (!row) {
+            button.hidden = true
+            continue
+        }
+        button.textContent = "See its " + said(row).length + " items"
+        button.addEventListener("click", () => pick(row, button))
+    }
+
+    // Anything naming a slide goes to it when pressed: a card on the study
+    // slide goes to that instrument's own. A press on its items button is
+    // that button's, and text being selected is not a press at all. A button
+    // inside it with nothing of its own to do (the card's "More on…") is how
+    // the keyboard gets there, its press bubbling up to here.
+    function go(id) {
+        const to = slides.indexOf(document.getElementById(id))
+        if (to >= 0) show(to)
+    }
+
+    for (const one of document.querySelectorAll("[data-to]")) {
+        one.addEventListener("click", (event) => {
+            if (event.target.closest("[data-opens]") || String(getSelection())) return
+            go(one.dataset.to)
+        })
+    }
+
+    /* -------------------------------- the run ------------------------------ */
+
+    // A level on the study slide's run says what it asks, and pressing it goes
+    // to those rows of the Content table. Both are read off the table — its
+    // first column is each instrument's level as written on the timeline,
+    // which is the number a level on the run carries (`data-level`) — so the
+    // run can never say something the table does not.
+    //
+    // Instruments are named short in the card: the abbreviation a row's name
+    // cites, or the name without its parentheses where it cites none.
+    function short(name) {
+        const cited = [...name.matchAll(/\(([^;()]+);/g)].map((one) => one[1])
+        if (cited.length) return cited.join(" + ")
+        const bare = name.match(/\(([A-Z][A-Z0-9-]+)\)/)
+        return bare ? bare[1] : name.replace(/\s*\([^)]*\)/g, "").trim()
+    }
+
+    function seek(mine) {
+        const to = slides.indexOf(mine[0].closest(".slide"))
+        if (to < 0) return
+        show(to)
+        mine[0].scrollIntoView({ block: "center" })
+        // Picked out for a moment, as having been gone to, and then left as
+        // they were. The class comes off first so a second visit plays again.
+        for (const row of mine) {
+            row.classList.remove("row--sought")
+            void row.offsetWidth
+            row.classList.add("row--sought")
+        }
+    }
+
+    for (const button of document.querySelectorAll("[data-level]")) {
+        const mine = rows.filter((row) => row.children[0].textContent.trim() === button.dataset.level)
+        if (!mine.length) continue
+        const many = mine.reduce((sum, row) => sum + (parseInt(row.lastElementChild.textContent, 10) || 0), 0)
+
+        const card = document.createElement("div")
+        card.className = "run__card"
+        card.id = "level-" + button.dataset.level
+        card.setAttribute("role", "tooltip")
+        card.innerHTML = '<p class="run__card-of">What it asks · <b></b></p><ul></ul><p class="run__card-go">Press to find it in the table</p>'
+        card.querySelector("b").textContent = many === 1 ? "1 item" : many + " items"
+        const list = card.querySelector("ul")
+        for (const name of new Set(mine.map((row) => short(row.children[1].textContent)))) {
+            const li = document.createElement("li")
+            li.textContent = name
+            list.appendChild(li)
+        }
+        button.after(card)
+        button.setAttribute("aria-describedby", card.id)
+        button.addEventListener("click", () => seek(mine))
+    }
+
+    /* ---------------------------- a figure, larger ------------------------- */
+
+    // A figure too fine to read at the size a slide gives it opens over
+    // everything when pressed (`data-zoom`, on a button holding the picture):
+    // first fitted to the window, then, pressed again, at its own size to be
+    // scrolled round. Its credit comes with it, being what its licence asks
+    // wherever it is shown. Pressing round it, Escape or leaving the slide
+    // puts it away. It sits outside the slides, for the item list's reason.
+    zoom.className = "zoom"
+    zoom.hidden = true
+    zoom.innerHTML = '<img alt="" /><p class="zoom__credit"></p>'
+    document.body.appendChild(zoom)
+    const zoomed = zoom.querySelector("img")
+
+    function enlarge(button) {
+        const img = button.querySelector("img")
+        const credit = button.closest("figure")?.querySelector(".model__credit")
+        zoomed.src = img.src
+        zoomed.alt = img.alt
+        zoom.querySelector(".zoom__credit").innerHTML = credit ? credit.innerHTML : ""
+        zoom.classList.remove("zoom--full")
+        zoom.hidden = false
+        zoom.scrollTop = 0
+    }
+
+    function shrink() {
+        zoom.hidden = true
+    }
+
+    for (const button of document.querySelectorAll("[data-zoom]")) button.addEventListener("click", () => enlarge(button))
+    zoomed.addEventListener("click", () => zoom.classList.toggle("zoom--full"))
+    zoom.addEventListener("click", (event) => event.target === zoom && shrink())
+    document.addEventListener("keydown", (event) => event.key === "Escape" && shrink())
+
     /* ------------------------------ the pointer ---------------------------- */
 
     // A slide taller than the window scrolls, so a swipe is only a move when
     // it is mostly sideways.
+    // A finger on a slider is dragging it, not the deck.
     let from = null
-    document.addEventListener("touchstart", (event) => (from = event.changedTouches[0]), { passive: true })
+    document.addEventListener(
+        "touchstart",
+        (event) => (from = event.target.closest("input") ? null : event.changedTouches[0]),
+        { passive: true },
+    )
     document.addEventListener(
         "touchend",
         (event) => {
-            if (!from) return
+            if (!from || !zoom.hidden) return
             const to = event.changedTouches[0]
             const across = to.clientX - from.clientX
             const down = to.clientY - from.clientY

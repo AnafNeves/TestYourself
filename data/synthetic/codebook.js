@@ -32,7 +32,7 @@ const files = [...html.matchAll(/<script src="(content\/[^"]+)"><\/script>/g)].m
 if (!files.length) throw new Error("no content scripts found in index.html")
 
 const source = files.map((file) => fs.readFileSync(path.join(ROOT, file), "utf8")).join("\n;\n")
-const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, BATTERIES, ASIDE, WATER_SHARE, formatMint }")()
+const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, BATTERIES, ASIDE, DEMOGRAPHICS, WATER_SHARE, formatMint }")()
 
 // The `mint` timeline, which is what a link naming no battery walks, and what
 // this describes — the deck's Content table, a synthetic run — is the test as
@@ -42,6 +42,16 @@ const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, BATTER
 const timeline = content.BATTERIES.mint
     .map((entry) => Object.assign({}, entry, { blocks: entry.blocks.filter((name) => content.ASIDE.indexOf(name) === -1) }))
     .filter((entry) => entry.blocks.length)
+
+// The demographics are written on no level: the first opens level 1, the
+// second level 2 and the third level 3, whatever those hold, never the closing
+// level, and what is left over when there are fewer levels at the head of the
+// last — as app.js places them (`opening`) for a run no link started on. The
+// rule is worked out in both places, so a change to one wants the same here.
+const places = timeline.filter((entry) => entry.blocks.indexOf("closing") === -1)
+const opening = places.map(() => [])
+content.DEMOGRAPHICS.forEach((name, at) => opening[Math.min(at, places.length - 1)].push(name))
+places.forEach((entry, at) => (entry.blocks = opening[at].concat(entry.blocks)))
 
 // The app version, so a synthetic file says which code its codebook came from.
 const app = fs.readFileSync(path.join(ROOT, "js", "app.js"), "utf8")

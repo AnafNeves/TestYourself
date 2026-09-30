@@ -14,7 +14,7 @@ execute:
     Rscript data/collected/preprocess.R --long
     quarto render data/collected/overview.qmd
 
-Base R only. The rendered page is git-ignored: out of a handful of people an
+Base R, and ggplot2 with ggside for the set-aside plot. The rendered page is git-ignored: out of a handful of people an
 aggregate is close to a person.
 -->
 
@@ -93,6 +93,7 @@ runs <- do.call(rbind, lapply(seq_len(nrow(wide)), function(row) {
     headless = identical(as.numeric(wide$viewport_width[row]), 0),
     battery = wide$battery[row],
     subset = walked < length(level_keys),
+    no_source = is.na(wide$source[row]) | wide$source[row] %in% c("", "Unknown"),
     random = "Demographics_SurveyAccuracy" %in% names(wide) && wide$Demographics_SurveyAccuracy[row] %in% random_said,
     stringsAsFactors = FALSE
   )
@@ -105,7 +106,8 @@ flags <- list(
   "speeding" = !is.na(runs$median_s) & runs$answers >= MIN_TIMED & runs$median_s * 1000 < FAST_MS,
   "scripted" = runs$headless | (!is.na(runs$cv) & runs$cv < STEADY_CV),
   "tryout" = runs$subset,
-  "said random" = runs$random
+  "said random" = runs$random,
+  "no source" = runs$no_source
 )
 runs$flags <- vapply(seq_len(nrow(runs)), function(i) paste(names(flags)[vapply(flags, `[`, TRUE, i)], collapse = ", "), "")
 flagged <- runs[runs$flags != "", ]
@@ -125,41 +127,70 @@ if (!KEEP_FLAGGED) {
 - **speeding**: a median answer quicker than `r FAST_MS / 1000` s, over at least `r MIN_TIMED` answers;
 - **scripted**: a headless browser (a window 0 pixels wide) or answer times too even for a person (SD under `r STEADY_CV` of the mean);
 - **tryout**: a hand-picked subset of the levels (`?only=`, `?skip=`);
+- **no source**: the link named none (`?source=` empty, saved as "Unknown"), so nobody sent it: a test, a link passed on, somebody guessing the address;
 - **said random**: answered "`r if (length(random_said)) random_said[1] else "No"`" to whether they took it seriously.
 
 ```{r}
 #| label: screen-plot
 #| fig-width: 7
-#| fig-height: 4.2
+#| fig-height: 4.6
 
+# Each run a point, kept against set aside, with the density of each group along
+# the two margins (ggside), so that where the set-aside runs sit relative to the
+# crowd shows without the points having to. A group of one has no density to
+# draw and is left off the margins.
 timed_runs <- runs[runs$answers > 0 & !is.na(runs$median_s), ]
 if (nrow(timed_runs)) {
-  set_aside <- timed_runs$flags != ""
-  par(mar = c(4, 4.5, 1, 1))
-  plot(timed_runs$answers, timed_runs$median_s, log = "xy", bty = "n", las = 1,
-       pch = 21, cex = 1.5, col = "white", bg = ifelse(set_aside, "#d9534180", "#5b3fd6"),
-       xlab = "Answers given", ylab = "Median answer (s)")
-  abline(h = FAST_MS / 1000, v = GLANCE_ITEMS, col = "grey80", lty = 2)
-  legend("bottomright", c("kept", "set aside"), pch = 21, pt.bg = c("#5b3fd6", "#d9534180"), col = "white",
-         pt.cex = 1.5, bty = "n", cex = 0.85)
+  timed_runs$group <- factor(ifelse(timed_runs$flags != "", "set aside", "kept"), c("kept", "set aside"))
+  shades <- c(kept = "#5b3fd6", `set aside` = "#d95341")
+  dense <- timed_runs[timed_runs$group %in% names(which(table(timed_runs$group) >= 2)), ]
+  ggplot2::ggplot(timed_runs, ggplot2::aes(answers, median_s, colour = group, fill = group)) +
+    ggplot2::geom_hline(yintercept = FAST_MS / 1000, colour = "grey80", linetype = "dashed") +
+    ggplot2::geom_vline(xintercept = GLANCE_ITEMS, colour = "grey80", linetype = "dashed") +
+    ggplot2::geom_point(shape = 21, size = 3, colour = "white", alpha = 0.75) +
+    ggside::geom_xsidedensity(data = dense, alpha = 0.35, linewidth = 0.4) +
+    ggside::geom_ysidedensity(data = dense, alpha = 0.35, linewidth = 0.4) +
+    ggplot2::scale_x_log10() +
+    ggplot2::scale_y_log10() +
+    ggplot2::scale_colour_manual(values = shades, aesthetics = c("colour", "fill"), name = NULL) +
+    ggplot2::labs(x = "Answers given", y = "Median answer (s)") +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
+      legend.position = "bottom",
+      ggside.panel.scale = 0.18,
+      ggside.axis.text = ggplot2::element_blank(),
+      ggside.axis.ticks = ggplot2::element_blank(),
+      ggside.panel.border = ggplot2::element_blank(),
+      ggside.panel.grid = ggplot2::element_blank()
+    )
 }
 ```
 
 ```{r}
 #| label: screen-table
 
+# Grouped by what set them aside, with a count each: a run breaking two rules is
+# its own group, and a group is a line however many runs are in it. What is
+# listed in a group is its spread, not the runs.
 if (nrow(flagged)) {
+  spread <- function(x, digits = 0) {
+    x <- x[!is.na(x)]
+    if (!length(x)) return("")
+    if (min(x) == max(x)) return(sprintf(paste0("%.", digits, "f"), x[1]))
+    sprintf(paste0("%.", digits, "f to %.", digits, "f"), min(x), max(x))
+  }
+  size <- table(flagged$flags)
+  groups <- split(flagged, factor(flagged$flags, names(size)[order(-size, names(size))]))
   knitr::kable(data.frame(
-    Run = flagged$participant,
-    Source = flagged$source,
-    Started = sub("T", " ", flagged$started),
-    Answers = flagged$answers,
-    Minutes = ifelse(is.na(flagged$minutes), "", sprintf("%.1f", flagged$minutes)),
-    `Median (s)` = ifelse(is.na(flagged$median_s), "", sprintf("%.2f", flagged$median_s)),
-    Levels = flagged$finished,
-    Why = flagged$flags,
-    check.names = FALSE
-  ), align = "lllrrrrl")
+    Why = names(groups),
+    Runs = vapply(groups, nrow, 1L),
+    Answers = vapply(groups, function(g) spread(g$answers), ""),
+    Minutes = vapply(groups, function(g) spread(g$minutes, 1), ""),
+    `Median (s)` = vapply(groups, function(g) spread(g$median_s, 2), ""),
+    `Levels finished` = vapply(groups, function(g) spread(g$finished), ""),
+    check.names = FALSE, row.names = NULL
+  ), align = "lrllll")
 } else {
   cat("Nothing set aside.")
 }

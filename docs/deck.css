@@ -119,16 +119,9 @@ h2 {
     color: var(--gold-pale);
 }
 
-/* A slide of two parts, one under the other, each its words beside a picture —
-   the picture to the right of the first and to the left of the second, so the
-   two do not read as one column with a stripe down it. Their headings are a
-   size down from a slide's own, since there are two of them and neither is the
-   slide. */
-.parts {
-    display: grid;
-    gap: clamp(26px, 4vh, 54px);
-}
-
+/* The words of a slide beside a picture, over the tiles that carry the rest
+   of it. The heading is the slide's own, a size down, since the tiles under it
+   want the room. */
 .part {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
@@ -136,18 +129,7 @@ h2 {
     align-items: center;
 }
 
-/* The words stay first in the markup — it is the order they are read in, on a
-   narrow window and on paper — and the picture is moved across instead. */
-.part--mirror {
-    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
-}
-
-.part--mirror .part__seen {
-    order: -1;
-}
-
 .part h2 {
-    font-size: clamp(24px, 3.2vw, 36px);
     margin-bottom: 14px;
 }
 
@@ -159,28 +141,6 @@ h2 {
 
 .part p:last-child {
     margin-bottom: 0;
-}
-
-/* The one list on a part slide. Three named mechanisms read as three things
-   rather than as a sentence with semicolons in it; the markers take the
-   deck's own blue, the way the item list's do. */
-.part ul {
-    margin: 0 0 14px;
-    padding-left: 1.15em;
-    color: var(--muted);
-    max-width: 56ch;
-}
-
-.part li {
-    margin-bottom: 9px;
-}
-
-.part li:last-child {
-    margin-bottom: 0;
-}
-
-.part li::marker {
-    color: var(--pick);
 }
 
 .part__seen {
@@ -208,20 +168,62 @@ h2 {
     box-shadow: 0 18px 40px -26px #000;
 }
 
-/* Narrow: one column, and the picture back under the words it belongs to. */
+/* Narrow: one column, the picture under the words it belongs to. */
 @media (max-width: 900px) {
-    .part,
-    .part--mirror {
+    .part {
         grid-template-columns: 1fr;
-    }
-
-    .part--mirror .part__seen {
-        order: 0;
     }
 
     .part__seen img {
         max-height: 22vh;
     }
+}
+
+/* The problems and the mechanisms: a name over a few lines each, in a grid
+   that fills the slide's width. The two slides tell theirs apart by one
+   colour — a rose for what goes wrong, the deck's blue for what is done about
+   it — on the tile's top edge and its name, and by nothing else. */
+.tiles {
+    --ink: var(--pick);
+    list-style: none;
+    margin: clamp(22px, 3.5vh, 40px) auto 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+}
+
+.tiles--woes {
+    --ink: #e8697f;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.tile {
+    padding: 14px 16px 15px;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--ink);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(4, 10, 20, 0.35) 80%);
+}
+
+.tile h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+}
+
+.tile p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.tiles__foot {
+    margin: 22px auto 0;
+    color: var(--dim);
 }
 
 b {
@@ -360,6 +362,1518 @@ a {
     text-transform: uppercase;
     color: var(--text);
     text-shadow: 0 0 50px rgba(190, 208, 245, 0.28);
+}
+
+/* --------------------------- the two instruments -------------------------- */
+
+/* The MINT and the BAIT as two cards, each joined by a line to its own level
+   on the run under them, and the run braced into the core and what is
+   optional. Each instrument is edged in the colour it is asked in in the app
+   (`format.color` in its block file), restated here like everything else.
+
+   A card, its join and its level are one thing in three places, so pointing
+   at any of them lights all three (`:has`, below). A card opens its items in
+   the list along the foot; a level says what it asks and goes to it in the
+   Content table (`deck.js`). */
+.study__cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+}
+
+.instrument {
+    --ink: var(--pick);
+    --ink-soft: var(--pick-soft);
+    --ink-line: rgba(61, 125, 251, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 18px 22px 16px;
+    border: 1px solid var(--ink-line);
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--ink-soft), rgba(4, 10, 20, 0.35) 70%);
+    box-shadow: 0 18px 40px -30px #000;
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        translate 0.2s;
+}
+
+.instrument--mint {
+    --ink: #e0457b;
+    --ink-soft: rgba(224, 69, 123, 0.13);
+    --ink-line: rgba(224, 69, 123, 0.5);
+}
+
+.instrument--bait {
+    --ink: #06b6d4;
+    --ink-soft: rgba(6, 182, 212, 0.13);
+    --ink-line: rgba(6, 182, 212, 0.5);
+}
+
+/* The name over what it stands for, on both cards: the MINT's in full is too
+   long to stand beside it, and the two cards should read alike. */
+.instrument__head {
+    margin-bottom: 10px;
+}
+
+.instrument h3 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+}
+
+.instrument .instrument__head p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.instrument__head span {
+    color: var(--dim);
+}
+
+.instrument p {
+    margin: 0 0 12px;
+}
+
+.instrument__what {
+    font-family: var(--serif);
+    font-size: clamp(16px, 1.5vw, 19px);
+    line-height: 1.4;
+    color: var(--text);
+}
+
+/* The way to its own slide, and the way into its items, at the foot of the
+   card whatever the words above it come to, so the buttons line up. */
+.instrument__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--dim);
+}
+
+.instrument__items {
+    appearance: none;
+    padding: 5px 14px;
+    border: 1px solid var(--ink-line);
+    border-radius: 999px;
+    background: rgba(4, 10, 20, 0.4);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+
+.instrument__items::after {
+    content: " →";
+}
+
+/* Quieter than the items button: it goes where pressing the card goes, and is
+   there for the keyboard and to say that it does. */
+.instrument__more {
+    appearance: none;
+    padding: 5px 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+}
+
+.instrument__more::after {
+    content: " →";
+    color: var(--ink);
+}
+
+.instrument:hover .instrument__more,
+.instrument__more:focus-visible {
+    outline: none;
+    color: var(--text);
+}
+
+/* Filled when pointed at, and while its items are the ones being read. */
+.instrument__items:hover,
+.instrument__items:focus-visible,
+.instrument__items[aria-expanded="true"] {
+    outline: none;
+    background: var(--ink);
+    color: #05070d;
+}
+
+.instrument__items[aria-expanded="true"]::after {
+    content: " ↓";
+}
+
+/* The joins, from each card down to its level. One svg the width of the run,
+   stretched to it (`preserveAspectRatio="none"`) with strokes that do not
+   stretch with it, so a path written in shares of the width lands on the
+   middle of a column at any size. */
+.study__joins {
+    display: block;
+    width: 100%;
+    height: 34px;
+    overflow: visible;
+}
+
+.study__join {
+    fill: none;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.6;
+    transition:
+        opacity 0.2s,
+        stroke-width 0.2s;
+}
+
+.study__join--mint {
+    stroke: #e0457b;
+}
+
+.study__join--bait {
+    stroke: #06b6d4;
+}
+
+/* The run: eleven levels, each one column of eleven — which is what the joins
+   above are measured in, so the parts take shares of the width in proportion
+   to their levels and nothing between them takes any. */
+.run {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) minmax(0, 1fr);
+    align-items: start;
+}
+
+.run__levels {
+    display: grid;
+    grid-template-columns: repeat(var(--levels, 1), minmax(0, 1fr));
+    row-gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.run__part--core .run__levels {
+    --levels: 4;
+}
+
+.run__part--more .run__levels {
+    --levels: 6;
+}
+
+.run__levels > li {
+    position: relative;
+    display: flex;
+    margin: 0 4px;
+}
+
+.run__level {
+    appearance: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 100%;
+    min-height: 52px;
+    padding: 8px 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: rgba(4, 10, 20, 0.5);
+    font: inherit;
+    font-size: clamp(10.5px, 1vw, 12.5px);
+    line-height: 1.25;
+    text-align: center;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        color 0.2s,
+        translate 0.2s,
+        box-shadow 0.2s;
+}
+
+/* What is optional is drawn fainter, and the closing level fainter still:
+   it is where the run ends, and in neither part. */
+.run__part--more .run__level {
+    border-style: dashed;
+    background: rgba(4, 10, 20, 0.3);
+    color: var(--muted);
+}
+
+.run__part--end .run__level {
+    border-style: dashed;
+    border-color: var(--line);
+    background: none;
+    color: var(--dim);
+}
+
+/* Pointed at, a level lights in the blue of what it asks. */
+.run__level:hover,
+.run__level:focus-visible {
+    outline: none;
+    border-color: var(--pick);
+    background: rgba(61, 125, 251, 0.16);
+    color: var(--text);
+    translate: 0 -2px;
+}
+
+.run__level b {
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #05070d;
+    background: var(--ink);
+}
+
+.run__level--mint,
+.run__level--bait,
+.run__level--mint:hover,
+.run__level--mint:focus-visible,
+.run__level--bait:hover,
+.run__level--bait:focus-visible {
+    border-color: var(--ink);
+    background: var(--ink-soft);
+    box-shadow: 0 0 22px -8px var(--ink);
+}
+
+.run__level--mint {
+    --ink: #e0457b;
+    --ink-soft: rgba(224, 69, 123, 0.16);
+}
+
+.run__level--bait {
+    --ink: #06b6d4;
+    --ink-soft: rgba(6, 182, 212, 0.16);
+}
+
+/* Where the join lands. */
+.run__level--mint::before,
+.run__level--bait::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    margin-left: -3.5px;
+    border-radius: 50%;
+    background: var(--ink);
+}
+
+/* Pointing at a card, its join or its level lights the other two. */
+.study:has(.instrument--mint:hover, .instrument--mint:focus-within, .run__level--mint:hover, .run__level--mint:focus-visible)
+    .study__join--mint,
+.study:has(.instrument--bait:hover, .instrument--bait:focus-within, .run__level--bait:hover, .run__level--bait:focus-visible)
+    .study__join--bait {
+    opacity: 1;
+    stroke-width: 3.5;
+}
+
+.study:has(.instrument--mint:hover, .instrument--mint:focus-within) .run__level--mint,
+.study:has(.instrument--bait:hover, .instrument--bait:focus-within) .run__level--bait {
+    translate: 0 -2px;
+    box-shadow: 0 0 30px -4px var(--ink);
+}
+
+.instrument:hover,
+.instrument:focus-within,
+.study:has(.run__level--mint:hover, .run__level--mint:focus-visible) .instrument--mint,
+.study:has(.run__level--bait:hover, .run__level--bait:focus-visible) .instrument--bait {
+    border-color: var(--ink);
+    box-shadow:
+        0 0 0 1px var(--ink),
+        0 22px 50px -30px var(--ink);
+    translate: 0 -2px;
+}
+
+/* What a level asks, over it while it is pointed at. `deck.js` writes it out
+   of the Content table's own rows. It is the blue of the item list along the
+   foot, being the same kind of thing: what is asked. Over the first level it
+   is held to the left edge and over the last two to the right, so it never
+   leaves the slide. */
+.run__card {
+    position: absolute;
+    z-index: 4;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    width: 250px;
+    margin-left: -125px;
+    padding: 12px 14px 11px;
+    border: 1px solid var(--pick);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(20, 40, 86, 0.98), rgba(7, 12, 26, 0.98));
+    box-shadow: 0 20px 40px -20px #000;
+    text-align: left;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 6px;
+    transition:
+        opacity 0.16s,
+        translate 0.16s,
+        visibility 0.16s;
+}
+
+.run__part--core li:first-child .run__card {
+    left: 0;
+    margin-left: 0;
+}
+
+.run__part--more li:nth-last-child(-n + 2) .run__card,
+.run__part--end .run__card {
+    left: auto;
+    right: 0;
+    margin-left: 0;
+}
+
+.run__card p {
+    margin: 0;
+}
+
+.run__card-of {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.run__card-of b {
+    letter-spacing: 0.06em;
+    text-transform: none;
+    font-size: 12px;
+    color: var(--pick);
+}
+
+.run__card ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 9px 0 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.run__card li {
+    padding: 2px 8px;
+    border: 1px solid rgba(61, 125, 251, 0.45);
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--text);
+}
+
+.run__card-go {
+    font-size: 11px;
+    color: var(--dim);
+}
+
+.run__card-go::after {
+    content: " →";
+}
+
+@media (hover: hover) {
+    .run__levels > li:hover {
+        z-index: 3;
+    }
+
+    .run__levels > li:hover .run__card {
+        opacity: 1;
+        visibility: visible;
+        translate: 0 0;
+    }
+}
+
+.run__levels > li:has(:focus-visible) {
+    z-index: 3;
+}
+
+.run__levels > li:has(:focus-visible) .run__card {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+}
+
+/* A curly brace under a part, pointing down at what is said under it: two
+   ends that curl up, two straight runs and a tip in the middle, so it keeps
+   its shape at any width. Its line is the bottom edge of the ends and the
+   runs, 6px down, which is where the tip's two halves start from. */
+.brace {
+    display: flex;
+    align-items: flex-start;
+    margin: 10px 4px 0;
+    color: var(--gold);
+}
+
+.run__part--more .brace {
+    color: var(--dim);
+}
+
+.brace span,
+.brace i {
+    height: 8px;
+    border: 0 solid currentColor;
+    border-bottom-width: 2px;
+}
+
+.brace span {
+    flex: 1;
+}
+
+.brace i:first-child,
+.brace i:last-child {
+    width: 12px;
+}
+
+.brace i:first-child {
+    border-left-width: 2px;
+    border-bottom-left-radius: 12px;
+}
+
+.brace i:last-child {
+    border-right-width: 2px;
+    border-bottom-right-radius: 12px;
+}
+
+.brace i:nth-child(3) {
+    position: relative;
+    width: 16px;
+    height: 14px;
+    border: 0;
+}
+
+.brace i:nth-child(3)::before,
+.brace i:nth-child(3)::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    width: 9px;
+    height: 8px;
+    border: 0 solid currentColor;
+    border-top-width: 2px;
+}
+
+.brace i:nth-child(3)::before {
+    left: 0;
+    border-right-width: 2px;
+    border-top-right-radius: 9px;
+}
+
+.brace i:nth-child(3)::after {
+    left: 7px;
+    border-left-width: 2px;
+    border-top-left-radius: 9px;
+}
+
+.run__said {
+    margin: 8px 4px 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--dim);
+}
+
+.run__said b {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.run__part--more .run__said b {
+    color: var(--text);
+}
+
+/* Narrow: the cards one under the other, which leaves the joins nowhere to
+   run, so they go, and the run is its three parts stacked, each braced. A
+   level still goes to the table when pressed, but says nothing over itself:
+   there is no room beside it, and a finger has no hover. */
+@media (max-width: 980px) {
+    .study__cards {
+        grid-template-columns: 1fr;
+    }
+
+    .study__joins,
+    .run__level--mint::before,
+    .run__level--bait::before,
+    .run__card {
+        display: none;
+    }
+
+    .run {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: 26px;
+    }
+
+    .run__part--more .run__levels {
+        --levels: 3;
+    }
+
+    .run__part--end .run__levels > li {
+        width: calc(33.333% - 8px);
+        margin-inline: auto;
+    }
+}
+
+@media (max-width: 560px) {
+    .run__part--core .run__levels,
+    .run__part--more .run__levels {
+        --levels: 2;
+    }
+
+    .instrument__foot {
+        flex-wrap: wrap;
+    }
+}
+
+/* A row gone to from a level on the run, lit for a moment in the list's blue
+   and left as it was. */
+tr.row--sought td {
+    animation: sought 2.4s ease-out both;
+}
+
+@keyframes sought {
+    from {
+        color: var(--text);
+        background: rgba(61, 125, 251, 0.34);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .instrument,
+    .run__level,
+    .run__card {
+        transition: none;
+    }
+}
+
+/* ------------------------- an instrument, at length ------------------------ */
+
+/* The MINT's and the BAIT's own slides, each in the colour its card is: a
+   head, two columns and, on the BAIT's, what this study adds under them.
+   What the lab set out to do and what is still to do is prose, so it is set
+   as prose, and numbered only where it is a list of things to do. */
+.about {
+    --ink: var(--pick);
+    --ink-soft: var(--pick-soft);
+    --ink-line: rgba(61, 125, 251, 0.5);
+}
+
+.about--mint {
+    --ink: #e0457b;
+    --ink-soft: rgba(224, 69, 123, 0.12);
+    --ink-line: rgba(224, 69, 123, 0.5);
+}
+
+.about--bait {
+    --ink: #06b6d4;
+    --ink-soft: rgba(6, 182, 212, 0.12);
+    --ink-line: rgba(6, 182, 212, 0.5);
+}
+
+/* The HiTOP-BR's rose (#be123c in its block file), lifted so it reads as
+   words on the dark. */
+.about--hitop {
+    --ink: #d65470;
+    --ink-soft: rgba(190, 18, 60, 0.16);
+    --ink-line: rgba(214, 84, 112, 0.5);
+}
+
+.about__head {
+    margin-bottom: clamp(20px, 3.5vh, 34px);
+}
+
+.about__head h2 {
+    margin: 0;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+}
+
+.about__head p {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.about__head span {
+    color: var(--dim);
+}
+
+.about__cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(26px, 4vw, 60px);
+    align-items: start;
+}
+
+.about h3 {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.about p {
+    margin: 0 0 22px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 58ch;
+}
+
+.about__points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: point;
+}
+
+.about__points li {
+    position: relative;
+    padding: 12px 0 12px 42px;
+    border-top: 1px solid var(--line);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    counter-increment: point;
+}
+
+.about__points li:last-child {
+    border-bottom: 1px solid var(--line);
+}
+
+/* A way on to another slide, at the end of the point it belongs to. */
+.about__to {
+    appearance: none;
+    display: inline;
+    margin-left: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.about__to::after {
+    content: " →";
+}
+
+.about__to:hover,
+.about__to:focus-visible {
+    outline: none;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.about__points li::before {
+    content: counter(point);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--ink-line);
+    border-radius: 50%;
+    background: var(--ink-soft);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 24px;
+    text-align: center;
+    color: var(--ink);
+}
+
+/* The MINT's three formats, drawn as the app draws them and working: circles
+   that take a press (radio buttons, so the keyboard moves along them) and a
+   slider with nothing written on it. The item over them is the MINT's own. */
+.formats {
+    margin: 0;
+    padding: 18px 20px 20px;
+    border: 1px solid var(--ink-line);
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--ink-soft), rgba(4, 10, 20, 0.35) 75%);
+}
+
+.formats figcaption {
+    margin-bottom: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.about .formats__item {
+    margin: 0 0 16px;
+    font-family: var(--serif);
+    font-size: clamp(16px, 1.5vw, 19px);
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.formats__row {
+    display: grid;
+    grid-template-columns: 5.6em auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+}
+
+.formats__name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.formats__end {
+    font-size: 11.5px;
+    color: var(--dim);
+}
+
+.formats__scale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+}
+
+.formats__scale label {
+    position: relative;
+    cursor: pointer;
+}
+
+/* The input stays, for the keyboard and a screen reader, and the circle
+   beside it is what is seen. */
+.formats__scale input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.formats__scale label span {
+    display: grid;
+    place-items: center;
+    width: clamp(26px, 2.4vw, 32px);
+    aspect-ratio: 1;
+    border: 1.5px solid var(--ink-line);
+    border-radius: 50%;
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    transition:
+        background 0.15s,
+        color 0.15s,
+        border-color 0.15s,
+        scale 0.15s;
+}
+
+.formats__scale label:hover span {
+    border-color: var(--ink);
+    color: var(--text);
+}
+
+.formats__scale input:checked + span {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: #05070d;
+    scale: 1.08;
+}
+
+.formats__scale input:focus-visible + span {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
+
+.formats__slider {
+    width: 100%;
+    margin: 0;
+    accent-color: var(--ink);
+    cursor: pointer;
+}
+
+/* Where the BAIT started: what it asks, and the bias in the lab's tasks it
+   was meant to account for, one over the other with the claim between. */
+.flow {
+    display: grid;
+    gap: 0;
+    justify-items: stretch;
+}
+
+.flow__from {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+}
+
+.flow__chip,
+.flow__to {
+    padding: 12px 14px;
+    border: 1px solid var(--ink-line);
+    border-radius: 10px;
+    background: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.flow__chip b,
+.flow__to b {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.flow__chip q {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.flow__chip q::before {
+    content: "“";
+}
+
+.flow__chip q::after {
+    content: "”";
+}
+
+/* The claim, between a line down from the two and a head pointing at what
+   they account for: laid out as a column rather than drawn behind the words,
+   which a line under a label on this gradient could not be. */
+.about .flow__arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    max-width: none;
+    margin: 0;
+    padding: 6px 0 10px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.about .flow__arrow::before {
+    content: "";
+    height: 14px;
+    border-left: 2px dashed var(--ink-line);
+}
+
+.about .flow__arrow::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    margin-top: -1px;
+    border: 0 solid var(--ink);
+    border-width: 0 2px 2px 0;
+    rotate: 45deg;
+}
+
+.flow__to {
+    border-style: dashed;
+    background: rgba(4, 10, 20, 0.45);
+    color: var(--muted);
+}
+
+@media (max-width: 900px) {
+    .about__cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .flow__from {
+        grid-template-columns: 1fr;
+    }
+
+    .formats__row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .formats__row .formats__end {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .formats__scale label span {
+        transition: none;
+    }
+}
+
+/* The HiTOP-BR's six spectra under the two scales that cut across them,
+   the general factor over all six and Externalizing over the last two, both
+   dashed as scored at analysis time rather than by the app. A spectrum says
+   what a participant is shown instead, and one of its items, when pointed at. */
+.tree {
+    margin: 0;
+    padding: 18px 20px 20px;
+    border: 1px solid var(--ink-line);
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--ink-soft), rgba(4, 10, 20, 0.35) 75%);
+}
+
+.tree figcaption {
+    margin-bottom: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.tree figcaption span {
+    color: var(--dim);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: none;
+}
+
+.tree__levels {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px 6px;
+}
+
+.about .tree__over {
+    max-width: none;
+    margin: 0;
+    padding: 7px 10px;
+    border: 1px dashed var(--ink-line);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 12.5px;
+    line-height: 1.3;
+    color: var(--text);
+}
+
+.tree__over span {
+    display: block;
+    font-size: 11px;
+    color: var(--dim);
+}
+
+.tree__over--p {
+    grid-column: 1 / -1;
+}
+
+.tree__over--ext {
+    grid-column: 5 / 7;
+}
+
+.tree__spectrum {
+    grid-row: 3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 64px;
+    padding: 8px 4px;
+    border: 1px solid var(--ink-line);
+    border-radius: 10px;
+    background: rgba(4, 10, 20, 0.5);
+    text-align: center;
+    font-size: clamp(10.5px, 0.95vw, 12.5px);
+    line-height: 1.25;
+    hyphens: manual;
+    cursor: default;
+    outline: none;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        translate 0.2s;
+}
+
+.tree__spectrum > b {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.tree__spectrum > i {
+    font-style: normal;
+    font-size: 11px;
+    color: var(--dim);
+}
+
+.tree__spectrum:hover,
+.tree__spectrum:focus-visible {
+    z-index: 3;
+    border-color: var(--ink);
+    background: var(--ink-soft);
+    translate: 0 -2px;
+}
+
+.tree__card {
+    position: absolute;
+    z-index: 4;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    width: 220px;
+    margin-left: -110px;
+    padding: 10px 12px;
+    border: 1px solid var(--ink);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(58, 14, 28, 0.98), rgba(12, 6, 12, 0.98));
+    box-shadow: 0 20px 40px -20px #000;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--dim);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 6px;
+    transition:
+        opacity 0.16s,
+        translate 0.16s,
+        visibility 0.16s;
+}
+
+.tree__card b {
+    color: var(--ink);
+}
+
+.tree__card q {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.tree__card q::before {
+    content: "“";
+}
+
+.tree__card q::after {
+    content: "”";
+}
+
+/* Held inside the figure over the spectra at either end. */
+.tree__spectrum:nth-child(3) .tree__card {
+    left: 0;
+    margin-left: 0;
+}
+
+.tree__spectrum:last-child .tree__card {
+    left: auto;
+    right: 0;
+    margin-left: 0;
+}
+
+.tree__spectrum:hover .tree__card,
+.tree__spectrum:focus-visible .tree__card {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+}
+
+.about .tree__note {
+    max-width: none;
+    margin: 12px 0 14px;
+    font-size: 12.5px;
+    color: var(--dim);
+}
+
+@media (max-width: 560px) {
+    .tree__levels {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tree__over--ext {
+        grid-column: 1 / -1;
+    }
+
+    .tree__spectrum {
+        grid-row: auto;
+    }
+
+    .tree__card {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tree__spectrum,
+    .tree__card {
+        transition: none;
+    }
+}
+
+/* The HiTOP's right column holds two things, the short measure and its
+   spectra, one over the other. */
+.about__right {
+    display: grid;
+    gap: 22px;
+}
+
+.about__right p {
+    margin-bottom: 0;
+}
+
+/* The HiTOP model, on a white plate the way the deck's other white figure is,
+   held low enough that the slide keeps to the window. Pressing it enlarges it,
+   which is what the lift and the cursor say. */
+.model {
+    margin: -6px 0 0;
+}
+
+.model__open {
+    appearance: none;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    padding: 8px;
+    border: 0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 18px 40px -26px #000;
+    cursor: zoom-in;
+    transition:
+        translate 0.2s,
+        box-shadow 0.2s;
+}
+
+/* The plate hugs the picture, which is held by its height. */
+.model__open img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 34vh;
+}
+
+.model__open:hover,
+.model__open:focus-visible {
+    outline: none;
+    translate: 0 -2px;
+    box-shadow:
+        0 0 0 2px var(--ink),
+        0 22px 50px -26px #000;
+}
+
+.model figcaption {
+    margin-top: 8px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--dim);
+}
+
+.model figcaption a,
+.zoom__credit a {
+    color: var(--muted);
+    text-underline-offset: 2px;
+}
+
+.model__hint {
+    color: var(--ink);
+}
+
+/* A figure enlarged, over everything: fitted to the window, then at its own
+   size to be scrolled round once the picture itself is pressed again. */
+.zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3vmin;
+    overflow: auto;
+    background: rgba(2, 3, 8, 0.9);
+    cursor: zoom-out;
+}
+
+.zoom[hidden] {
+    display: none;
+}
+
+.zoom img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100vh - 6vmin - 34px);
+    padding: 10px;
+    border-radius: 10px;
+    background: #fff;
+    cursor: zoom-in;
+}
+
+.zoom--full {
+    display: block;
+}
+
+.zoom--full img {
+    max-width: none;
+    max-height: none;
+    margin: 0 auto;
+    cursor: zoom-out;
+}
+
+.zoom__credit {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--dim);
+    cursor: auto;
+}
+
+@media print {
+    .zoom {
+        display: none;
+    }
+}
+
+/* ------------------------------ what to send back ----------------------------- */
+
+/* Three pilots across, four kinds of feedback down, and each kind in a colour
+   of its own, carried by its label and the rule down the left of its cells.
+   A row is a `display: contents` group, so the grid lays every cell out on
+   one set of tracks and pointing at a row still lights all of it. */
+.pilots__lede {
+    margin: -8px auto 22px;
+    color: var(--muted);
+}
+
+.pilots {
+    display: grid;
+    grid-template-columns: 10.5em repeat(3, minmax(0, 1fr));
+    column-gap: 14px;
+}
+
+.pilots__row {
+    display: contents;
+}
+
+.pilots__row--good {
+    --kind: var(--accent-2);
+}
+
+.pilots__row--bad {
+    --kind: #f07575;
+}
+
+.pilots__row--fix {
+    --kind: var(--gold);
+}
+
+.pilots__row--felt {
+    --kind: #a78bfa;
+}
+
+.pilots__row > * {
+    margin: 0;
+    padding: 12px 12px 12px 0;
+    border-top: 1px solid var(--line);
+    transition: background 0.2s;
+}
+
+.pilots__row--head > * {
+    padding-top: 0;
+    border-top: 0;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--dim);
+}
+
+.pilots__row--head b {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.pilots__kind {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--dim);
+}
+
+.pilots__kind b {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 13.5px;
+    color: var(--kind);
+}
+
+.pilots__cell {
+    padding-left: 12px;
+    border-left: 2px solid var(--kind);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--dim);
+}
+
+.pilots__cell > q {
+    display: block;
+    font-family: var(--serif);
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+.pilots__cell > q + q {
+    margin-top: 8px;
+}
+
+/* A quotation inside a quotation takes the single marks, which is what the
+   browser's own `quotes` gives the second level. */
+.pilots__cell q q {
+    color: var(--muted);
+}
+
+.pilots__row:not(.pilots__row--head):hover > * {
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.pilots__foot {
+    margin: 18px auto 0;
+    font-size: 13.5px;
+    color: var(--muted);
+}
+
+/* Narrow: a kind of feedback at a time, each pilot's excerpt under its label
+   and named, since the columns that said whose it was are gone. */
+@media (max-width: 900px) {
+    .pilots {
+        grid-template-columns: 1fr;
+    }
+
+    .pilots__row--head {
+        display: none;
+    }
+
+    .pilots__row > * {
+        padding-right: 0;
+    }
+
+    .pilots__cell {
+        border-top: 0;
+        padding-top: 6px;
+        padding-bottom: 10px;
+    }
+
+    .pilots__cell::before {
+        content: attr(data-pilot);
+        display: block;
+        margin-bottom: 2px;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--dim);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pilots__row > * {
+        transition: none;
+    }
+}
+
+/* ----------------------------------- to do ---------------------------------- */
+
+/* What is to be done next, a card a thing, numbered, in the deck's gold. A
+   way back into the deck at the end of a line takes the same look as it does
+   on an instrument's slide, which is why the gold is written as `--ink`. */
+.todo {
+    --ink: var(--gold);
+    --ink-soft: rgba(217, 164, 65, 0.12);
+    --ink-line: rgba(217, 164, 65, 0.45);
+}
+
+.todo h2 {
+    margin-bottom: 4px;
+}
+
+.todo__when {
+    margin: 0 0 28px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.todo__list {
+    display: grid;
+    gap: 14px;
+    max-width: 860px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: todo;
+}
+
+.todo__list li {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    column-gap: 20px;
+    row-gap: 4px;
+    align-items: center;
+    padding: 18px 22px;
+    border: 1px solid var(--ink-line);
+    border-radius: 14px;
+    background: linear-gradient(90deg, var(--ink-soft), rgba(4, 10, 20, 0.35) 70%);
+    counter-increment: todo;
+}
+
+.todo__list li::before {
+    content: counter(todo);
+    grid-row: 1 / 3;
+    grid-column: 1;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--ink-line);
+    border-radius: 50%;
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+}
+
+.todo__list b {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(19px, 2.1vw, 25px);
+    line-height: 1.25;
+    color: var(--text);
+}
+
+.todo__list span {
+    font-size: 14px;
+    color: var(--muted);
 }
 
 /* --------------------------------- a table -------------------------------- */

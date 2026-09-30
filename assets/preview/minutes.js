@@ -5,5 +5,5 @@
 // level has no minutes, or if the timeline did not load.
 for (const place of document.querySelectorAll("[data-minutes]")) {
     const level = typeof BATTERIES === "undefined" ? null : BATTERIES.all.find((each) => each.key === place.dataset.minutes)
-    if (level && level.minutes) place.textContent = `results in ${level.minutes} minutes`
+    if (level && level.minutes) place.textContent = `${level.minutes} minutes`
 }

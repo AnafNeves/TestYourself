@@ -277,12 +277,14 @@ The optional set, offered after the core set, is:
   form of the CERQ.
 - A set of questions on social and political views: a left-right
   self-placement (the European Social Survey item), three items adapted from
-  the Conspiracy Mentality Questionnaire (Bruder et al., 2013), twenty-nine
+  the Conspiracy Mentality Questionnaire (Bruder et al., 2013), thirty-two
   agree/disagree statements on economic redistribution and social order
   (adapted from the British Social Attitudes scales; Evans et al., 1996),
   equality of outcomes between groups, human enhancement and heredity, the
-  climate, nuclear power and the moral standing of animals, and how much
-  beauty should count against cost and use, a question on whether a range of
+  climate, nuclear power and the moral standing of animals, how much
+  beauty should count against cost and use, and whether words alone can do
+  lasting harm (adapted from the Words Can Harm Scale; Pratt et al., 2026),
+  a question on whether a range of
   views or a range of backgrounds matters more, and a question on diet, most
   of them written or adapted for this study. These are political opinions and are treated as special category
   data (see A5, A6 and A10); they are collected anonymously like the health
@@ -296,9 +298,9 @@ the symptom measures: two of them, drawn at random for each participant, are
 offered first, and the participant picks which to answer, then picks between
 the one left and the third. The random draw means that no one instrument is
 always answered first and none always answered last. The other demographic
-questions open the MINT's part (education, field of study, student status,
-ethnicity and country) and the symptom part (financial comfort and social
-status), and so move with them. The items within each questionnaire are
+questions open the second part, whichever it is (education, field of study,
+student status, ethnicity and country), and the third (financial comfort and
+social status). The items within each questionnaire are
 presented in a random order, except where an instrument was validated in a
 fixed order, in which case that order is kept. The optional questionnaires are
 offered three at a time, the participant choosing which to answer next. In
@@ -362,7 +364,8 @@ support.
 - **A5. Risk of disclosures about beliefs, illegal actions, or threats to self/others?** — **Yes**,
   as to beliefs: the optional continuation includes a set of questions on
   social and political views (redistribution, law and order, equality between
-  groups, human enhancement, heredity, the climate, animals), answered as
+  groups, human enhancement, heredity, the climate, animals, whether words
+  can do lasting harm), answered as
   agreement with statements, and a left-right self-placement. These are
   opinions of the kind asked in general population social surveys (the
   British Social Attitudes and European Social Survey items among them). No
@@ -688,13 +691,13 @@ items are conditional follow-ups that most participants will not see.
 
 - Level 1 — demographics, FIPI, single-item scales: **22**
 - Level 2 — demographics, MINT: **43**
-- Level 3 — BAIT: **27**
-- Level 4 — demographics, PHQ-4, sleep, mental-health history, HiTOP-BR: **55**
+- Level 3 — demographics, BAIT: **29**
+- Level 4 — PHQ-4, sleep, mental-health history, HiTOP-BR: **53**
 - **Mandatory core: 147**
 - Optional continuation (HEXACO + KSE-G, archetypes, primals, ICAR-16,
-  attention and emotion measures, opinions, closing items): **189**, of which
-  the opinions level is 35
-- **Whole survey: 336**
+  attention and emotion measures, opinions, closing items): **192**, of which
+  the opinions level is 38
+- **Whole survey: 339**
 
 Three attention checks fall in the core (MINT, BAIT, HiTOP-BR).
 

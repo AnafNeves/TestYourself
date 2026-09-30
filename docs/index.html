@@ -49,72 +49,414 @@
             </div>
         </section>
 
-        <!-- 2 · what it is, and what it is for ----------------------------- -->
+        <!-- 2 · what is wrong with the way it is usually done -------------- -->
+        <!-- Written by hand. The references are for the people reading the
+             deck to follow up, not a literature review: one a claim that
+             wants one, and none where the claim is common ground. -->
+        <section class="slide" id="problem">
+            <div class="part">
+                <div class="part__said">
+                    <h2>The trouble with surveys</h2>
+                    <p>
+                        Psychology runs on questionnaires, and nearly all of them are asked the same way: <b>a page of radio buttons on a
+                        platform built for the person writing the study</b>, not the person answering it.
+                    </p>
+                    <p>
+                        The instruments are rarely what fails; the answering is. <b>No amount of validation survives careless
+                        answers</b>, and a dataset nobody can trust is not one worth sharing.
+                    </p>
+                </div>
+                <figure class="part__seen">
+                    <img src="figures/bored.jpg" alt="Somebody at a desk, bored, looking at a screen with their head on their hand" />
+                </figure>
+            </div>
+
+            <ul class="tiles tiles--woes">
+                <li class="tile">
+                    <h3>Built for the researcher</h3>
+                    <p>
+                        Qualtrics, Gorilla, jsPsych and the rest are good at building a study and indifferent to taking one: grid after
+                        grid, a progress bar at best, a thank-you at the end. Nothing in them is designed to be finished.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Boredom and fatigue</h3>
+                    <p>
+                        Attention falls with length. The same item is answered worse at the end of a long battery than at its start, and
+                        the people who stop halfway are not a random half.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Careless responding</h3>
+                    <p>
+                        Straight lines, the middle of every scale, a second an item: often a tenth of an online sample or more
+                        (Meade &amp; Craig, 2012), in panels that pay by the minute and reward the quick. It is not only noise: it
+                        can make unrelated scales correlate (Huang et al., 2015).
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Nothing back</h3>
+                    <p>
+                        An hour of honest answers buys a debriefing sheet. The participant learns nothing about themselves, so there is
+                        no reason to care how they answer, to come back or to tell anybody else.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Jingle and jangle</h3>
+                    <p>
+                        One name for different things, different names for one thing. Scales multiply (most are used once or twice;
+                        Elson et al., 2023) and are seldom asked side by side, so how far grit is conscientiousness, or worry
+                        rumination, is rarely checked in one sample.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Small, closed datasets</h3>
+                    <p>
+                        Each study asks a handful of scales of a few hundred people and keeps the file. Pooling them afterwards means
+                        reconciling versions, formats and samples that were never meant to meet.
+                    </p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 3 · what the Abyss is, and how it works ------------------------ -->
+        <!-- Written by hand too, so it wants reading again when a mechanism
+             changes in the app: each tile restates a section of AGENTS.md
+             (the descent and the gauge, the figures, the fork, the shelf, the
+             votes and stars, sharing, carrying on, quality control). -->
+        <section class="slide" id="abyss">
+            <div class="part">
+                <div class="part__said">
+                    <h2>What the Abyss is</h2>
+                    <p>
+                        <b>A survey platform built to be engaging enough that people want to finish it.</b> The questionnaires underneath
+                        are ordinary validated ones, asked as they were written; everything around them is there to keep somebody reading
+                        the question they are answering, to the last of them.
+                    </p>
+                    <p>
+                        The aim is <b>high-quality, re-usable, open-access datasets</b>, clean enough to be pooled and wide enough to show
+                        how far their measures overlap, since the same people answer all of them.
+                    </p>
+                </div>
+                <!-- On a plate, the way the app puts a drawn problem on one:
+                     the figure is on white and would otherwise be a lit
+                     square in the middle of the dark. -->
+                <figure class="part__seen part__seen--plated">
+                    <img src="figures/correlations.png" alt="A clustered correlation matrix of the items, red and blue blocks along the diagonal" />
+                </figure>
+            </div>
+
+            <ul class="tiles tiles--works">
+                <li class="tile">
+                    <h3>Staged progress</h3>
+                    <p>
+                        The run is levels, dressed as a dive: a gauge in metres, landmarks passed on the way down, the seabed and the rock
+                        beneath it. What is left is always in sight and the next stretch always short.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Feedback</h3>
+                    <p>
+                        Every level closes on a figure drawn from the answers just given (a body, a hill, a sea, a wheel) rather than a
+                        score. It is what is worth reaching, and why the next level gets answered.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Agency</h3>
+                    <p>
+                        After the first level, participants choose which part of themselves to test next, from two or three cards at a
+                        time. The order is drawn, then theirs; carrying on is their decision.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Collection</h3>
+                    <p>
+                        Each level finished mints a badge onto a shelf, and a whole-run profile fills in as the levels do. The run
+                        accumulates something to look at, not just a bar filling up.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Asking back</h3>
+                    <p>
+                        Every reading can be agreed or disagreed with and every level rated. The verdict is data too, including on a star
+                        sign read beside a temperament: the Barnum effect caught in the act.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Sharing</h3>
+                    <p>
+                        A level's results or the whole profile go out as a link or an image, which opens into the test for whoever
+                        receives it: recruitment by word of mouth, filed as such.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Carrying on</h3>
+                    <p>
+                        Answers are saved as they are given, and a run left partway is picked up where it stopped on the same device, so
+                        closing the tab costs neither the participant nor the data.
+                    </p>
+                </li>
+                <li class="tile">
+                    <h3>Quiet quality control</h3>
+                    <p>
+                        Attention checks, response times and a closing question on whether it was taken seriously are recorded for every
+                        level, and shown to nobody.
+                    </p>
+                </li>
+            </ul>
+
+            <p class="tiles__foot">
+                Built to be changed: the questions are <b>data rather than code</b>, and a study asks its own battery from its own link.
+            </p>
+        </section>
+
+        <!-- 4 · the two instruments the study is for ----------------------- -->
+        <!-- Written by hand, unlike the Content table after it, so it wants
+             reading again when `content/timeline.js`, `block_mint.js` or
+             `block_bait.js` changes: the levels and their names and the norms'
+             samples are restated here. What is *not* restated is read out of
+             the Content table by `deck.js`: how many items a card's button
+             offers (`data-opens`, a questionnaire key the table's rows carry)
+             and what a level on the run asks (`data-level`, its place as
+             written on the timeline, which is the table's first column).
+             A card is the way to its own slide after this one (`data-to`,
+             the slide's id); its items button is the one part that is not.
+
+             The cards sit over the run and are joined to their own levels on
+             it; the joins are drawn in one svg across the whole width, in
+             shares of eleven equal columns, which is why every level on the
+             run takes one column and the same margin either side. -->
         <section class="slide">
-            <div class="parts">
-                <div class="part">
-                    <div class="part__said">
-                        <h2>What it is</h2>
-                        <p>
-                            <b>A survey platform built to be engaging enough that people want to finish it.</b> The battery underneath is an
-                            ordinary one — validated questionnaires, asked as they were written — and everything around it is there for one
-                            purpose: to keep somebody reading the question they are answering, all the way to the last of them.
-                        </p>
-                        <p>Three mechanisms carry that, and the rest of this deck is how they are built:</p>
-                        <ul>
-                            <li>
-                                <b>Staged progress.</b> The run is broken into levels and dressed as a descent, so what is left is always in
-                                sight and the next stretch is always short.
-                            </li>
-                            <li>
-                                <b>Feedback.</b> Every level closes on a personalised result drawn from the answers just given — the thing
-                                that is worth reaching, and the reason the next level gets answered.
-                            </li>
-                            <li>
-                                <b>Agency.</b> Below the part a study requires, participants choose what to answer next and how far down to
-                                go. Carrying on is theirs to decide, which is what makes carrying on worth something.
-                            </li>
-                        </ul>
-                        <p>
-                            It is built to be changed. The questions are <b>data rather than code</b>, so a scale can be added, dropped or
-                            moved without touching the engine, and a study can ask a named subset of the blocks from its own recruitment
-                            link.
-                        </p>
-                    </div>
-                    <!-- On a plate, the way the app puts a drawn problem on one:
-                         the figure is on white and would otherwise be a lit
-                         square in the middle of the dark. -->
-                    <figure class="part__seen part__seen--plated">
-                        <img src="figures/correlations.png" alt="A clustered correlation matrix of the items, red and blue blocks along the diagonal" />
-                    </figure>
+            <h2>What is being validated</h2>
+
+            <div class="study">
+                <div class="study__cards">
+                    <article class="instrument instrument--mint" data-to="about-mint">
+                        <header class="instrument__head">
+                            <h3>MINT</h3>
+                            <p>Multidimensional Interoceptive Traits questionnaire <span>· Makowski et al.</span></p>
+                        </header>
+                        <p class="instrument__what">How people sense the inside of their own body, as a trait.</p>
+                        <footer class="instrument__foot">
+                            <button type="button" class="instrument__more">More on the MINT</button>
+                            <button type="button" class="instrument__items" data-opens="mint" aria-controls="items" aria-expanded="false">
+                                See its items
+                            </button>
+                        </footer>
+                    </article>
+
+                    <article class="instrument instrument--bait" data-to="about-bait">
+                        <header class="instrument__head">
+                            <h3>BAIT</h3>
+                            <p>Beliefs about Artificial Intelligence Technology <span>· Makowski et al.</span></p>
+                        </header>
+                        <p class="instrument__what">What people believe AI can make, and how they feel about it.</p>
+                        <footer class="instrument__foot">
+                            <button type="button" class="instrument__more">More on the BAIT</button>
+                            <button type="button" class="instrument__items" data-opens="bait" aria-controls="items" aria-expanded="false">
+                                See its items
+                            </button>
+                        </footer>
+                    </article>
                 </div>
 
-                <div class="part part--mirror">
-                    <div class="part__said">
-                        <h2>Why</h2>
-                        <p>
-                            The aim is <b>high-quality, re-usable, open-access datasets</b>: batteries deep enough and clean enough that
-                            other researchers can pool them, re-analyse them and ask questions of them that the study collecting them never
-                            asked.
-                        </p>
-                        <p>
-                            What stands in the way of that is not the instruments but the answering. A long battery is often met by somebody
-                            with no stake in it who wants to be finished: straight lines down the page, the middle of every scale, a second
-                            an item. <b>No amount of validation survives that</b>, and a dataset nobody can trust is not one worth sharing.
-                        </p>
-                        <p>
-                            So the wager is a plain one — give people something worth reaching, and what comes back is worth opening to
-                            everybody.
-                        </p>
+                <!-- Column c of eleven is centred on 10c − 5 here: the MINT's
+                     level is the second, the BAIT's the third. -->
+                <svg class="study__joins" viewBox="0 0 110 40" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="study__join study__join--mint" d="M15 0V40" />
+                    <path class="study__join study__join--bait" d="M64 0V18H25V40" />
+                </svg>
+
+                <div class="run" aria-label="The levels of the run">
+                    <div class="run__part run__part--core">
+                        <ol class="run__levels">
+                            <li><button type="button" class="run__level" data-level="1">General</button></li>
+                            <li>
+                                <button type="button" class="run__level run__level--mint" data-level="2">Brain-Body Axis <b>MINT</b></button>
+                            </li>
+                            <li>
+                                <button type="button" class="run__level run__level--bait" data-level="3">
+                                    AI Expertise &amp; Usage <b>BAIT</b>
+                                </button>
+                            </li>
+                            <li><button type="button" class="run__level" data-level="4">Mood &amp; Health</button></li>
+                        </ol>
+                        <div class="brace" aria-hidden="true"><i></i><span></span><i></i><span></span><i></i></div>
+                        <p class="run__said"><b>Core</b> · levels 1–4, every participant</p>
                     </div>
-                    <figure class="part__seen">
-                        <img src="figures/bored.jpg" alt="Somebody at a desk, bored, looking at a screen with their head on their hand" />
+
+                    <div class="run__part run__part--more">
+                        <ol class="run__levels">
+                            <li><button type="button" class="run__level" data-level="5">Character</button></li>
+                            <li><button type="button" class="run__level" data-level="6">Archetypes</button></li>
+                            <li><button type="button" class="run__level" data-level="7">The World</button></li>
+                            <li><button type="button" class="run__level" data-level="8">How You Think</button></li>
+                            <li><button type="button" class="run__level" data-level="9">Mind &amp; Heart</button></li>
+                            <li><button type="button" class="run__level" data-level="10">Where You Stand</button></li>
+                        </ol>
+                        <div class="brace" aria-hidden="true"><i></i><span></span><i></i><span></span><i></i></div>
+                        <p class="run__said"><b>Optional</b> · levels 5–10, the participant's choice</p>
+                    </div>
+
+                    <div class="run__part run__part--end">
+                        <ol class="run__levels">
+                            <li><button type="button" class="run__level" data-level="11">Closing</button></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 · the MINT, at length ------------------------------------------ -->
+        <!-- Written by hand. The three scales are the MINT's three formats
+             (`MINT_FORMATS` in `content/block_mint.js`) drawn as a participant
+             meets them, and working, so they can be tried; the item over them
+             is one of the MINT's own, verbatim. A format added or changed
+             there wants changing here. -->
+        <section class="slide" id="about-mint">
+            <div class="about about--mint">
+                <header class="about__head">
+                    <h2>MINT</h2>
+                    <p>Multidimensional Interoceptive Traits questionnaire <span>· Makowski et al.</span></p>
+                </header>
+
+                <div class="about__cols">
+                    <div>
+                        <h3>Where it comes from</h3>
+                        <p>
+                            Its first validation (ER/MB2021/2, two studies) established its structure and how it relates to other
+                            interoceptive scales. With the two later studies that asked it too, 1,684 people are its norms.
+                        </p>
+
+                        <h3>In this study</h3>
+                        <ol class="about__points">
+                            <li>
+                                <b>Replication of structure</b> on a new, larger sample with the same design, and its convergent and
+                                discriminant validity against the measures around it.
+                            </li>
+                            <li>
+                                <b>Effect of response format.</b> Each run is dealt one of three formats at random, all scored 0 to 6, to see
+                                whether the numbers on a scale change how it is answered.
+                            </li>
+                            <li>
+                                <b>Correlates with HiTOP</b>, the Hierarchical Taxonomy of Psychopathology, which describes mental ill health
+                                as dimensions rather than diagnoses: to assess the relationship between interoception and psychopathology
+                                within that framing.
+                                <button type="button" class="about__to" data-to="about-hitop">More on the HiTOP</button>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <figure class="formats">
+                        <figcaption>The three formats, as a participant meets them</figcaption>
+                        <p class="formats__item">I can notice even very subtle changes in my breathing</p>
+
+                        <div class="formats__row">
+                            <span class="formats__name">0 to 6</span>
+                            <span class="formats__end">Disagree</span>
+                            <span class="formats__scale" role="radiogroup" aria-label="Circles numbered 0 to 6">
+                                <label><input type="radio" name="format-sequential" /><span>0</span></label>
+                                <label><input type="radio" name="format-sequential" /><span>1</span></label>
+                                <label><input type="radio" name="format-sequential" /><span>2</span></label>
+                                <label><input type="radio" name="format-sequential" /><span>3</span></label>
+                                <label><input type="radio" name="format-sequential" /><span>4</span></label>
+                                <label><input type="radio" name="format-sequential" /><span>5</span></label>
+                                <label><input type="radio" name="format-sequential" /><span>6</span></label>
+                            </span>
+                            <span class="formats__end">Agree</span>
+                        </div>
+
+                        <div class="formats__row">
+                            <span class="formats__name">−3 to +3</span>
+                            <span class="formats__end">Disagree</span>
+                            <span class="formats__scale" role="radiogroup" aria-label="Circles numbered −3 to +3">
+                                <label><input type="radio" name="format-symmetric" /><span>−3</span></label>
+                                <label><input type="radio" name="format-symmetric" /><span>−2</span></label>
+                                <label><input type="radio" name="format-symmetric" /><span>−1</span></label>
+                                <label><input type="radio" name="format-symmetric" /><span>0</span></label>
+                                <label><input type="radio" name="format-symmetric" /><span>+1</span></label>
+                                <label><input type="radio" name="format-symmetric" /><span>+2</span></label>
+                                <label><input type="radio" name="format-symmetric" /><span>+3</span></label>
+                            </span>
+                            <span class="formats__end">Agree</span>
+                        </div>
+
+                        <div class="formats__row">
+                            <span class="formats__name">No numbers</span>
+                            <span class="formats__end">Disagree</span>
+                            <span class="formats__scale">
+                                <input type="range" class="formats__slider" min="0" max="6" step="0.01" value="3" aria-label="A slider with no numbers" />
+                            </span>
+                            <span class="formats__end">Agree</span>
+                        </div>
                     </figure>
                 </div>
             </div>
         </section>
 
-        <!-- 3 · what the test asks ----------------------------------------- -->
+        <!-- 6 · the BAIT, at length ------------------------------------------ -->
+        <!-- Written by hand. The example items are the BAIT's own, verbatim
+             (`content/block_bait.js`), and the four discriminability items it
+             names are that file's Discrimination block, asked and not scored.
+             The candidate items for the usage angle are in README.md, under
+             Relationship with AI. -->
+        <section class="slide" id="about-bait">
+            <div class="about about--bait">
+                <header class="about__head">
+                    <h2>BAIT</h2>
+                    <p>Beliefs about Artificial Intelligence Technology <span>· Makowski et al.</span></p>
+                </header>
+
+                <div class="about__cols">
+                    <div>
+                        <h3>Where it started</h3>
+                        <p>
+                            As a trait measure that could partly modulate and mediate the <b>anti-AI bias</b> the lab measures in its tasks,
+                            drawing on two things:
+                        </p>
+
+                        <div class="flow">
+                            <div class="flow__from">
+                                <div class="flow__chip">
+                                    <b>Expectations</b> about what AI can produce
+                                    <q>Current AI algorithms can generate very realistic videos</q>
+                                </div>
+                                <div class="flow__chip">
+                                    <b>Attitudes</b>, items carried over from the GAAIS
+                                    <q>Much of society will benefit from a future full of AI</q>
+                                </div>
+                            </div>
+                            <p class="flow__arrow">partly modulates and mediates</p>
+                            <div class="flow__to">
+                                <b>Anti-AI bias</b> in the lab's tasks: the same image judged less favourably once it is believed to be
+                                made by AI
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3>Where it is going</h3>
+                        <p>Its psychometric properties have not been ideal, and more work is needed to make it a better measure.</p>
+                        <ol class="about__points">
+                            <li>
+                                <b>Sharper expectations.</b> Improve the sensitivity of what it measures about what AI can produce, across
+                                modalities: images, text, art and more.
+                            </li>
+                            <li>
+                                <b>Subjective discriminability.</b> Explore a separate factor for how well people think they can tell AI's
+                                work from a person's. Four such items are asked already, and not yet scored.
+                            </li>
+                            <li>
+                                <b>Usage, taken further.</b> Extend it to AI addiction and "AI psychosis": the bond with a chatbot and the
+                                spiral the reports describe.
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 · what the test asks ----------------------------------------- -->
         <section class="slide">
             <h2>Content</h2>
             <table>
@@ -128,250 +470,475 @@
                 </thead>
                 <tbody>
         <!-- table:start · written by docs/build_slides.py · do not edit by hand -->
-                    <tr data-items="r0" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r0" data-questionnaires="demographics1" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Demographics</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>6</td>
                     </tr>
-                    <tr data-items="r1" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r1" data-questionnaires="fipi" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Five-Item Personality Inventory (FIPI; Gosling et al., 2003)</td>
                         <td>Extraversion, Agreeableness, Conscientiousness, Emotional Stability, Openness</td>
                         <td>5</td>
                     </tr>
-                    <tr data-items="r2" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r2" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Single Item Narcissism Scale (SINS; Konrath et al., 2014)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r3" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r3" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Single-Item Self-Rated Health (SRH; DeSalvo et al., 2006)</td>
                         <td>General Health</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r4" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r4" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Single-Item Measure of Stress Symptoms (SIMS; Elo et al., 2003)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r5" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r5" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Single-Item Self-Esteem Scale (SISE; Robins et al., 2001)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r6" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r6" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Self-Concept Clarity Scale, item 11 (SCCS; Campbell et al., 1996)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r7" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r7" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Meaning in Life Questionnaire, item 8 (MLQ; Steger et al., 2006)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r8" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r8" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>General Self-Efficacy Single-Item (GSE-SI; Di et al., 2023)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r9" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r9" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Aesthetic seeking</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r10" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r10" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Single-Item Life Satisfaction Scale (SILS; Cheung &amp; Lucas, 2014)</td>
                         <td>Life Satisfaction</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r11" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r11" data-questionnaires="singles" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>1</td>
                         <td>Self-placement items</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>2</td>
                     </tr>
-                    <tr data-items="r12" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r12" data-questionnaires="demographics2" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>2</td>
                         <td>Demographics</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>9</td>
                     </tr>
-                    <tr data-items="r13" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r13" data-questionnaires="mint" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>2</td>
                         <td>Multidimensional Interoceptive Traits questionnaire (MINT; Makowski et al.)</td>
                         <td>Bodily Awareness, Bodily Clarity, Bodily Sensitivity</td>
                         <td>34</td>
                     </tr>
-                    <tr data-items="r14" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r14" data-questionnaires="demographics3" tabindex="0" aria-controls="items" aria-expanded="false">
+                        <td>3</td>
+                        <td>Subjective financial well-being (ESS / OECD item)</td>
+                        <td>None</td>
+                        <td>1</td>
+                    </tr>
+                    <tr data-items="r15" data-questionnaires="demographics3" tabindex="0" aria-controls="items" aria-expanded="false">
+                        <td>3</td>
+                        <td>MacArthur Scale of Subjective Social Status (Adler et al., 2000)</td>
+                        <td>None</td>
+                        <td>1</td>
+                    </tr>
+                    <tr data-items="r16" data-questionnaires="bait" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>3</td>
                         <td>Beliefs about Artificial Intelligence Technology (BAIT; Makowski et al.)</td>
                         <td>AI Realism, AI Apprehension, AI Enthusiasm</td>
                         <td>27</td>
                     </tr>
-                    <tr data-items="r15" tabindex="0" aria-controls="items" aria-expanded="false">
-                        <td>4</td>
-                        <td>Subjective financial well-being (ESS / OECD item)</td>
-                        <td>—</td>
-                        <td>1</td>
-                    </tr>
-                    <tr data-items="r16" tabindex="0" aria-controls="items" aria-expanded="false">
-                        <td>4</td>
-                        <td>MacArthur Scale of Subjective Social Status (Adler et al., 2000)</td>
-                        <td>—</td>
-                        <td>1</td>
-                    </tr>
-                    <tr data-items="r17" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r17" data-questionnaires="phq4" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>4</td>
                         <td>Patient Health Questionnaire-4, refined 5-option version (PHQ-4; Kroenke et al., 2009; Makowski et al., 2025)</td>
                         <td>Anxiety, Depression</td>
                         <td>4</td>
                     </tr>
-                    <tr data-items="r18" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r18" data-questionnaires="sleep" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>4</td>
                         <td>Single-Item Sleep Quality Scale (SQS; Snyder et al., 2018)</td>
                         <td>Sleep</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r19" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r19" data-questionnaires="psychiatric" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>4</td>
                         <td>Psychiatric history</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>2</td>
                     </tr>
-                    <tr data-items="r20" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r20" data-questionnaires="hitopbr" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>4</td>
                         <td>HiTOP Brief Report (HiTOP-BR; Simms et al., 2026)</td>
                         <td>Dominance, Unusual Experiences, Bodily Complaints, Solitude, Emotional Intensity, Impulsivity</td>
                         <td>46</td>
                     </tr>
-                    <tr data-items="r21" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r21" data-questionnaires="hexaco18" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>5</td>
                         <td>HEX-ACO-18 (Olaru &amp; Jankowsky, 2022)</td>
                         <td>Honesty-Humility, Emotionality, Sociability, Patience, Diligence, Curiosity</td>
                         <td>19</td>
                     </tr>
-                    <tr data-items="r22" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r22" data-questionnaires="hexaco18" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>5</td>
                         <td>Social Desirability-Gamma Short Scale (KSE-G; Kemper et al., 2014)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>6</td>
                     </tr>
-                    <tr data-items="r23" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r23" data-questionnaires="archetypes" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>6</td>
                         <td>Open Source Archetype Indicator – Pearson-Marr (OSAI-PM)</td>
                         <td>Idealist, Sage, Seeker, Revolutionary, Magician, Warrior, Realist, Jester, Lover, Creator, Ruler, Caregiver</td>
                         <td>37</td>
                     </tr>
-                    <tr data-items="r24" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r24" data-questionnaires="pi18 primals_tertiary" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>7</td>
                         <td>Primals Inventory-18 (PI-18; Clifton &amp; Yaden, 2021) + five tertiary scales (PI-99; Clifton et al., 2019)</td>
                         <td>Enticing, Alive, Safe, Acceptable, Changing, Hierarchical, Interconnected, Understandable</td>
                         <td>41</td>
                     </tr>
-                    <tr data-items="r25" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r25" data-questionnaires="icar16" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>8</td>
                         <td>ICAR-16 Sample Test (ICAR16; Condon &amp; Revelle, 2014; Young &amp; Keith, 2020)</td>
                         <td>Verbal, Logical, Visual, Spatial</td>
                         <td>16</td>
                     </tr>
-                    <tr data-items="r26" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r26" data-questionnaires="control" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>9</td>
                         <td>Adult ADHD Self-Report Scale v1.1, items 1-2 (ASRS; Kessler et al., 2005)</td>
                         <td>Inattention</td>
                         <td>2</td>
                     </tr>
-                    <tr data-items="r27" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r27" data-questionnaires="control" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>9</td>
                         <td>Cognitive Failures Questionnaire, items 10 and 21 (CFQ; Broadbent et al., 1982)</td>
                         <td>Absent-Mindedness</td>
                         <td>2</td>
                     </tr>
-                    <tr data-items="r28" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r28" data-questionnaires="control" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>9</td>
                         <td>Mind Wandering: Spontaneous, items 1 and 4 (MW-S; Carriere et al., 2013)</td>
                         <td>Mind Wandering</td>
                         <td>2</td>
                     </tr>
-                    <tr data-items="r29" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r29" data-questionnaires="control" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>9</td>
                         <td>Brief Self-Control Scale, items 1-2 (BSCS; Tangney et al., 2004)</td>
                         <td>Self-Control</td>
                         <td>2</td>
                     </tr>
-                    <tr data-items="r30" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r30" data-questionnaires="ers" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>9</td>
                         <td>Emotion Reactivity Scale, six items (ERS; Nock et al., 2008)</td>
                         <td>Emotional Sensitivity, Emotional Arousal, Emotional Persistence</td>
                         <td>6</td>
                     </tr>
-                    <tr data-items="r31" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r31" data-questionnaires="cerq" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>9</td>
                         <td>Cognitive Emotion Regulation Questionnaire, short form (CERQ-short; Garnefski &amp; Kraaij, 2006)</td>
                         <td>Self-Blame, Acceptance, Rumination, Positive Refocusing, Refocus on Planning, Positive Reappraisal, Putting into Perspective, Catastrophising, Other-Blame</td>
                         <td>19</td>
                     </tr>
-                    <tr data-items="r32" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r32" data-questionnaires="leftright" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>Left-right self-placement (European Social Survey)</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>1</td>
                     </tr>
-                    <tr data-items="r33" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r33" data-questionnaires="cmq" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>Conspiracy Mentality Questionnaire, items 1, 4 and 5 (CMQ; Bruder et al., 2013)</td>
                         <td>Suspicion</td>
                         <td>3</td>
                     </tr>
-                    <tr data-items="r34" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r34" data-questionnaires="views" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>British Social Attitudes left-right and libertarian-authoritarian scales, adapted (BSA; Evans et al., 1996)</td>
                         <td>Sharing, Order</td>
                         <td>7</td>
                     </tr>
-                    <tr data-items="r35" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r35" data-questionnaires="views" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>Equality of outcomes between groups</td>
                         <td>Parity</td>
                         <td>5</td>
                     </tr>
-                    <tr data-items="r36" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r36" data-questionnaires="views" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>Human enhancement and heredity beliefs</td>
                         <td>Enhancement, Heredity</td>
                         <td>7</td>
                     </tr>
-                    <tr data-items="r37" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r37" data-questionnaires="views" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>Climate, animals and the environment</td>
                         <td>Planet, Animals</td>
                         <td>9</td>
                     </tr>
-                    <tr data-items="r38" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r38" data-questionnaires="views" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>10</td>
                         <td>Beauty against purpose</td>
                         <td>Beauty</td>
                         <td>3</td>
                     </tr>
-                    <tr data-items="r39" tabindex="0" aria-controls="items" aria-expanded="false">
+                    <tr data-items="r39" data-questionnaires="views" tabindex="0" aria-controls="items" aria-expanded="false">
+                        <td>10</td>
+                        <td>Words Can Harm Scale, items 6 and 8 and one reversed item, adapted (WCHS; Pratt et al., 2026)</td>
+                        <td>Words</td>
+                        <td>3</td>
+                    </tr>
+                    <tr data-items="r40" data-questionnaires="closing" tabindex="0" aria-controls="items" aria-expanded="false">
                         <td>11</td>
                         <td>Closing items</td>
-                        <td>—</td>
+                        <td>None</td>
                         <td>2</td>
                     </tr>
         <!-- table:end -->
                 </tbody>
             </table>
 
+        </section>
+
+        <!-- 8 · the HiTOP, and the short form of it the test asks ------------- -->
+        <!-- Written by hand, out of `content/block_hitop.js`: the spectra are
+             the HiTOP's own names, in the instrument's register, and what a
+             participant is shown instead comes up on hover, with one of each
+             spectrum's items, verbatim. The item counts are that file's, and
+             the two scales across the spectra are the ones its header leaves
+             to analysis time. Reached from the MINT's slide, and last so that
+             the Content table stays where it was.
+
+             The model is ColinFreilich's figure off Wikimedia Commons
+             (File:HiTOP_Model.png, CC BY-SA 4.0), kept as it was published —
+             not resized or cut, so that nothing about it has been modified —
+             and credited under it and in the enlarged view, which is what the
+             licence asks. It is too fine to read on the slide, which is why
+             pressing it opens it at the size of the window (`data-zoom`). -->
+        <section class="slide" id="about-hitop">
+            <div class="about about--hitop">
+                <header class="about__head">
+                    <h2>HiTOP</h2>
+                    <p>Hierarchical Taxonomy of Psychopathology <span>· Kotov et al., 2017</span></p>
+                </header>
+
+                <div class="about__cols">
+                    <div>
+                        <h3>What it is</h3>
+                        <p>
+                            A classification of mental ill health built from how symptoms go together rather than from diagnostic
+                            categories. Problems sit on spectra that everybody falls somewhere along, arranged in a hierarchy from one
+                            general factor down to single symptoms.
+                        </p>
+
+                        <figure class="model">
+                            <button type="button" class="model__open" data-zoom aria-label="Enlarge the HiTOP model">
+                                <img
+                                    src="figures/hitop_model.png"
+                                    alt="The HiTOP model: a general factor of psychopathology over six spectra (somatoform, internalizing, thought disorder, detachment, and disinhibited and antagonistic externalizing, the last two under an externalizing superspectrum), each branching into subfactors, dimensional syndromes, symptom components and maladaptive traits, down to single symptoms, with the disorders linked to each at the foot"
+                                />
+                            </button>
+                            <figcaption>
+                                <span class="model__credit">
+                                    The HiTOP model ·
+                                    <a href="https://commons.wikimedia.org/wiki/File:HiTOP_Model.png" target="_blank" rel="noopener"
+                                        >ColinFreilich</a
+                                    >,
+                                    <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>,
+                                    via Wikimedia Commons
+                                </span>
+                                <span class="model__hint">· press to enlarge</span>
+                            </figcaption>
+                        </figure>
+                    </div>
+
+                    <div class="about__right">
+                        <div>
+                            <h3>The short measure</h3>
+                            <p>
+                                The <b>HiTOP-BR</b> (Brief Report; Simms et al., 2026): 45 statements about the last twelve months, on four
+                                points from "Not at all" to "A lot", none reversed, scored as the mean of each of six spectra. Its norms are
+                                the development sample's (N = 780), through the {hitop} R package, which also scores a saved file directly.
+                            </p>
+                        </div>
+
+                        <figure class="tree">
+                            <figcaption>The six spectra of the HiTOP-BR <span>· point at one</span></figcaption>
+                            <div class="tree__levels">
+                                <p class="tree__over tree__over--p">General factor (p) <span>12 items across the spectra</span></p>
+                                <p class="tree__over tree__over--ext">Externalizing <span>10 items</span></p>
+
+                                <div class="tree__spectrum" tabindex="0">
+                                    <b>Internal&shy;izing</b><i>8 items</i>
+                                    <span class="tree__card">Shown as <b>Emotional Intensity</b><q>My moods were intense and unpredictable</q></span>
+                                </div>
+                                <div class="tree__spectrum" tabindex="0">
+                                    <b>Somato&shy;form</b><i>8 items</i>
+                                    <span class="tree__card">Shown as <b>Bodily Complaints</b><q>I felt something was wrong with my body</q></span>
+                                </div>
+                                <div class="tree__spectrum" tabindex="0">
+                                    <b>Thought Disorder</b><i>6 items</i>
+                                    <span class="tree__card">Shown as <b>Unusual Experiences</b><q>My fantasies felt very real to me</q></span>
+                                </div>
+                                <div class="tree__spectrum" tabindex="0">
+                                    <b>Detach&shy;ment</b><i>5 items</i>
+                                    <span class="tree__card">Shown as <b>Solitude</b><q>I was happiest when I was alone</q></span>
+                                </div>
+                                <div class="tree__spectrum" tabindex="0">
+                                    <b>Disinhib&shy;ition</b><i>9 items</i>
+                                    <span class="tree__card">Shown as <b>Impulsivity</b><q>I had trouble planning and keeping to schedules</q></span>
+                                </div>
+                                <div class="tree__spectrum" tabindex="0">
+                                    <b>Antagon&shy;ism</b><i>9 items</i>
+                                    <span class="tree__card">Shown as <b>Dominance</b><q>I deserved special treatment</q></span>
+                                </div>
+                            </div>
+                            <p class="tree__note">The two scales over the spectra are scored at analysis time.</p>
+                            <button type="button" class="instrument__items" data-opens="hitopbr" aria-controls="items" aria-expanded="false">
+                                See its items
+                            </button>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9 · what a pilot is expected to send back ------------------------- -->
+        <!-- Excerpts of three pilots' notes on an earlier version of the test,
+             all of it addressed since: their own words, cut with ellipses and
+             never reworded, and nobody named. A column a pilot, headed by the
+             grain their notes were taken at, and a row a kind of feedback,
+             labelled with what that kind is for, so the slide says both what
+             to look for and how finely. A row is a `display: contents` group,
+             which is what lets pointing at any of its cells light the row. -->
+        <section class="slide" id="feedback">
+            <h2>Feedback expectations</h2>
+            <p class="pilots__lede">
+                What piloting the test should send back, and at what grain: excerpts of three pilots' notes on an earlier version,
+                all addressed since.
+            </p>
+
+            <div class="pilots">
+                <div class="pilots__row pilots__row--head">
+                    <span></span>
+                    <p><b>Pilot 1</b>Line by line: wording, punctuation, layout</p>
+                    <p><b>Pilot 2</b>Level by level, with how long each took</p>
+                    <p><b>Pilot 3</b>On a phone and a laptop</p>
+                </div>
+
+                <div class="pilots__row pilots__row--good">
+                    <p class="pilots__kind"><b>Positives</b>What worked, so that it is kept</p>
+                    <p class="pilots__cell" data-pilot="Pilot 1"><q>Very cool user experience - definitely engaging!</q></p>
+                    <p class="pilots__cell" data-pilot="Pilot 2">
+                        <q>I liked the hill metaphor and the overall use of images throughout the test to help understand and visualise the
+                            results</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 3">
+                        <q>Compared to a normal test, it actually made me want to keep going and see what the next level was</q>
+                    </p>
+                </div>
+
+                <div class="pilots__row pilots__row--bad">
+                    <p class="pilots__kind"><b>Negatives</b>What confused, broke or got in the way</p>
+                    <p class="pilots__cell" data-pilot="Pilot 1">
+                        <q>For PHQ-4 section, the visual format of the question items is different to that in previous sections (although,
+                            may be intentional)</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 2">
+                        <q><q>I get through hard times by finding what is funny in them.</q> … what or who is <q>them</q>? No text above
+                            the question either.</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 3">
+                        <q>Sometimes when I tried to tap on a specific number, it wouldn’t select the number I was actually pressing … I
+                            tried to select 40 but it would sometimes go to 47</q>
+                    </p>
+                </div>
+
+                <div class="pilots__row pilots__row--fix">
+                    <p class="pilots__kind"><b>Things to fix</b>Where it is, what it says, what it should say</p>
+                    <p class="pilots__cell" data-pilot="Pilot 1">
+                        <q><q>contains</q> → <q>contain</q> on first paragraph line</q>
+                        <q><q>Now, how have you been lately.</q> requires a question mark rather than a full stop</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 2">
+                        <q>maybe add PMDD in the <q>what are you diagnosed with</q> question especially if you're tracking mood</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 3">
+                        <q>the <q>Disagree</q> and <q>Agree</q> labels were in the middle of the scale, underneath around 2 and 4, rather
+                            than at the ends underneath 0 and 6</q>
+                    </p>
+                </div>
+
+                <div class="pilots__row pilots__row--felt">
+                    <p class="pilots__kind"><b>Subjective reactions</b>How it felt: the effort, the time, whether it rang true</p>
+                    <p class="pilots__cell" data-pilot="Pilot 1">
+                        On the glosses in brackets: <q>I feel it comes across as a bit overwhelming</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 2">
+                        <q>This level was a little hard so I didn't put lots of effort to answer the questions properly towards the
+                            end</q>
+                    </p>
+                    <p class="pilots__cell" data-pilot="Pilot 3">
+                        <q>I think it looks a bit nicer on the laptop, but it was still really good on the phone</q>
+                    </p>
+                </div>
+            </div>
+
+            <p class="pilots__foot">
+                Say which device and browser, name the level, and quote the words on screen: a note that can be found is a note that
+                can be fixed.
+            </p>
+        </section>
+
+        <!-- 10 · what is to do next ------------------------------------------ -->
+        <!-- Written by hand, and rewritten week by week. The links back into
+             the deck are `data-to`, a slide's id, like a card's. -->
+        <section class="slide" id="todo">
+            <div class="todo">
+                <h2>TODOs</h2>
+                <p class="todo__when">For next week</p>
+                <ol class="todo__list">
+                    <li>
+                        <b>Pilot the Abyss test</b>
+                        <span>
+                            <a href="https://realitybendinglab.com/TestYourself/" target="_blank" rel="noopener"
+                                >realitybendinglab.com/TestYourself</a
+                            >, with notes
+                            <button type="button" class="about__to" data-to="feedback">as on Feedback expectations</button>
+                        </span>
+                    </li>
+                    <li>
+                        <b>Pilot another experiment: Color illusions</b>
+                        <span>About 10–15 minutes</span>
+                    </li>
+                    <li>
+                        <b>Start thinking about what is interesting to measure in someone's usage of and beliefs about AI</b>
+                        <span>Where the BAIT is going <button type="button" class="about__to" data-to="about-bait">is on its slide</button></span>
+                    </li>
+                </ol>
+            </div>
         </section>
 
         <!-- ----------------------------------------------------------------- -->

@@ -1,0 +1,186 @@
+<!doctype html>
+<!-- The picture a link straight into the Hyborian Age is shown with
+     (start/hyborian/index.html names it as its og:image). card.html's look,
+     warmed to the level's bronze, with four of the heroes' painted cards
+     fanned beside the name, and under it a hook on the opening of the
+     Nemedian Chronicles ("Know, oh prince…", The Phoenix on the Sword): the paintings are assets/hyborian/*.jpg
+     themselves, so a repainted hero is picked up by photographing this again.
+     hyborian.jpg beside it is this, photographed by make.py. No hero is named
+     after a character and "Conan" is nowhere on it (see the head of
+     content/block_hyborian.js). -->
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>The Abyss Test: Hyborian Age preview card</title>
+        <style>
+            :root {
+                --bg: #07060a;
+                --muted: #ddd3c2;
+                --cream: #f3e3c3;
+                --bronze: #c0873a;
+                --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+                --sans: ui-sans-serif, system-ui, sans-serif;
+            }
+
+            html,
+            body {
+                margin: 0;
+                width: 1200px;
+                height: 630px;
+                overflow: hidden;
+                background: var(--bg);
+            }
+
+            .card {
+                position: relative;
+                width: 1200px;
+                height: 630px;
+                overflow: hidden;
+                font-family: var(--sans);
+                color: var(--muted);
+                background-image: radial-gradient(55% 75% at 78% 58%, rgba(192, 135, 58, 0.24), transparent 64%),
+                    radial-gradient(90% 55% at 8% 4%, rgba(142, 42, 30, 0.16), transparent 62%),
+                    radial-gradient(140% 100% at 50% 120%, rgba(3, 3, 5, 0.9), transparent 55%),
+                    linear-gradient(180deg, #110d0b 0%, var(--bg) 45%, #030204 100%);
+            }
+
+            .logos {
+                position: absolute;
+                top: 34px;
+                left: 64px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .logos img {
+                height: 44px;
+                width: auto;
+            }
+
+            .words {
+                position: absolute;
+                left: 64px;
+                top: 158px;
+                width: 540px;
+            }
+
+            .the {
+                font-size: 19px;
+                font-weight: 600;
+                letter-spacing: 0.5em;
+                text-transform: uppercase;
+                margin: 0;
+            }
+
+            .title {
+                margin: 18px 0 0;
+                font-family: var(--serif);
+                font-size: 68px;
+                font-weight: 400;
+                line-height: 1.02;
+                color: var(--cream);
+            }
+
+            .sub {
+                margin: 24px 0 0;
+                font-family: var(--serif);
+                font-size: 28px;
+                font-style: italic;
+                line-height: 1.3;
+                color: #d9ccb4;
+            }
+
+            .meta {
+                margin: 34px 0 0;
+                font-size: 13.5px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                white-space: nowrap;
+            }
+
+            .meta i {
+                font-style: normal;
+                opacity: 0.45;
+                margin: 0 5px;
+            }
+
+            /* The hand: the Pirate Queen and the Barbarian side by side in
+               front, each turned a little away from the other and neither
+               covering the other's figure, and the Princess and the Thief behind
+               them, further out and turned further, each showing
+               the half of its picture that reads: her window, his tower. Each card is placed by its
+               middle and turned about it. */
+            .hand img {
+                position: absolute;
+                width: 204px;
+                height: auto;
+                margin-left: -102px;
+                border-radius: 9px / 6px;
+                box-shadow:
+                    0 16px 36px rgba(0, 0, 0, 0.7),
+                    0 0 0 1px rgba(0, 0, 0, 0.4);
+            }
+
+            .hand .left {
+                left: 752px;
+                top: 186px;
+                transform: rotate(-13deg);
+            }
+
+            .hand .right {
+                left: 1072px;
+                top: 186px;
+                transform: rotate(13deg);
+            }
+
+            .hand .queen {
+                left: 846px;
+                top: 148px;
+                transform: rotate(-4deg);
+                z-index: 1;
+            }
+
+            .hand .barbarian {
+                left: 1000px;
+                top: 148px;
+                transform: rotate(4deg);
+                z-index: 2;
+            }
+
+            .hand .queen,
+            .hand .barbarian {
+                box-shadow:
+                    0 22px 50px rgba(0, 0, 0, 0.75),
+                    0 0 50px rgba(192, 135, 58, 0.3);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="logos">
+                <img src="../logo_sussex.svg" alt="" />
+                <img src="../logo_researchplus.png" alt="" />
+                <img src="../logo_rebel.png" alt="" />
+            </div>
+
+            <div class="words">
+                <p class="the">The Abyss</p>
+                <h1 class="title">Which Hyborian hero are you?</h1>
+                <p class="sub">Know, oh prince, who you might have been in the age undreamed of… A barbarian, a thief, a sorcerer, or a pirate queen?</p>
+                <p class="meta">Part of a research project <i>·</i> <span data-minutes="Hyborian">immediate results</span> <i>·</i> entirely anonymous</p>
+            </div>
+
+            <div class="hand">
+                <img class="left" src="../hyborian/princess.jpg" alt="" />
+                <img class="right" src="../hyborian/thief.jpg" alt="" />
+                <img class="queen" src="../hyborian/pirate-queen.jpg" alt="" />
+                <img class="barbarian" src="../hyborian/barbarian.jpg" alt="" />
+            </div>
+        </div>
+        <!-- resume.js first: the timeline draws its shuffles off its chance(). -->
+        <script src="../../js/resume.js"></script>
+        <script src="../../content/timeline.js"></script>
+        <script src="minutes.js"></script>
+    </body>
+</html>

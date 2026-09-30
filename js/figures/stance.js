@@ -13,11 +13,12 @@
    authoritarian, and no quadrant carries the name of an ideology: a name
    over a region reads as a verdict on whoever lands in it.
 
-   **The spectra**, seven lines under it for the oppositions the plane does
+   **The spectra**, eight lines under it for the oppositions the plane does
    not carry — trust against suspicion (the CMQ), equal chances against
    equal outcomes, preserving against enhancing human nature, nurture
    against nature, growth against the planet, people first against
-   animals too and purpose against beauty (the custom scales) — each a track
+   animals too, purpose against beauty (the custom scales) and just
+   words against words that wound (adapted from the WCHS) — each a track
    between its two ends with the person marked on it and the average ticked.
 
    Every position is a reach along its own scale, not a standing, the sea's
@@ -164,6 +165,15 @@ function makeStance(shared) {
             to: "Beauty is worth having for its own sake",
             hue: "#f28fb0",
             what: "How much beauty should count when it costs money, usefulness or meaning.",
+        },
+        {
+            dimension: "Words",
+            low: "Just words",
+            high: "Words wound",
+            from: "Words hurt at the time, and people get over them",
+            to: "Words alone can do lasting harm",
+            hue: "#c9a27a",
+            what: "Whether words alone can do somebody lasting harm, and so whether some people should be kept from hearing some things.",
         },
     ]
 

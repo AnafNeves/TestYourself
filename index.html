@@ -3,8 +3,25 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>The Abyss Test</title>
-        <meta name="description" content="The Abyss Test: a science-based assessment of personality, with your results as you go." />
+        <!-- The title and the description are what a search result shows, and
+             most of what a search engine matches the page against, so they
+             say what people search for and not only the name. The social
+             tags below keep the name alone. -->
+        <title>The Abyss Test · Free Science-Based Personality Test</title>
+        <meta
+            name="description"
+            content="A free, anonymous personality test from the University of Sussex. Discover your personality traits, your archetype, how you think and how you see the world."
+        />
+        <!-- The one address search engines should file every link to the test
+             under, whatever its query says (?source=, ?start=, a shared
+             ?card=), so that one page is ranked rather than many near-copies
+             of it. Added by a script and not written as a tag for the og:url
+             reason below: Facebook can read a rel=canonical in the markup as
+             the address being shared, and its crawler runs no script, while
+             Google's renders the page and reads a canonical added this way. -->
+        <script>
+            document.head.append(Object.assign(document.createElement("link"), { rel: "canonical", href: "https://realitybendinglab.com/TestYourself/" }))
+        </script>
         <!-- What a link to the test unfurls into on social media and in chats.
              Read by crawlers that run no script, so it is the same for every
              link whatever its query says; a level with a preview of its own
@@ -168,9 +185,8 @@
                          only when there is one. -->
                     <div class="resume" id="resume" hidden>
                         <p class="resume__head">Welcome back</p>
-                        <p class="resume__note" id="resume-note"></p>
                         <div class="resume__ways">
-                            <button class="btn" id="resume-go">Carry on where you left off</button>
+                            <button class="btn" id="resume-go">Continue where you left off</button>
                             <button class="btn btn--ghost" id="resume-drop">Start again</button>
                         </div>
                     </div>

@@ -66,9 +66,9 @@ ROWS = [
     ("Self-placement items", ["singles"], ["SelfPlacement_"]),
     ("Demographics", ["demographics2"], None),
     ("Multidimensional Interoceptive Traits questionnaire (MINT; Makowski et al.)", ["mint"], None),
-    ("Beliefs about Artificial Intelligence Technology (BAIT; Makowski et al.)", ["bait"], None),
     ("Subjective financial well-being (ESS / OECD item)", ["demographics3"], ["Demographics_FinancialComfort"]),
     ("MacArthur Scale of Subjective Social Status (Adler et al., 2000)", ["demographics3"], ["Demographics_SocialStatus"]),
+    ("Beliefs about Artificial Intelligence Technology (BAIT; Makowski et al.)", ["bait"], None),
     (
         "Patient Health Questionnaire-4, refined 5-option version (PHQ-4; Kroenke et al., 2009; Makowski et al., 2025)",
         ["phq4"],
@@ -103,6 +103,7 @@ ROWS = [
     ("Human enhancement and heredity beliefs", ["views"], ["Opinion_Enhancement_", "Opinion_Heredity_"]),
     ("Climate, animals and the environment", ["views"], ["Opinion_Planet_", "Opinion_Animals_"]),
     ("Beauty against purpose", ["views"], ["Opinion_Beauty_"]),
+    ("Words Can Harm Scale, items 6 and 8 and one reversed item, adapted (WCHS; Pratt et al., 2026)", ["views"], ["Opinion_Words_"]),
     ("Closing items", ["closing"], None),
 ]
 
@@ -179,6 +180,10 @@ def build(book):
                 # canonical level is the one thing about it that does not move.
                 "level": str(level),
                 "name": name,
+                # Which questionnaires it is drawn from, by their keys in
+                # `content/`, which is how a card on the study slide finds the
+                # row whose items it offers without matching on a name.
+                "questionnaires": qs,
                 # In the order they are authored, which is the order they read.
                 "dimensions": list(dict.fromkeys(one["dimension"] for one in mine if one["dimension"])),
                 "count": len(mine),
@@ -203,11 +208,12 @@ def table(rows):
     for row in rows:
         # Focusable and a disclosure: picking a row opens the item list below.
         out.append(
-            '                    <tr data-items="%s" tabindex="0" aria-controls="items" aria-expanded="false">' % row["id"]
+            '                    <tr data-items="%s" data-questionnaires="%s" tabindex="0" aria-controls="items" aria-expanded="false">'
+            % (row["id"], html.escape(" ".join(row["questionnaires"])))
         )
         out.append("                        <td>%s</td>" % html.escape(row["level"]))
         out.append("                        <td>%s</td>" % html.escape(row["name"]))
-        out.append("                        <td>%s</td>" % html.escape(", ".join(row["dimensions"]) or "—"))
+        out.append("                        <td>%s</td>" % html.escape(", ".join(row["dimensions"]) or "None"))
         out.append("                        <td>%d</td>" % row["count"])
         out.append("                    </tr>")
     out.append(SHUT)

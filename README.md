@@ -15,8 +15,8 @@ Every level closes on results of its own. Each link below starts the test on tha
     </td>
     <td align="center" width="50%">
       <b>Brain-Body Axis</b><br>
-      <a href="https://realitybendinglab.com/TestYourself/?start=demographics2&amp;source=README"><img src="assets/readme/brainbody.jpg" alt="The results of Brain-Body Axis" width="100%"></a><br>
-      <a href="https://realitybendinglab.com/TestYourself/?start=demographics2&amp;source=README"><b>Take the Body Awareness Test!</b></a>
+      <a href="https://realitybendinglab.com/TestYourself/?start=mint&amp;source=README"><img src="assets/readme/brainbody.jpg" alt="The results of Brain-Body Axis" width="100%"></a><br>
+      <a href="https://realitybendinglab.com/TestYourself/?start=mint&amp;source=README"><b>Take the Body Awareness Test!</b></a>
     </td>
   </tr>
   <tr>
@@ -27,8 +27,8 @@ Every level closes on results of its own. Each link below starts the test on tha
     </td>
     <td align="center" width="50%">
       <b>Mood &amp; Health</b><br>
-      <a href="https://realitybendinglab.com/TestYourself/?start=demographics3&amp;source=README"><img src="assets/readme/moodhealth.jpg" alt="The results of Mood &amp; Health" width="100%"></a><br>
-      <a href="https://realitybendinglab.com/TestYourself/?start=demographics3&amp;source=README"><b>Take the Wellbeing Test!</b></a>
+      <a href="https://realitybendinglab.com/TestYourself/?start=mood&amp;source=README"><img src="assets/readme/moodhealth.jpg" alt="The results of Mood &amp; Health" width="100%"></a><br>
+      <a href="https://realitybendinglab.com/TestYourself/?start=mood&amp;source=README"><b>Take the Wellbeing Test!</b></a>
     </td>
   </tr>
   <tr>
@@ -100,12 +100,14 @@ Everything a link can say about a run goes after the address, e.g.
 | `?card=1&s=` | Show somebody's whole-run profile web rather than the test. Made by the profile's "Copy share link", not by hand. | `?card=1&s=Curiosity~3.8,…` |
 | `?card=1&level=&s=` | Show one level's results out of a shared link, with `m=` and `d=` (a birth month and a stand-in day) for level 1's star sign. Made by a level's "Copy link". | `?card=1&level=Character&s=…` |
 
-Options combine with `&`. The blocks, in timeline order, are `demographics1`, `fipi`, `singles` (General);
-`demographics2`, `mint` (Brain-Body Axis); `bait` (AI Expertise & Usage); `demographics3`, `mood`, `health`, `hitop`
+Options combine with `&`. The blocks, in timeline order, are `fipi`, `singles` (General);
+`mint` (Brain-Body Axis); `bait` (AI Expertise & Usage); `mood`, `health`, `hitop`
 (Mood & Health); `hexaco` (Character); `archetypes`; `primals` (The World); `icar` (How You Think); `regulation`
 (Mind & Heart); `opinions` (Where You Stand); `sex` (Sexuality, asked only by `battery=all`); `hyborian` (The Hyborian Age, asked by no battery and reached only by `start=hyborian`); and `closing`, which is
 always asked. `mood` and `hitop` are asked or
-skipped together.
+skipped together. `demographics1`, `demographics2` and `demographics3` belong to no level: they open the first three
+levels, whatever those turn out to be, or the three after the levels `?start=` brings forward, which open on their own
+questions; `?only=` and `?skip=` take them, `?start=` does not.
 
 ## Similar tests online
 
@@ -129,11 +131,12 @@ Not asked yet. "Partly there" names what the test already asks on the same groun
 | Cognition | Cross-modal correspondences | | |
 | Cognition | Abstract vs. concrete construal | | |
 | Cognition | Rumination and worry | | CERQ's Rumination (Mind & Heart) |
-| Cognition | Intolerance to Uncertainty | |  |
+| Cognition | Intolerance to Uncertainty | Would go in Beyond Madness (see Pop-Culture Hooks) |  |
 | Unusual experiences | Paranormal beliefs | | |
 | Unusual experiences | Unusual sensory experiences | | HiTOP-BR's Unusual Experiences (Mood & Health) |
 | Unusual experiences | Fantasy proneness | | |
 | Unusual experiences | Psychotic experiences | | HiTOP-BR's Unusual Experiences (Mood & Health) |
+| Reality | Fake news and reality | A level of its own: see below | CMQ's Suspicion (Where You Stand), BAIT (AI Expertise & Usage) |
 | Identity | Masculine–feminine | | |
 | Hormones | Menstrual cycle phase, contraceptive use, last sexual activity | For females. Needs a line saying why it is asked (conscious experience is shaped by hormonal state, which influences cognition and emotion) and a way to skip | |
 | Sleep | Parasomnias and boundary failures | IOWA / MPS. **Ask Giulia about the validation of her scale** | |
@@ -152,7 +155,7 @@ Not asked yet. "Partly there" names what the test already asks on the same groun
 | Self and others | Public and private self-consciousness | | |
 | Self and others | Shame and disgust | | |
 | Self and others | Social connection | | |
-| Self and others | Suggestibility | | |
+| Self and others | Suggestibility | SSS (Kotov et al., 2004), as in IllusionGameSuggestibility; see **Fake news and reality**, below | |
 | Self and others | PCS? | | |
 | Wellbeing and emotions | Coping | | CERQ-short (Mind & Heart) |
 | Wellbeing and emotions | Self-rated health | | Health single (General) |
@@ -161,7 +164,7 @@ Not asked yet. "Partly there" names what the test already asks on the same groun
 | Wellbeing and emotions | Wisdom | | |
 | Wellbeing and emotions | Aesthetic experiences | | `Aesthetics_Beauty` single (General) |
 | Politics | Words Can Harm Scale (WCHS) | | |
-| Politics | Nietzscheanism | | |
+| Politics | Nietzscheanism | Would go in Which Philosopher (see Pop-Culture Hooks) | |
 | Relationship with AI | Relationship | See below | BAIT (AI Expertise & Usage) |
 | Relationship with AI | Revelation | See below | |
 | Relationship with AI | Roles given to a chatbot | Companion, friend, therapist, romantic partner, sexual partner, as one tick-any-number item, after Buck & Maheux (2026, *JMIR*) | |
@@ -179,6 +182,106 @@ revelation, so measure the stages rather than the outcome: two facets on the BAI
 
 Buck & Maheux's GAATES items ("AI helps me make sense of secret messages intended only for me", "I've discovered hidden truths
 about the world through AI") are the clinical end of the same ground.
+
+**Fake news and reality**, a possible level of its own: how somebody tells true from false, how easily they are moved and how
+firmly they hold on to what is real. It would be the test's first measure of truth as a *performance*, and "can you spot fake
+news?" is a question people want answered about themselves. The lab has run most of the pieces already: the MIST and the MOCRI
+(FakeNewsIntervention), the SSS (IllusionGameSuggestibility), 512 news excerpts crossing fake and real with written by a person
+and by AI, on four topics (FakeNewsValidation), real and AI-generated faces (FakeFace, and FictionChoco's CHOCO model for a
+real-to-fake slider), the Illusion Game and the COVID fake news study (2021covidfakenews).
+
+- *Telling true from false*: tasks with right answers, scored through `correct:` as the ICAR is.
+  - **MIST-16** (Maertens et al., 2023): headlines judged real or fake, read in its Verification done framework — V
+    (discernment), r (real news detected), f (fake news detected), d (distrust) and n (naïveté). Only r and f need be
+    dimensions: counted in items, n is max(0, r − f) and d is max(0, f − r), so the engine needs nothing new. Published UK and
+    US norms. The items are American and from 2018–19, which dates a real headline more than a fake one.
+  - FakeNewsIntervention's own extension (COVID and general headlines) is not validated, and some of its "fake" items are
+    debunkings — "Fact Check: No, Bill Gates Did Not Create COVID-19…" and "Social Media Scare: False Claims That COVID-19 Was
+    Engineered…" are true headlines about false claims — so it wants relabelling before any of it is reused.
+  - **FakeNewsValidation's excerpts**, asked two ways: true or false, and written by a person or by AI. The grid answers both
+    at one press, but scoring both wants an item to feed two dimensions, which it cannot yet. It would put the BAIT's beliefs
+    about how realistic AI is beside whether somebody can actually tell.
+  - **Real or AI faces** (FakeFace), as picture items on the ICAR's pattern: a direct check on the BAIT's four Discrimination
+    items, which ask how well people can do exactly this and are asked but not scored.
+  - **MOCRI-12**: manipulative against non-manipulative posts, the techniques (ad hominem, false dichotomies, scapegoating,
+    doom) rather than the facts.
+  - **Bullshit receptivity** (Pennycook et al., 2015): sentences strung together out of buzzwords against real ones, read as
+    sensitivity, one rated against the other. The scientific version is Evans et al. (2020).
+  - **Overclaiming** (OCQ; Paulhus et al., 2003): claiming to know names and ideas that do not exist, scored by signal
+    detection as accuracy and bias. It would sit well beside the KSE-G.
+  - **Visual illusions** (the Illusion Game; Makowski et al., 2023): a few Müller-Lyer, Ebbinghaus and vertical-horizontal
+    trials as picture items — whether your eyes can be trusted. Untimed here, so a judgement rather than the game's sensitivity.
+  - **Confidence**: before the task, where you put yourself among a hundred people at spotting fake news (a `curve` item), set
+    against where you come out. Overconfidence goes with falling for false news (Lyons et al., 2021), and the gap is the most
+    shareable number the level could give.
+- *How you decide what is true*:
+  - **Epistemic beliefs** (Garrett & Weeks, 2017): Faith in Intuition for Facts, Need for Evidence and Truth is Political,
+    three short scales that predict misperceptions.
+  - **Actively open-minded thinking** (Haran et al., 2013; 7 items) and **intellectual humility** (Leary et al., 2017; 6 items).
+  - **Cognitive reflection**, the "lazy, not biased" account of falling for fake news (Pennycook & Rand, 2019): the CRT-2
+    (Thomson & Oppenheimer, 2016) or the verbal CRT (Sirota et al., 2021), since everybody knows the bat and the ball. A second
+    right-answer test beside the ICAR.
+  - **Where the news comes from, and whether it is avoided**: the Reuters Institute Digital News Report's items, with yearly
+    norms by country. **Trust** in science, the media and parliament: the ESS items, with European norms.
+- *How easily you are moved*:
+  - **Suggestibility**: the SSS (Kotov et al., 2004; 21 items, as in IllusionGameSuggestibility). Its physiological items
+    (thirst at an imagined drink, a chill at somebody else's shiver) are on the MINT's ground.
+  - **Absorption** and **fantasy proneness** (above). The PCS (Lush et al., 2021) is a recorded procedure of suggestions rather
+    than a questionnaire, and long.
+  - Fakeness from the other side, fooling rather than being fooled: **bullshitting frequency** (Littrell et al., 2021;
+    persuasive and evasive) and the lab's own **Lying Profile Questionnaire** (Makowski et al., 2023; ability, frequency,
+    negativity, contextuality).
+- *Reality itself*: derealisation and depersonalisation (the CDS-2, commented out in the `mood` block); the sense of reality
+  (De Pisapia's preprint, in `RealityModel`); paranormal beliefs (above); and conspiracy beliefs — the GCBS-15 (Brotherton et
+  al., 2013), specific beliefs beside the CMQ's mentality — though the CMQ is on Where You Stand and the MIST's fake items are
+  conspiracy headlines already, so one of the three is probably enough.
+- *Across the run*: an illusory truth effect, statements shown on one screen and rated for truth among new ones later, which
+  only a run this long can do. Its reliability as an individual difference is poor, and the exposure has to be dressed as
+  something else, which is close to deception.
+- *The figure*: a plane of discernment (how well) against bias (which way you lean, believing or doubting), a character in each
+  corner — the detective, the believer, the cynic, the one lost in the fog. Or **Snell's window**, on the descent's own ground:
+  from under water the sky is seen through one bright circle and the rest of the surface is a mirror of the deep, the window
+  as wide as your discernment and tinted by the way you lean. **Plato's cave** (public domain) is the hook version: the shadows
+  on the wall and how far out you would climb, an ascent where the test is a descent.
+- *Before it goes in*: **a debrief** — a level of fake headlines has to end by saying which were fake, every one, so its key
+  is shown on the results, unlike the ICAR's (the MIST's is published anyway); several MIST items are political
+  ("Left-Wingers Are More Likely to Lie…"), which brings the level near Article 9 as the opinions level is; and a budget: the
+  MIST-16 and the SSS alone are 37 items.
+
+## Pop-Culture Hooks
+
+Short levels on the Hyborian Age's pattern: written to be shared in a fandom, kept out of every battery and reached by
+`?start=`, so that the result is the way into the rest of the test. Each wants a construct the test does not measure yet,
+with real norms where there are any (a comparison with a named crowd is what gets shared); a result somebody would post,
+whichever it is; a figure that works as the picture of the post; and an entry page under `start/` with a card of its own.
+Nothing on screen carries a live trademark, the Hyborian Age's rule about "Conan".
+
+- **Morality.** D&D-style alignment: Good–Evil from the Light Triad (Kaufman et al., 2019) against the Short Dark Triad
+  (Jones & Paulhus, 2014), both with published norms, and Lawful–Chaotic from a need-for-structure or rule-orientation
+  scale. Read back as the nine-cell alignment chart, which is a meme already, with a painted card a cell, and the Good–Evil
+  axis doubling as a light side and a dark side, after the Force in Star Wars. Alignment is in the D&D System Reference
+  Document (SRD 5.1, CC-BY-4.0), so it wants an attribution line and nothing more; "the Force", "Jedi" and "Sith" are
+  Lucasfilm's, so on screen it is a light side and a dark side and nothing named. Could also include our own Lie Profile 
+  scale, and bullshitting frequency.
+- **Which Philosopher.** Questions out of the 2020 PhilPapers Survey (the trolley, the experience machine, the
+  teletransporter, free will, God, moral realism), read against the public answers of about 1,800 professional
+  philosophers, with the Nietzscheanism scale (under Politics, above) and perhaps the Oxford Utilitarianism Scale (Kahane
+  et al., 2018). Read back as the historical philosopher nearest your answers, their positions coded by hand, lit on
+  Raphael's *School of Athens*. Philosophical beliefs are Article 9, like the opinions level. Could also covertly include
+  bullshit receptivity and pseudo-profound bullshit (Pennycook et al., 2015).
+- **Beyond Madness.** Lovecraft's cosmic horror, as how deep you would go before you went mad: curiosity (the 5DC,
+  Kashdan et al., 2018) pulling you down against intolerance of uncertainty (the IUS-12, above) and awe. Read back as a
+  depth and a part in the story — the scholar, the sailor, the cultist, the narrator who lives to write it down. The most
+  at home of them, the test being a descent already: its entry page can name The World after it (`?start=<block>,primals`)
+  so that the sea comes next. Lovecraft is public domain in the UK.
+- **Superpowers.** Which superpower you would be given, read off motives (power, achievement, affiliation, autonomy),
+  which nothing in the test measures. Generic powers, no Marvel or DC.
+- **Zombie Apocalypse.** How many days you would last: pathogen disgust (the TDDS's Pathogen items), generalised trust
+  (the ESS item, which has real norms), risk-taking (DOSPERT) and preparedness. Read back as the day you would fall on,
+  against the crowd of everybody else's.
+- **MBTI.** For the pop factor: the biggest audience of any, with a subreddit a type. Four letters out of open items (the
+  OEJTS), then set against what the Character level measures, which makes it a Barnum probe beside the star sign.
+  "MBTI" and "Myers-Briggs" are trademarks, so on screen it is "your four letters".
 
 ## Inspiration and Resources
 

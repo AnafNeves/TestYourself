@@ -9,30 +9,39 @@
    General. It is not in the ethics application. It is written to be shared
    in the fandom, and to be worth reading beside the rest of the run.
 
-   WHAT IS ASKED: one briefing and one questionnaire of twenty-one custom
-   statements, unvalidated, on a seven-point agreement scale, under seven
-   dimensions. Three say how somebody would live in that world and four say
-   what they take the world to be. The level closes on the first three
-   (js/figures/hyborian.js): which HERO they make somebody, out of eight,
-   shown as the hero's painted card with the person's three stats on a card
+   WHAT IS ASKED: one briefing and one questionnaire of twenty-four custom
+   statements, unvalidated, on a seven-point agreement scale, under eight
+   dimensions. Four say how somebody would live in that world and four say
+   what they take the world to be. The level closes on the first four
+   (js/figures/hyborian.js): which HERO they make somebody, out of eleven,
+   shown as the hero's painted card with the person's four stats on a card
    beside it. The other four were written to read which GOD would claim
    them, out of five, from dimensions disjoint from the hero's so that the
    pair would say something — a Thief claimed by Mitra is news — and THE GOD
    IS NOT SHOWN FOR NOW (September 2026): the four are still asked and saved,
    and the reading is kept in the figure file, drawn by nothing.
 
-     The hero, three dimensions, each a corner of a cube:
+     The hero, four dimensions, the nearest of eleven written profiles:
        Burning     intensity over safety; vitalism. After Conan's creed in
                    Queen of the Black Coast: "let me live deep while I live".
                    Nothing else in the run measures it
-       The Code    honour and plain dealing against guile, one bipolar scale:
-                   two items keep one's word, one (reversed) is the thief's —
-                   rules are for those not clever enough to get round them. Hook:
-                   HEXACO Honesty-Humility, and the opinions level's
-                   Order (the law obeyed though thought wrong)
+       The Code    faith kept and plain dealing against guile, one bipolar
+                   scale: two items keep one's word at a cost, one (reversed)
+                   is the thief's — honour as a luxury with a price. Honour, not
+                   lawfulness: nothing in it asks about rules, which the
+                   barbarian scorns (see the items). Hook: HEXACO
+                   Honesty-Humility
        Barbarism   civilisation as soft, unnatural and passing — the thesis
                    of Beyond the Black River. Declinism. Hook: the opinions
                    level's Enhancement, the other way
+       Splendour   the appetite for rank and fine things: to stand above
+                   others with silk and gold about you — "the jeweled
+                   thrones of the Earth". Not bodily pleasure, which is
+                   Sacred Pleasure's, and not wildness. Added (September
+                   2026) for the Princess, after Yasmina of The People of
+                   the Black Circle, whose ending is this choice. Hook:
+                   HEXACO Honesty-Humility (greed avoidance, modesty), the
+                   other way, and Barbarism, which it likely runs against
 
      The god, four dimensions:
        Indifference    Crom's: no god or fate is watching, and asking one
@@ -64,7 +73,7 @@
    Asking No One is folded into Indifference through its prayer item.
 
    NO NORMS, on purpose, like the archetypes' wheel: the hero is the nearest
-   corner of the cube of three reaches and the god the nearest of five
+   of eleven profiles to the four reaches and the god the nearest of five
    written profiles, so nothing is read against other people and no invented
    mean is needed. `profile: false`, since the whole-run web is where
    somebody stands against others and none of this is that. No attention
@@ -108,144 +117,268 @@ defineBlock("hyborian", [
         },
 
         items: [
+            // HOW THE ITEMS ARE WRITTEN (third draft, September 2026). Three
+            // rules, and the reasons for them.
+            //
+            // EVERY ITEM IS CONTESTED, forward or reversed. The hero is read
+            // off a cut at a half — a mean of 4 on the 1–7 scale — so a
+            // dimension tells people apart only if the room splits over its
+            // items. The first draft's were ones nearly everybody agrees
+            // with ("I keep my word even when nobody would know") or nearly
+            // everybody rejects, so most people landed on one corner of the
+            // box and the same two heroes. The second draft's rule was one
+            // reversed item easy to agree with against forward items that
+            // cost something, and that does not centre the scale either:
+            // agreeing with everything scores (7 + 7 + 1) / 3 = 5, a reach
+            // of two thirds, and lands high, so a soft reversed item is a
+            // floor and not a counterweight. Now each item is written so
+            // that people plausibly split over it — the long careful life
+            // is given its due rather than sneered at ("lived carefully",
+            // not "playing safe"), and the cautious or civilised end is
+            // never the silly answer, since an item that tells the person
+            // which answer is the foolish one is answered on that alone.
+            // Where the earlier wording was a memory ("the best moments of
+            // my life…"), a word that confounds the scale ("holy", which
+            // a secular hedonist rejects and lands as an ascetic) or a
+            // claim so strong that nearly everybody rejects it ("anyone can
+            // become anything", "a clever lie is a weapon"), it went.
+            //
+            // ONE PERSPECTIVE, THE CREED'S. Every item is a maxim, in the
+            // impersonal or the generic "we", and none says "I". A maxim
+            // asks whether you endorse a philosophy; "I would rather…" asks
+            // you to report on yourself, and the two are answered
+            // differently in good faith — somebody can hold that a short
+            // blazing life is the better one and know they would not live
+            // it. Mixed inside a three-item scale, that gap is error. The
+            // Code's guile pole in the first person ("I would lie to win")
+            // also carries a social cost the maxim does not, and the four
+            // god dimensions are beliefs about the world, which cannot be
+            // put in the first person at all. The briefing frames the items
+            // as statements of the age's philosophy and the reading is which
+            // hero somebody WOULD HAVE BEEN, so endorsement is the task
+            // being set. The cost, accepted: a creed lets people answer as
+            // the hero they admire rather than as themselves. On this level
+            // that is the game, and it is the same game on every item.
+            //
+            // PLAIN WORDS, ONE CLAIM AN ITEM, IN HOWARD'S REGISTER. His
+            // "better … than", walls and gods and feasts and thrones, two
+            // items his own lines — but nothing archaic enough to be misread
+            // ("befalls", "lived deep", "to the hilt", "hearth" were tried
+            // and read awkwardly or old), no item that is two claims, and no
+            // joke: a witty line ("whatever comes after death can wait
+            // until I get there") is answered on its tone. The wit is in
+            // the choice an item forces, not in its phrasing.
+            //
+            // A "better X than Y" item is worth having where it fits:
+            // agreeing with one is taking a side, which blunts yea-saying in
+            // a scale too short to balance by keying. Two forward and one
+            // reversed is the shape throughout, so the scale is centred by
+            // content rather than by keying; two and two would put a
+            // yea-sayer exactly on the cut and halve the exact ties a mean
+            // of 4 makes, at the price of a fourth item a dimension and a
+            // fourth minute, and is the change to make first if the data say
+            // the cut is off. The keys are the first draft's, the level
+            // being asked by no battery and nothing yet pooled on them.
+
             // The hero ---------------------------------------------------
 
-            // Burning: intensity over safety, and the dark days as part of a
-            // full life rather than a flaw in it.
+            // Burning: intensity over safety. The first item is the
+            // Barbarian's creed in Queen of the Black Coast ("let me live
+            // deep while I live") set against its opposite. The second asks
+            // the value and not the memory. The reversed one is the
+            // Frontiersman's: a fire against an adventure is a real trade,
+            // where "the wiser choice" was one everybody agreed with.
             {
                 key: "Hyborian_Burning_1",
                 dimension: "Burning",
-                text: "I would rather have a short, blazing life than a long, careful one",
+                text: "Better a short life lived to the full than a long one lived carefully",
             },
             {
                 key: "Hyborian_Burning_2",
                 dimension: "Burning",
-                text: "I would not trade my darkest days for a flatter life",
+                text: "Danger is part of what makes life worth living",
             },
             {
                 key: "Hyborian_Burning_3",
                 dimension: "Burning",
-                text: "Playing it safe is a waste of a life",
+                text: "A warm fire at home is worth more than any adventure",
+                reverse: true,
             },
 
-            // The Code: honour and plain dealing at one end, the thief's
-            // guile at the other. The reversed item is the Thief's Luck of
-            // the first draft, folded in as the other pole; its second item
-            // ("The clever take what the strong cannot hold") went to keep
-            // three items a dimension.
+            // The Code: faith kept and plain dealing at one end, guile at the
+            // other. It is NOT respect for the law, which the first draft's
+            // reversed item ("Rules are for people who aren't clever enough
+            // to get around them") made it: Howard's barbarian scorns every
+            // law the cities write and keeps his word, so an item about rules
+            // set the Code against Barbarism and took points off the
+            // Barbarian for being one. Nothing here mentions a rule. The
+            // guile pole is the Thief's and the Sorcerer's real position —
+            // honour as a luxury with a price — which people split over,
+            // where "a clever lie is a weapon like any other" was rejected
+            // by almost everybody and told nobody apart.
             {
                 key: "Hyborian_Code_1",
                 dimension: "The Code",
-                text: "I keep my word even when nobody would know I broke it",
+                text: "A promise made to an enemy is still a promise",
             },
             {
                 key: "Hyborian_Code_2",
                 dimension: "The Code",
-                text: "I say what I mean, even when it costs me",
+                text: "Better to lose a fair fight than to win by a trick",
             },
             {
                 key: "Hyborian_Code_3",
                 dimension: "The Code",
-                text: "Rules are for people who aren't clever enough to get around them",
+                text: "Honour is a fine thing until it gets you killed",
                 reverse: true,
             },
 
-            // Barbarism: civilisation as soft, unnatural and passing.
+            // Barbarism: civilisation as soft, unnatural and passing. The
+            // first item is the "soft" facet and the second the "passing"
+            // one — the borderer's closing line in Beyond the Black River
+            // ("barbarism must always ultimately triumph"), cut to one
+            // claim; the second draft's "whim of circumstance" was opaque
+            // out of context. The reversed item answers the first directly
+            // and keeps the three nouns, where "the finest things humankind
+            // has ever made" was agreed with by nearly everyone.
             {
                 key: "Hyborian_Barbarism_1",
                 dimension: "Barbarism",
-                text: "Modern life has made people soft",
+                text: "Safe behind their walls, civilised people have grown soft",
             },
             {
                 key: "Hyborian_Barbarism_2",
                 dimension: "Barbarism",
-                text: "Life today is better than it has ever been",
-                reverse: true,
+                text: "In the end, barbarism always triumphs over civilisation",
             },
             {
                 key: "Hyborian_Barbarism_3",
                 dimension: "Barbarism",
-                text: "People are stronger when life is harder",
+                text: "Cities, laws and learning have made people better, not softer",
+                reverse: true,
+            },
+
+            // Splendour: rank and fine things. One item for rank — a throne
+            // against the crowd, which costs something to agree with, where
+            // "rather rule than be ruled" was agreed with by anybody who
+            // would rather not be ruled — one for taste, and the reversed
+            // one a fan will know: the Barbarian's answer to Yasmina in The
+            // People of the Black Circle ("To chafe your rump on gold
+            // thrones…?"), a claim strong enough that the room splits.
+            {
+                key: "Hyborian_Splendour_1",
+                dimension: "Splendour",
+                text: "Better to sit on the throne than to stand in the crowd",
+            },
+            {
+                key: "Hyborian_Splendour_2",
+                dimension: "Splendour",
+                text: "Silk, gold and fine wine are worth every coin they cost",
+            },
+            {
+                key: "Hyborian_Splendour_3",
+                dimension: "Splendour",
+                text: "A gold throne is a cage, not a prize",
+                reverse: true,
             },
 
             // The god ----------------------------------------------------
 
-            // Indifference: no god or fate is watching. The third item is
-            // Asking No One's, and is what makes the scale Crom's rather
-            // than a plain absence of providence.
+            // Indifference: no god or fate is watching. The second item is
+            // Crom's own line in Queen of the Black Coast ("Little he cares
+            // if men live or die") and what makes the dimension his — an
+            // indifferent god is still a god. The third is Asking No One's,
+            // prayer as inaction, which people split over; "better to trust
+            // your own strength than to pray" was agreed with by the devout
+            // too, strength not excluding prayer.
             {
                 key: "Hyborian_Indifference_1",
                 dimension: "Indifference",
-                text: "Things happen for a reason",
+                text: "Everything that happens to us happens for a reason",
                 reverse: true,
             },
             {
                 key: "Hyborian_Indifference_2",
                 dimension: "Indifference",
-                text: "No god or fate is watching over me",
+                text: "If there are gods, they care little whether we live or die",
             },
             {
                 key: "Hyborian_Indifference_3",
                 dimension: "Indifference",
-                text: "Praying for something is a way of not doing anything about it",
+                text: "Praying for something is a way of doing nothing about it",
             },
 
-            // Afterlife: something comes after death, and it matters. The
-            // two reversed items are the grey realm's, which is where a low
-            // score sits.
+            // Afterlife: something comes after death (the second item), and
+            // it matters to how one lives (the first). The reversed item is
+            // the grey realm's shrug on the second facet — this life as the
+            // only one worth the worry — which an unbeliever and a believer
+            // who lives as if it made no difference both agree with; "death
+            // is the end, and nothing waits beyond it" only mirrored the
+            // belief item, and the first draft's "This life does not need
+            // an afterlife to be worth living" was agreed with by believers
+            // and unbelievers alike.
             {
                 key: "Hyborian_Afterlife_1",
                 dimension: "Afterlife",
-                text: "What happens after death matters to how I live",
+                text: "What comes after death should shape how we live now",
             },
             {
                 key: "Hyborian_Afterlife_2",
                 dimension: "Afterlife",
-                text: "When it's over, it's over, and that's fine",
-                reverse: true,
+                text: "Some part of us goes on after death",
             },
             {
                 key: "Hyborian_Afterlife_3",
                 dimension: "Afterlife",
-                text: "This life does not need an afterlife to be worth living",
+                text: "This life is the only one worth worrying about",
                 reverse: true,
             },
 
             // The Gift at Birth: what you have was given, and the rest is
-            // what you do with it.
+            // what you do with it. The first item is Crom's gift. The
+            // reversed one is the self-made claim, which people split over
+            // and which mirrors neither forward item; "with enough will,
+            // anyone can become anything" was strong enough that most
+            // rejected it.
             {
                 key: "Hyborian_Gift_1",
                 dimension: "The Gift at Birth",
-                text: "You are born with what you have; the rest is about what you do with it",
+                text: "Courage is something you are born with, not something you learn",
             },
             {
                 key: "Hyborian_Gift_2",
                 dimension: "The Gift at Birth",
-                text: "Nobody can give you courage; you either have it or you don't",
+                text: "What a person is made of shows early and changes little",
             },
             {
                 key: "Hyborian_Gift_3",
                 dimension: "The Gift at Birth",
-                text: "People can become anything they set their minds to",
+                text: "A person is made by their choices, not by their birth",
                 reverse: true,
             },
 
             // Sacred Pleasure: the body and its pleasures as holy rather
-            // than base. The reversed item is the ascetic's.
+            // than base — but not in those words. "Holy" and "worship"
+            // confounded the scale with religiosity, a secular hedonist
+            // rejecting the word and landing as an ascetic; "nothing to be
+            // ashamed of" met near-universal agreement. So the anti-ascetic
+            // claim stated plainly, Howard's feasts kept with the soul in
+            // them and a real opposite beside them, and the reversed item
+            // the ascetic's.
             {
                 key: "Hyborian_Pleasure_1",
                 dimension: "Sacred Pleasure",
-                text: "Pleasure is a gift, not a temptation",
+                text: "There is no virtue in self-denial",
             },
             {
                 key: "Hyborian_Pleasure_2",
                 dimension: "Sacred Pleasure",
-                text: "Enjoying the body is nothing to be ashamed of",
+                text: "Feasting does more for the soul than fasting",
             },
             {
                 key: "Hyborian_Pleasure_3",
                 dimension: "Sacred Pleasure",
-                text: "The body's appetites are there to be controlled, not indulged",
+                text: "The body's appetites are there to be mastered, not indulged",
                 reverse: true,
             },
         ],
@@ -256,8 +389,8 @@ defineBlock("hyborian", [
    PICTURES — prompts for the cards, being tried out and not decided on.
 
    The hero cards are these pictures, cut for the page by
-   assets/hyborian/source/cut.py; a hero without one (the Frontiersman) is
-   drawn as its emblem on a card of the same shape. These are the prompts (Gemini, Grok
+   assets/hyborian/source/cut.py, all eight heroes now; a hero without one
+   would be drawn as its emblem on a card of the same shape. These are the prompts (Gemini, Grok
    Imagine), one a hero and one a god, thirteen in the end — each drawn as a
    vintage collectible card, the way a fantasy trading card or a character
    card of an old fantasy board game looks, but all picture: an ornate border
@@ -296,9 +429,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -306,14 +439,14 @@ defineBlock("hyborian", [
      Pulp, dramatic, mature. Obviously hand-painted.
 
      SUBJECT:
-     A pirate queen of an ancient sea stands at the prow of her long, 
-     sleek black galley, seen full length, one foot on the rail 
+     A pirate queen of an ancient sea stands at the prow of her long,
+     sleek black galley, seen full length, one foot on the rail
      and one hand resting near a jeweled dagger sheathed at her hip.
-     She is young, tall, and fierce, formed like a goddess: lithe, alluring, 
-     with ivory-white skin and a mass of midnight-black hair blown back by the hot wind. 
-     Her dark eyes burn with untamed intensity. In true Shemite reaver fashion, 
-     she wears a wide, jeweled girdle of heavy crimson silk, heavy gold armlets, and bare feet. 
-     Beyond the low-waisted war vessel lies a sinister jungle coastline where a black, sluggish river empties into the sea under a copper, hazy sunset. 
+     She is young, tall, and fierce, formed like a goddess: lithe, alluring,
+     with ivory-white skin and a mass of midnight-black hair blown back by the hot wind.
+     Her dark eyes burn with untamed intensity. In true Shemite reaver fashion,
+     she wears a wide, jeweled girdle of heavy crimson silk, heavy gold armlets, and bare feet.
+     Beyond the low-waisted war vessel lies a sinister jungle coastline where a black, sluggish river empties into the sea under a copper, hazy sunset.
      Ancient Near Eastern antiquity, not a seventeenth-century pirate: no tricornes, no cutlasses, no eye patches.
 
      -----
@@ -329,9 +462,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -366,9 +499,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -379,9 +512,9 @@ defineBlock("hyborian", [
      A woman mercenary stands full length in the shade of a great stone
      gateway of a crowded caravan city, one shoulder against a carved
      pillar, one hand resting easily on the hilt of a straight sword, a
-     heavy purse of coin at her belt. She is tall, lean and strong, in her early thirties, 
+     heavy purse of coin at her belt. She is tall, lean and strong, in her early thirties,
      with wild fair hair tied back and
-     cool, steady grey eyes that miss nothing. She is free and independent. Still beautiful and attractive. 
+     cool, steady grey eyes that miss nothing. She is free and independent. Still beautiful and attractive.
      She wears a plain loose white tunic with a leather belt and a light chainmail, and a travelling cloak thrown
      back. Legs gleaming in the heat, with high laced sandals. Behind her, through the gate, a noon-bright bazaar of striped
      awnings, camels, merchants and guards of a dozen lands. At ease
@@ -389,7 +522,12 @@ defineBlock("hyborian", [
      medieval: no red hair, no plate armour.
 
     -----
-     THE THIEF (the thieves' quarter of The Tower of the Elephant)
+     THE THIEF (after Taurus of Nemedia, the prince of thieves, in The
+     Tower of the Elephant: "tall as the Cimmerian, and heavier; he was
+     big-bellied and fat, but his every movement betokened a subtle dynamic
+     magnetism", barefoot, a knotted rope over his shoulder; he killed the
+     tower's lions with a powder blown from a tube. Save the original as
+     source/taurus1.jpg)
 
      Don't use memory. Start fresh.
 
@@ -401,9 +539,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -411,17 +549,20 @@ defineBlock("hyborian", [
      Pulp, dramatic, mature. Obviously hand-painted.
 
      SUBJECT:
-     A thief crouches full length on the edge of a flat rooftop at
-     night, poised to jump, above a sprawling ancient city of domes, towers
-     and lamp-lit alleys. He is quick, with a sharp, clever
-     face half in shadow, a crooked grin and bright dark eyes; The rogue wears
-     close-fitting dark cloth, soft leather slippers, a coil of silk rope
-     over one shoulder and a slim curved knife at his hip. Across the city,
-     rising above everything, stands one tall, slender tower of pale stone
-     with a single red jewel glowing at its top, and he is looking at it.
-     A thin moon, deep blue night, warm lamplight below. Ancient Near
-     Eastern antiquity, not medieval: no hooded modern assassin, no mask, no
-     bow or crossbow, no Robin Hood hat.
+     A master thief crouches full length in the dark of a moonlit garden at
+     the foot of a high wall, one hand raised for silence, a knotted silk
+     rope coiled over his shoulder. He is tall and heavy in the prime of
+     middle age, big-bellied and powerful rather than comic, yet poised on
+     the balls of his bare feet as lightly as a cat; a sly, good-humoured
+     face of a rogue with a short dark beard, and keen eyes that glint in the
+     starlight. He wears a dark sleeveless tunic belted under his belly, and
+     at the belt a slim hollow tube of copper and a short knife. Behind him,
+     rising out of the garden into the stars, stands one tall, slender tower
+     of pale stone gleaming like frosted silver, its rim crusted with jewels,
+     a single red jewel glowing at its top. Among the dark shrubs, half-seen,
+     the shape of a crouching lion. Deep blue night, silver starlight on the
+     tower. Ancient Near Eastern antiquity, not medieval: no hood, no mask, no
+     bow or crossbow, no modern assassin, not a young acrobat.
 
 
      -----
@@ -437,9 +578,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -474,9 +615,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -493,7 +634,7 @@ defineBlock("hyborian", [
      single green lamp burns on an altar behind him, and through a high
      doorway the black shape of a pyramid stands against a starless sky.
      Patient, learned, bound by nothing. Colours of black, bronze and a
-     sickly green. Antiquity older than Egypt. No white beard, 
+     sickly green. Antiquity older than Egypt. No white beard,
      no staff with a crystal, no glowing magic effects.
 
      -----
@@ -510,9 +651,9 @@ defineBlock("hyborian", [
      faint print grain, a little wear at the edges. One clear silhouette that
      still reads when the card is small.
 
-     Simple warm bronze border decoration. 
+     Simple warm bronze border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -532,6 +673,179 @@ defineBlock("hyborian", [
      firelight. Ancient, not a fairy-tale witch: no pointed hat, no
      broomstick, no cauldron, no green skin, no cackling crone.
 
+     -----
+     THE FRONTIERSMAN (after Balthus and his dog, in Beyond the Black River)
+
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration.
+
+     STYLE:
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A young settler stands full length at the edge of a forest clearing at
+     dusk, an axe on his shoulder, a great shaggy grey hound at his side
+     with its hackles up. He is sturdy, sandy-haired and open-faced, not a
+     warrior by trade but steady and brave, looking out into the trees with
+     wary respect. He wears a homespun wool tunic, leather leggings and
+     moccasin-like shoes, a hunting knife and a horn at his belt. Behind him
+     stands a stockade fort of sharpened logs with a thread of smoke rising;
+     in front of him a dark, sluggish river, and beyond it an endless
+     primeval forest, black and silent, where something is watching. Deep
+     green and amber light fading to night. Ancient antiquity, not colonial
+     America: no muskets, no coonskin cap, no tricorne.
+
+     -----
+     THE PRINCESS (after Yasmina, the Devi of Vendhya, in The People of the
+     Black Circle: "the suppleness and beauty of her tall, slender figure.
+     A filmy veil fell below her breasts, supported by a flowing head-dress
+     bound about with a triple gold braid and adorned with a golden
+     crescent", a jeweled dagger in her girdle; at the end she goes back
+     to her throne rather than into the hills.)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration.
+
+     STYLE:
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A young queen lies on a sofa next to the arched window of a mountain
+     fortress at dusk, one hand lifting a filmy veil from her face, the
+     other resting on a jewelled dagger. She is tall and
+     slender, proud and imperious, and beautiful and alluring, with dark, commanding eyes and long black
+     hair; she wears gossamer robes of pale silk over rich transparent garments of
+     crimson and gold, and a flowing head-dress bound with a triple braid of
+     gold and set with a golden crescent. Behind her, a chamber of carved
+     ivory, silk cushions and brass lamps; through the window in front of
+     her, the wild blue peaks of great mountains and, very small on the pass
+     far below, a lone rider. Splendour at her back and the wilds before
+     her. Warm gold lamplight inside, cold blue dusk outside. Early Indian
+     antiquity, older than any empire in the history books: not Mughal, not
+     a film costume, no tiara, not a fairy-tale princess, no pink.
+
+     -----
+     THE EXILE (after Yag-Kosha, the being from Yag in The Tower of the
+     Elephant: "the image had the body of a man, naked, and
+     green in color; but the head was one of nightmare and madness … the
+     wide flaring ears, the curling proboscis, on either side of which
+     stood white tusks tipped with round golden balls"; blind, topaz-eyed,
+     on a marble couch under a domed golden ceiling, the walls green jade,
+     the floor ivory, incense rising from a brazier on a golden tripod. He
+     came to earth outcast from the green planet Yag, watched the ages
+     pass, was a god to jungle-folk, and would not teach Yara the magic to
+     enslave kings.)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration.
+
+     STYLE:
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     An ancient, sorrowful alien being sits full length on a marble couch in a
+     round chamber high in a tower: a man-like tall and lanky body, naked but for a
+     cloth about the loins, smooth and green in colour, and the great head reminiscent of
+     an elephant, with wide flaring ears, a long curling trunk-like nose and white
+     tusks tipped with round golden balls. His eyes are topaz and blind,
+     tears on his cheeks, and his limbs bear the old marks of torment; yet
+     he sits upright, dignified and patient, his trunk raised gently towards
+     the viewer as a blind man reaches out. Above him a domed golden
+     ceiling, around him walls of green jade and a floor of ivory with thick
+     rugs; smoke of incense rising from a brazier on a golden tripod, and
+     through a narrow window a sky full of stars, one of them faintly green.
+     Greens, golds and warm incense haze. Grave, tender and very old, not a
+     monster and not a Hindu god: no many arms, no crown, no jewels on the
+     body, no chains, no blood.
+
+
+     -----
+     THE SHAMAN (after Zogar Sag, the Pictish wizard of Beyond the Black
+     River: "a lean figure of middle height, almost hidden in ostrich plumes
+     set on a harness of leather and copper. From amidst the plumes peered a
+     hideous and malevolent face"; his eyes "shone red as blood in the
+     firelight" as he called leopards and pythons out of the forest, in front
+     of a hut "decorated by human skulls dangling from the eaves". The
+     plumes are Kushite, traded up the coast, which is why they are ostrich
+     and not any bird of that forest. Save the original as
+     source/shaman1.jpg)
+
+     Don't use memory. Start fresh.
+
+     A single vintage fantasy collectible card, seen straight on and filling
+     the image, 5:7. The painting runs the full height and width
+     of the card. No border, No title bar, no text
+     box, no name, no numbers, no symbols, no lettering or runes anywhere, no
+     signature, no watermark. Old printed card stock: slightly faded colour,
+     faint print grain, a little wear at the edges. One clear silhouette that
+     still reads when the card is small.
+
+     Simple warm bronze border decoration.
+
+     STYLE:
+     An early-1990s fantasy trading card painting: oil and
+     gouache, rich but slightly muddy colour, dramatic lighting,
+     a painterly background that stays readable behind the
+     figure, the look of the first years of the hobby.
+     Pulp, dramatic, mature. Obviously hand-painted.
+
+     SUBJECT:
+     A forest shaman stands full length before a long hut of logs and bark
+     at night, arms raised as he calls something out of the forest, a ring of
+     fires throwing red light up across him. He is lean and of middle
+     height, with a long neck and a thin, cruel, clever face, his eyes
+     glinting red in the firelight; he is almost hidden in a great mass of
+     black and white ostrich plumes set on a harness of leather and copper,
+     his face and chest painted with pale clay patterns, copper bands on his
+     arms. Human skulls hang from the eaves of the hut behind him. At the
+     edge of the clearing, where the black forest crowds in, a leopard's eyes
+     shine green and the coils of a great python slide out of the dark.
+     Drums, smoke and sparks rising into the night. Deep reds and blacks,
+     firelight and green eyes. Ancient and primeval, the magic real and
+     frightening: not a Native American costume — no war bonnet, no eagle
+     feathers, no tipi, no totem pole, no tomahawk — and not a comic witch
+     doctor, no bone through the nose.
+
      ------- GODS -----------------------------------
      CROM
 
@@ -547,7 +861,7 @@ defineBlock("hyborian", [
 
      Simple cold pale silver-blue border decoration.
 
-     STYLE: 
+     STYLE:
      An early-1990s fantasy trading card painting: oil and
      gouache, rich but slightly muddy colour, dramatic lighting,
      a painterly background that stays readable behind the
@@ -566,26 +880,6 @@ defineBlock("hyborian", [
      valleys. Cold, sunless light in greys and cold blue. The mood is
      indifference, not menace: no glowing eyes, no lightning from the sky, no
      worshippers, no throne, no horned helmet.
-
-
-     
-
-     THE FRONTIERSMAN (after Balthus and his dog, in Beyond the Black River)
-
-     SUBJECT:
-     A young settler stands full length at the edge of a forest clearing at
-     dusk, an axe on his shoulder, a great shaggy grey hound at his side
-     with its hackles up. He is sturdy, sandy-haired and open-faced, not a
-     warrior by trade but steady and brave, looking out into the trees with
-     wary respect. He wears a homespun wool tunic, leather leggings and
-     moccasin-like shoes, a hunting knife and a horn at his belt. Behind him
-     stands a stockade fort of sharpened logs with a thread of smoke rising;
-     in front of him a dark, sluggish river, and beyond it an endless
-     primeval forest, black and silent, where something is watching. Deep
-     green and amber light fading to night. Ancient antiquity, not colonial
-     America: no muskets, no coonskin cap, no tricorne.
-
-     
 
 
 

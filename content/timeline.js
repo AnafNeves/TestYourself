@@ -21,7 +21,9 @@
    A block is one stretch of the run that moves as a piece — a file of its own,
    `content/block_<name>.js`. Moving one between levels is moving its name from
    one line of a timeline to another, and a block named nowhere here is never
-   asked however completely it is written.
+   asked however completely it is written. The demographics are the one
+   exception: they are named on no level but in `DEMOGRAPHICS`, below, and open
+   the first levels of the run by place, whatever those levels hold.
 
    A questionnaire is the unit of shuffling and the only one: its items may
    come in any order but they come together, and everything around them holds
@@ -331,17 +333,11 @@ const WATER_SHARE = 2 / 3
 // the BAIT and the HiTOP-BR) as a drawn fork of two, then the rest as a drawn
 // fork of three.
 const TIMELINE_MINT = [
-    { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"], minutes: 3 },
+    { key: "General", name: "General", blocks: ["fipi", "singles"], minutes: 3 },
     shuffle([
-        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 2, minutes: 8 },
+        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["mint"], fork: 2, minutes: 8 },
         { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2, minutes: 3 },
-        {
-            key: "MoodHealth",
-            name: "Mood & Health",
-            blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(),
-            fork: 2,
-            minutes: 8,
-        },
+        { key: "MoodHealth", name: "Mood & Health", blocks: [shuffle(["mood", "health"]), "hitop"].flat(), fork: 2, minutes: 8 },
     ]),
     shuffle([
         { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
@@ -358,17 +354,11 @@ const TIMELINE_MINT = [
 // core: General, then every other level in one drawn fork of three, then the
 // closing.
 const TIMELINE_ALL = [
-    { key: "General", name: "General", blocks: ["demographics1", "fipi", "singles"], minutes: 3 },
+    { key: "General", name: "General", blocks: ["fipi", "singles"], minutes: 3 },
     shuffle([
-        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["demographics2", "mint"], fork: 3, minutes: 8 },
+        { key: "BrainBody", name: "Brain-Body Axis", blocks: ["mint"], fork: 3, minutes: 8 },
         { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 3, minutes: 3 },
-        {
-            key: "MoodHealth",
-            name: "Mood & Health",
-            blocks: ["demographics3", shuffle(["mood", "health"]), "hitop"].flat(),
-            fork: 3,
-            minutes: 8,
-        },
+        { key: "MoodHealth", name: "Mood & Health", blocks: [shuffle(["mood", "health"]), "hitop"].flat(), fork: 3, minutes: 8 },
         { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
         { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
         { key: "World", name: "The World", blocks: ["primals"], fork: 3, minutes: 6 },
@@ -406,6 +396,20 @@ const TIMELINE_ALL = [
 // level first.
 const BATTERIES = { mint: TIMELINE_MINT, all: TIMELINE_ALL }
 const ASIDE = ["hyborian"]
+
+// **The demographics are written on no level**: they open the run's first
+// levels, one apiece and in this order — the first opens level 1, the second
+// level 2, the third level 3 — whatever those levels turn out to hold. Which
+// level stands second or third is drawn and then chosen, so a block written on
+// one would be asked at a different depth by every person; written here, it
+// belongs to the place, the way a level's number and depth do, and a fork
+// moving a level into or out of that place leaves it where it is (app.js,
+// `swapLevels`). A level a link starts on (`?start=`) is a hook and opens on
+// its own questions, so the demographics open the levels after it instead.
+// `closing` is never one of those places, the run ending through it; a run
+// with fewer levels than this puts what is left at the head of its last. Every
+// battery asks them, and `?only=` and `?skip=` name them like any other block.
+const DEMOGRAPHICS = ["demographics1", "demographics2", "demographics3"]
 
 // Blocks that come and go together, because one figure is drawn from both:
 // the climb reads the PHQ-4 out of `mood` and the HiTOP-BR out of `hitop`,

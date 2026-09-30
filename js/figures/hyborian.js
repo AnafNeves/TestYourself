@@ -1,16 +1,23 @@
 /* =========================================================================
    The Hyborian Age, as a hand of two cards: which of Howard's heroes the
    person would have been, the hero's painted card, and beside it the card's
-   back, which carries the person's own stats — the three dimensions the hero
+   back, which carries the person's own stats — the four dimensions the hero
    was read from — with what the hero is said to be and who it is modelled
    on, the way a trading card's back does.
 
-   The hero is the nearest corner of a cube: each of its three dimensions
-   (Burning, the Code, Barbarism) is a reach along its own scale, high or
-   low, and all eight corners have a face. Nothing is read against other
-   people, so the questionnaire carries no norms and goes through
-   `dimensionsIn`, the wheel's exception: what is compared is the person's
-   answers with a handful of fictional lives.
+   The hero is the nearest of eleven profiles: each of its four dimensions
+   (Burning, the Code, Barbarism, Splendour) is a reach along its own scale,
+   and each hero is a corner of that four-dimensional box, high or low on
+   each. Eleven heroes stand on sixteen corners, so an answer on a corner
+   with no hero goes to whichever hero it is nearest in the reaches
+   themselves — the hero it differs from on the dimension nearest the
+   middle. The Exile and the Shaman were added to fill the two corners that
+   had four heroes round them, where the reading was most arbitrary.
+   Answered at random, each hero comes up between about 4% (the Exile, the
+   Shaman, each closed in on every side) and 14% of the time. Nothing is read
+   against other people, so the questionnaire carries no norms and goes
+   through `dimensionsIn`, the wheel's exception: what is compared is the
+   person's answers with a handful of fictional lives.
 
    THE GOD IS NOT SHOWN, FOR NOW. The other four dimensions (Indifference,
    Afterlife, the Gift at Birth, Sacred Pleasure) are still asked and saved,
@@ -42,7 +49,7 @@ function makeHyborian(shared) {
     const HYBORIAN_OF = "hyborian"
     const HERO_KEY = "Hero"
     const GOD_KEY = "God"
-    const HERO_ON = ["Burning", "The Code", "Barbarism"]
+    const HERO_ON = ["Burning", "The Code", "Barbarism", "Splendour"]
     const GOD_ON = ["Indifference", "Afterlife", "The Gift at Birth", "Sacred Pleasure"]
 
     // The colour the hero votes and draws in, the questionnaire's own; and
@@ -52,75 +59,150 @@ function makeHyborian(shared) {
 
     const PICTURES = "assets/hyborian/"
 
-    // The eight heroes, one a corner of the cube (`at`, in the order of
-    // HERO_ON: Burning, the Code, Barbarism; 1 is high). `keys` is what the
-    // card says it predicts; `story` is who the archetype is modelled on,
-    // in the third person and claiming nothing about the person, which is
-    // the flavour text on the card's back. `picture` is the painting, where
-    // there is one.
+    // What stands over the hand while it is locked, and so over the taste of
+    // the level too: the opening of the Nemedian Chronicles, which heads The
+    // Phoenix on the Sword, since a stand-in hero's own line would give it
+    // away. Weird Tales printed "oh", not the "O" it is usually quoted with.
+    const NEMEDIAN = {
+        words:
+            "Know, oh prince, that between the years when the oceans drank Atlantis and the gleaming cities … there was " +
+            "an Age undreamed of, when shining kingdoms lay spread across the world like blue mantles beneath the stars…",
+        from: "The Phoenix on the Sword, 1932",
+    }
+
+    // The eleven heroes, each a corner of the box (`at`, in the order of
+    // HERO_ON: Burning, the Code, Barbarism, Splendour; 1 is high). `keys` is what the
+    // card says it predicts; `picture` is the painting, where
+    // there is one. `epigraph` is Howard's own words over the hand, each
+    // checked against the story's text (Project Gutenberg, Wikisource),
+    // Howard's spelling and punctuation kept, his "--" set as a dash, and
+    // none of them carrying the trademark; the King's is a verse, one line
+    // of it to a line.
     const HEROES = [
         {
             name: "The Barbarian",
             emblem: "sword",
             picture: "barbarian.jpg",
-            at: [1, 1, 1],
+            epigraph: {
+                words: "Let me live deep while I live; let me know the rich juices of red meat and stinging wine on my palate, the hot embrace of white arms, the mad exultation of battle … and I am content.",
+                from: "Queen of the Black Coast, 1934",
+            },
+            at: [1, 1, 1, 0],
             keys: ["fierce", "straightforward", "untamed", "loyal to your own"],
-            story: "The northern swordsman come down out of the hills: burning, plain-dealing, and sure that the cities have gone soft.",
         },
         {
             name: "The Free Blade",
             emblem: "blades",
             picture: "free-blade.jpg",
-            at: [1, 1, 0],
+            epigraph: {
+                words: "Why won't men let me live a man's life?",
+                from: "Red Nails, 1936",
+            },
+            at: [1, 1, 0, 0],
             keys: ["bold", "honourable", "your own master", "at home anywhere"],
-            story: "The mercenary who sells her sword and keeps her word, and is at home in any city that will have her.",
         },
         {
             name: "The Pirate Queen",
             emblem: "sail",
             picture: "pirate-queen.jpg",
-            at: [1, 0, 1],
+            epigraph: {
+                words: "Were I still in death and you fighting for life, I would come back from the abyss to aid you",
+                from: "Queen of the Black Coast, 1934",
+            },
+            at: [1, 0, 1, 1],
             keys: ["burning", "ruthless", "devoted", "wild"],
-            story: "The queen of the Black Coast: no law but her own, a love that would drive her back from the dead, and the sea for a kingdom.",
         },
         {
             name: "The Thief",
             emblem: "key",
             picture: "thief.jpg",
-            at: [1, 0, 0],
+            epigraph: {
+                words: "… it's the chance of being turned into a spider or a toad, against the wealth and power of the world. All good thieves must know how to take risks.",
+                from: "The Tower of the Elephant, 1933",
+            },
+            at: [1, 0, 0, 1],
             keys: ["quick", "cunning", "restless", "at home in the crowd"],
-            story: "The prince of thieves in a city of towers: what the clever take, the strong cannot hold.",
         },
         {
             name: "The King",
             emblem: "crown",
             picture: "king.jpg",
-            at: [0, 1, 1],
+            epigraph: {
+                words: "When I was a fighting-man, the kettle-drums they beat,\nThe people scattered gold-dust before my horse's feet;\nBut now I am a great king, the people hound my track\nWith poison in my wine-cup, and daggers at my back.",
+                from: "The Phoenix on the Sword, 1932",
+            },
+            at: [0, 1, 1, 1],
             keys: ["steadfast", "just", "hard to move", "of the old ways"],
-            story: "The barbarian who stayed: a throne won with a sword and kept with a code, and no love for the court around it.",
         },
         {
             name: "The Frontiersman",
             emblem: "axe",
-            at: [0, 1, 0],
+            picture: "frontiersman.jpg",
+            epigraph: {
+                words: "Come on, boy … We've got work to do.",
+                from: "Beyond the Black River, 1935",
+            },
+            at: [0, 1, 0, 0],
             keys: ["decent", "patient", "brave when it counts", "civilised"],
-            story: "The settler on the last river, with a dog and an axe: the ordinary civilised man who admires the wild and does not belong to it.",
         },
         {
             name: "The Sorcerer",
             emblem: "eye",
             picture: "sorcerer.jpg",
-            at: [0, 0, 0],
+            epigraph: {
+                words: "I did dark and terrible magic with the Serpent Ring of Set, which I found in a nighted tomb a league beneath the earth, forgotten before the first man crawled out of the slimy sea.",
+                from: "The Phoenix on the Sword, 1932",
+            },
+            at: [0, 0, 0, 1],
             keys: ["patient", "calculating", "learned", "hungry for more"],
-            story: "The priest of the serpent: patient, learned, bound by nothing, and after more than a life can hold.",
         },
         {
             name: "The Witch",
             emblem: "moon",
             picture: "witch.jpg",
-            at: [0, 0, 1],
+            epigraph: {
+                words: "I cannot save you, though I would if I might. Man must, at last, work out his own salvation.",
+                from: "The Hour of the Dragon, 1935",
+            },
+            at: [0, 0, 1, 0],
             keys: ["watchful", "wily", "of the wild", "unhurried"],
-            story: "The wise-woman of the hills with a wolf at her side: outside the law, unhurried, and older than the kingdom below her.",
+        },
+        {
+            name: "The Princess",
+            emblem: "diadem",
+            picture: "princess.jpg",
+            epigraph: {
+                words: "Even a queen is human … But because I am a queen, I must consider my kingdom.",
+                from: "The People of the Black Circle, 1934",
+            },
+            at: [0, 1, 0, 1],
+            keys: ["proud", "dutiful", "commanding", "born to the throne"],
+        },
+        {
+            name: "The Exile",
+            emblem: "trunk",
+            picture: "exile.jpg",
+            epigraph: {
+                words:
+                    "There are many worlds besides this earth, and life takes many shapes. I am neither god nor demon, but " +
+                    "flesh and blood like yourself…",
+                from: "The Tower of the Elephant, 1933",
+            },
+            at: [0, 1, 1, 0],
+            keys: ["patient", "gentle", "true to your word", "wanting nothing"],
+        },
+        {
+            name: "The Shaman",
+            emblem: "plume",
+            picture: "shaman.jpg",
+            epigraph: {
+                words:
+                    "Civilized men laugh … But not one can tell me how Zogar Sag can call pythons and tigers and leopards " +
+                    "out of the wilderness and make them do his bidding.",
+                from: "Beyond the Black River, 1935",
+            },
+            at: [0, 0, 1, 1],
+            keys: ["cunning", "patient", "of the wild", "hungry for power"],
         },
     ]
 
@@ -197,13 +279,12 @@ function makeHyborian(shared) {
         return found
     }
 
-    // The hero is the nearest corner of the cube, which is each reach taken
-    // as high or low. A reach of exactly a half — a mean of 4 on the seven
-    // points, which is not rare — is as near either corner, and counts as
-    // high, so that there is never a tie and always one hero.
+    // The hero is the nearest of the nine to the four reaches. Where two
+    // are as near — a reach of exactly a half, a mean of 4 on the seven
+    // points, which is not rare — the first written is taken, so that there
+    // is always one hero.
     function hero(locked) {
-        const corner = reaches(HERO_ON, locked).map((reach) => (reach >= 0.5 ? 1 : 0))
-        return HEROES.find((one) => one.at.every((value, index) => value === corner[index]))
+        return nearest(HEROES, reaches(HERO_ON, locked))
     }
 
     function god(locked) {
@@ -227,6 +308,9 @@ function makeHyborian(shared) {
         axe: [["path", { d: "M36 98 L82 32", "stroke-width": 7 }], ["path", { d: "M74 20 Q100 28 98 56 Q82 46 66 50 Z", fill: "currentColor" }]],
         eye: [["path", { d: "M18 60 Q60 20 102 60 Q60 100 18 60 Z", "stroke-width": 6 }], ["circle", { cx: 60, cy: 60, r: 13, fill: "currentColor" }], ["circle", { cx: 60, cy: 60, r: 5, fill: "var(--plate, #0b1020)" }]],
         moon: [["path", { d: "M72 20 A40 40 0 1 0 72 100 A30 30 0 1 1 72 20 Z", fill: "currentColor" }]],
+        trunk: [["circle", { cx: 60, cy: 44, r: 22, fill: "currentColor" }], ["path", { d: "M38 38 Q18 30 20 56 Q30 60 40 50 Z M82 38 Q102 30 100 56 Q90 60 80 50 Z", fill: "currentColor" }], ["path", { d: "M60 64 Q60 92 74 96 Q84 96 82 86", "stroke-width": 8 }]],
+        plume: [["path", { d: "M60 104 V40", "stroke-width": 4 }], ["path", { d: "M60 16 Q84 40 60 70 Q36 40 60 16 Z", fill: "currentColor" }], ["path", { d: "M58 60 Q24 44 26 20 Q46 36 58 52 Z M62 60 Q96 44 94 20 Q74 36 62 52 Z", fill: "currentColor", opacity: 0.6 }]],
+        diadem: [["path", { d: "M22 80 Q60 60 98 80 L98 92 Q60 72 22 92 Z", fill: "currentColor" }], ["path", { d: "M68 22 A22 22 0 1 0 68 66 A17 17 0 1 1 68 22 Z", fill: "currentColor" }]],
         mountain: [["path", { d: "M14 90 L46 30 L60 54 L72 40 L106 90 Z", fill: "currentColor" }], ["path", { d: "M40 42 L46 30 L52 42 L48 40 L46 46 L44 40 Z", fill: "var(--plate, #0b1020)" }]],
         sun: [["circle", { cx: 60, cy: 60, r: 16, fill: "currentColor" }], ["path", { d: "M60 14 V30 M60 90 V106 M14 60 H30 M90 60 H106 M28 28 L39 39 M81 81 L92 92 M92 28 L81 39 M39 81 L28 92", "stroke-width": 6 }]],
         star: [["path", { d: "M60 14 L66 46 L92 28 L74 54 L106 60 L74 66 L92 92 L66 74 L60 106 L54 74 L28 92 L46 66 L14 60 L46 54 L28 28 L54 46 Z", fill: "currentColor" }]],
@@ -289,12 +373,14 @@ function makeHyborian(shared) {
         return card
     }
 
-    // What each stat is, on hover or focus. Never a standing, since there is
-    // none.
+    // What each stat is, on hover or focus, without its name, which is
+    // written on the row the tooltip stands over. Never a standing, since
+    // there is none.
     const ABOUT = {
-        Burning: "intensity over safety: a short blazing life over a long careful one",
-        "The Code": "honour and plain dealing over guile: keeping your word against getting round the rules",
-        Barbarism: "civilisation as soft and passing: people were stronger when life was harder",
+        Burning: "Intensity over safety: a short blazing life over a long careful one",
+        "The Code": "Honour and plain dealing over guile: keeping your word against winning by a trick",
+        Barbarism: "Civilisation as soft and passing: people were stronger when life was harder",
+        Splendour: "Rank and fine things: silk, gold and a throne over a simple life",
     }
 
     const PIPS = 10
@@ -304,11 +390,12 @@ function makeHyborian(shared) {
     // person's own position and no comparison with anybody.
     function stat(dimension, reach, locked) {
         const worth = Math.round(reach * PIPS)
-        const told = dimension + ": " + ABOUT[dimension]
+        const told = ABOUT[dimension]
         const row = document.createElement("li")
         row.className = "hyborian__stat"
         row.tabIndex = 0
-        row.setAttribute("aria-label", locked ? dimension : told + ". " + worth + " out of " + PIPS)
+        // The label keeps the name, which a screen reader has nowhere else.
+        row.setAttribute("aria-label", locked ? dimension : dimension + ". " + told + ". " + worth + " out of " + PIPS)
         row.appendChild(text("span", "hyborian__stat-name", dimension.replace(/^The /, "")))
         const pips = document.createElement("span")
         pips.className = "hyborian__pips" + (locked ? " blank" : "")
@@ -332,8 +419,9 @@ function makeHyborian(shared) {
         return row
     }
 
-    // The back: who the hero is, the person's three stats, what the hero is
-    // said to be, and the flavour text.
+    // The back: who the hero is, the person's stats and what the hero is
+    // said to be. No flavour text: the painting on the front already says
+    // who the hero is, and a line of it again on the back said nothing more.
     function back(hero, locked) {
         const card = document.createElement("div")
         card.className = "hyborian__back"
@@ -350,28 +438,33 @@ function makeHyborian(shared) {
 
         card.appendChild(text("p", "hyborian__label", "It predicts that you are…"))
         card.appendChild(text("p", "hyborian__traits" + (locked ? " blank" : ""), hero.keys.join(" · ")))
-        card.appendChild(text("p", "hyborian__flavour" + (locked ? " blank" : ""), hero.story))
         return card
     }
 
-    // A line, the two cards, the vote, and a line on what the stats are.
-    // Locked, the cards drawn from stand-in values with everything earned on
-    // them blurred, and no vote.
+    // The line over the hand, Howard's own words and where they are from.
+    function epigraph(quote) {
+        const figure = document.createElement("figure")
+        figure.className = "hyborian__epigraph"
+        figure.appendChild(text("blockquote", "hyborian__epigraph-words", quote.words))
+        const from = document.createElement("figcaption")
+        from.className = "hyborian__epigraph-from"
+        from.appendChild(document.createTextNode("— "))
+        from.appendChild(text("cite", "", quote.from))
+        figure.appendChild(from)
+        return figure
+    }
+
+    // The hero's epigraph, the two cards and the vote. Locked, the Nemedian Chronicles' opening in place of the
+    // hero's line, which would give the stand-in hero away, the cards drawn
+    // from stand-in values with everything earned on them blurred, and no
+    // vote.
     function renderHyborian(locked) {
         const holder = document.createElement("div")
         holder.className = "hyborian"
         holder.style.setProperty("--chart", HERO_COLOUR)
 
-        holder.appendChild(
-            text(
-                "p",
-                "theories__intro hyborian__intro",
-                "The Hyborian Age had a philosophy of its own: gods who mostly did not listen, heroes who trusted their own " +
-                    "strength, and cities softer than the wilds around them. Here is where your answers would have put you.",
-            ),
-        )
-
         const drawn = hero(locked)
+        holder.appendChild(epigraph(locked ? NEMEDIAN : drawn.epigraph))
         const hand = document.createElement("div")
         hand.className = "hyborian__hand"
         hand.appendChild(front(drawn, locked))
@@ -385,15 +478,6 @@ function makeHyborian(shared) {
         vote.appendChild(text("p", "climbview__ask", "Does this match you?"))
         vote.appendChild(pickButtons(HERO_KEY, VOTES))
         holder.appendChild(vote)
-
-        holder.appendChild(
-            text(
-                "p",
-                "climbview__note hyborian__note",
-                "Each stat is how far along its own scale your answers reach, out of ten. Nothing here is compared with other " +
-                    "people, only with a handful of lives that were never lived.",
-            ),
-        )
         return holder
     }
 

@@ -210,19 +210,11 @@ body[data-screen="intro"] #app {
 }
 
 .resume__head {
-    margin: 0;
+    margin: 0 0 16px;
     font-size: 11.5px;
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--gold);
-}
-
-.resume__note {
-    margin: 8px 0 16px;
-    font-family: var(--serif);
-    font-size: 17px;
-    line-height: 1.45;
-    color: var(--text);
 }
 
 .resume__ways {

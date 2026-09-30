@@ -15,7 +15,8 @@
 //      fairness between groups means equal chances or equal outcomes, how
 //      far to trust those in charge, whether people should be improved on or
 //      selected, where differences between people come from, the climate,
-//      the animals and how much beauty should count. This half is meant to move with the times, is
+//      the animals, how much beauty should count and whether words alone can
+//      do lasting harm. This half is meant to move with the times, is
 //      mostly written for the study rather than taken from a published
 //      scale, and is the spectra under the plane. A question belongs here if
 //      people who share a place on the plane still divide over it.
@@ -84,8 +85,8 @@
 // ESS's item verbatim and whose key says so.
 //
 // Read back together as one figure (js/figures/stance.js): the two
-// BSA-derived scales as a plane, the other seven dimensions as spectra under
-// it. All are `profile: false` — nine more axes would crowd the whole-run
+// BSA-derived scales as a plane, the other eight dimensions as spectra under
+// it. All are `profile: false` — ten more axes would crowd the whole-run
 // web, and a person's politics has no business on a card made to be shared.
 //
 // **No attention check.** Among statements about politics an instruction to
@@ -231,7 +232,7 @@ defineBlock("opinions", [
     },
 
     // Views: every statement of the level, in one shuffled run ===========
-    // Seven scales and two single items, on the BSA's five labels, dealt in
+    // Nine scales and three single items, on the BSA's five labels, dealt in
     // among one another (see the head of the file for why they are one
     // questionnaire). No instruction over them — the labels already say it
     // is a matter of agreeing. The BSA-derived items open on "In the country
@@ -247,6 +248,7 @@ defineBlock("opinions", [
     //   Heredity
     //   Planet, Animals  the climate and the animals.
     //   Beauty           beauty against purpose.
+    //   Words            whether words alone can do lasting harm.
     //
     // All norms are PLACEHOLDERS, invented, read only for where the average
     // person is marked on the figure — and they are what put each dimension
@@ -282,6 +284,12 @@ defineBlock("opinions", [
             Planet: { mean: 3.4, sd: 0.8 },
             Animals: { mean: 3.0, sd: 0.8 },
             Beauty: { mean: 3.0, sd: 0.7 },
+            // Loosely from Pratt et al. (2026): the WCHS's mean of 59.81 (SD
+            // 20.71) on a 1-100 slider, in a representative US sample, turned
+            // into five-point units. Still a placeholder: two of the three
+            // items here are not the WCHS's as published, and three items
+            // spread wider than ten.
+            Words: { mean: 3.4, sd: 0.9 },
         },
 
         items: [
@@ -601,6 +609,89 @@ defineBlock("opinions", [
                 dimension: "Beauty",
                 reverse: true,
                 text: "How well a thing works matters more than how it looks",
+            },
+
+            // Words ===========================================================
+            // Adapted from the Words Can Harm Scale (WCHS; Bellet, Jones &
+            // McNally, 2018; validated by Pratt, Jones, Bellet, McNally & Gray,
+            // 2026, Personality and Individual Differences, 257, 113785; on
+            // the shelf as literature/Pratt2026Words.pdf): the belief that
+            // speech can do lasting psychological harm, as against mere
+            // offence. It is the premise under the arguments about speech a
+            // society is having now — trigger warnings, deplatforming, what
+            // may be said online — which nothing else on the level asks
+            // about (the BSA's censorship item was left out of Order). It
+            // leans left (r = .29 with liberal ideology, .52 with support for
+            // top-down censorship) without being left-right: most of its
+            // spread is within a side. Higher is more harm.
+            //
+            // **Two of its ten items and one of our own.** The WCHS is one
+            // factor (loadings .67 to .83, alpha .92, Table 1), so any few of
+            // its items measure the same thing; these were chosen as the ones
+            // about other people and about society, since the level asks what
+            // somebody makes of everybody else. Left out: the items about the
+            // person's own vulnerability (1, "I could be left emotionally
+            // scarred by something I read", and 2, 3, 5 and 7), which ask what
+            // the HiTOP-BR and the PHQ-4 already ask and are likely much of
+            // why the scale goes with anxiety; item 4, a person developing
+            // PTSD "from something they read", which has a clinical answer
+            // (the DSM-5's trauma criterion does not count exposure through
+            // media), the CMQ's item 3 reason; item 9, "There is great power
+            // in the words we choose…", near its ceiling (M = 77 of 100); and
+            // item 10, "Even a simple phrase can be emotionally traumatizing
+            // for someone vulnerable" (.82), the one to swap in if the
+            // reversed item below does poorly. **Every WCHS item is keyed one
+            // way**, so the third item is written for the other end, which is
+            // one more reason the scale is adapted as a whole and never pooled
+            // with WCHS data. The WCHS is a slider anchored at five points
+            // (strongly disagree, somewhat disagree, neither, somewhat agree,
+            // strongly agree); here it takes the BSA's five labels with the
+            // rest of the level.
+
+            // WCHS item 8, the highest-loading (.83, M = 62): "Exposing
+            // someone to a triggering idea can seriously damage their mental
+            // health." "Triggering" is the vocabulary of one side of the
+            // argument the item asks about, so somebody who doubts the concept
+            // is answering the word as much as the claim; the claim is kept.
+            {
+                key: "Opinion_Words_Ideas",
+                dimension: "Words",
+                text: "Exposing someone to an idea that deeply upsets them can seriously damage their mental health",
+            },
+            // WCHS item 6, verbatim (.72, M = 54, the nearest the middle of
+            // the ten): the one that turns the belief into a view on what
+            // people should be allowed to hear.
+            {
+                key: "Opinion_Words_Exposure",
+                dimension: "Words",
+                text: "Vulnerable people should not be exposed to certain kinds of speech, as this might harm them",
+            },
+            // Not the WCHS's: the other end of it, written for the scale. The
+            // first clause grants the hurt, so agreeing that words hurt costs
+            // this item nothing; what it asks is the second, whether the hurt
+            // lasts — the WCHS's own line between harm and offence. Said as
+            // what happens (people get over them) rather than as a denial of
+            // harm ("…do not cause lasting harm", or "rarely"), since a
+            // reversed item built on a negation is disagreed with as a double
+            // negative.
+            //
+            // **For later: speech as violence.** Weighed for this place and
+            // kept out: "Words alone are never similar to physical violence".
+            // "Never" is a negation and an absolute (a person who thinks words
+            // almost never harm can still think of years of verbal abuse and
+            // disagree), and the claim is the "speech is violence" argument
+            // (Feldman Barrett, 2017) — whether words and violence belong in
+            // one moral or legal category, a neighbour of this scale rather
+            // than it, and nearer one side's slogan. If that question is
+            // wanted, the wording without those faults is "However hurtful,
+            // words are a different thing from physical violence", asked with
+            // **no dimension** beside the scale, the way `Opinion_Planet_Nuclear`
+            // sits beside Planet, so that the data can say whether it lines up.
+            {
+                key: "Opinion_Words_Lasting",
+                dimension: "Words",
+                reverse: true,
+                text: "Some words can be hurtful, but people get over them in time",
             },
 
             // Last, and held there (see Planet and Animals, above).
