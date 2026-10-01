@@ -78,13 +78,17 @@
         `askable` in data/norms/norms_bks.R marks which. Unwanted attention is
         asked, if at all, only as a consensual game: asked straight, its
         experience would be a question about assault.
-     3. NO WAY TO DECLINE AN ITEM without leaving its dimension unfinished. A
-        `custom` answer ("I'd rather not say") holds the dimension unscored.
-        The kinks get round it by scoring "I'd rather not say" as not a
-        turn-on (`score: 0`, see KINK_GRID) rather than as custom, so a skip
-        costs the count one and not the result; the file keeps the words, so
-        an analysis can tell a skip from a no. Anything else scored on the
-        level would want the same thought.
+     3. DECLINING AN ITEM. Solved (October 2026): "I'd rather not say" is a
+        `declined` answer, which app.js leaves out of the dimension rather
+        than holding it unfinished or counting it as anything. A dimension
+        is scored on the items answered once `enough` of them are (two
+        thirds, on both questionnaires here), and below that its figure is
+        drawn blurred with a line saying the questions were not answered.
+        Until then the kinks scored a skip as not a turn-on (`score: 0`), so
+        somebody who declined all twenty-two was told they were more vanilla
+        than 99% of people, which a pilot was; and one skip on the Desire
+        items held the whole volcano back without a word. The file keeps the
+        words, so an analysis can tell a skip from a no either way.
      4. WHETHER SOMEBODY'S OWN RESULTS MAY BE SHARED. Every level carries
         "Share these results", a link and an image; this one's carries a
         person's sex life to whoever it is sent to, and on from there.
@@ -103,13 +107,14 @@ const SEX_PARTNERS = {
     placeholder: "An approximate number",
 }
 
-// A way out of an item somebody would rather not answer. It holds the
-// dimension unfinished (THE BLOCKERS, 3).
+// A way out of an item somebody would rather not answer. Declined: left out
+// of the dimension, which is scored on the rest while `enough` of them are
+// answered (THE BLOCKERS, 3).
 const SEX_RATHER_NOT = {
     value: 98,
     text: "I'd rather not say",
     small: true,
-    custom: true,
+    declined: true,
 }
 
 // THE KINKS. Each item is one kink, or one side of one, answered as a cell
@@ -153,10 +158,11 @@ const SEX_RATHER_NOT = {
 // that turn somebody on and the figure draws it as a count. The row is in the
 // words.
 //
-// "I'd rather not say" is a way out under the table, scored 0 and NOT custom:
-// custom would hold the dimension unfinished (THE BLOCKERS, 3) and one skip
-// would cost the whole result. The file keeps the words, so a skip can be
-// told from a no.
+// "I'd rather not say" is a way out under the table, declined: left out of the
+// count rather than counted as a no, so the share is of the kinks answered,
+// while `enough` of them are (THE BLOCKERS, 3). It was scored 0 until October
+// 2026, which read twenty-two skips as twenty-two kinks that turn nobody on.
+// The file keeps the words, so a skip can be told from a no.
 const KINK_COLOUR = "#c2417a"
 const KINK_ACROSS = [
     // Its value is 3, after the others, so that the three columns written
@@ -177,7 +183,7 @@ const KINK_RATHER_NOT = {
     value: 98,
     text: "I'd rather not say",
     small: true,
-    score: 0,
+    declined: true,
 }
 
 // The two questions the table is the product of, each set over the headers
@@ -491,8 +497,12 @@ defineBlock("sex", [
     // lead-in over each item says again, since several are situations
     // somebody may never have been in (sex outdoors, a sexy voice on the
     // telephone). The chapter prefers an incomplete scale discarded to one
-    // filled in with means, which is what the engine does anyway: "I'd
-    // rather not say" holds the dimension unfinished (THE BLOCKERS, 3).
+    // filled in with means. The feedback is more lenient: "I'd rather not
+    // say" is declined, and a subscale is read off the items answered while
+    // two thirds of it are (`enough`: three of the four-item brakes, four of
+    // the six-item accelerator), the volcano being drawn blurred with a line
+    // saying so below that (THE BLOCKERS, 3). An analysis keeping to the
+    // chapter's rule reads the skips in the file.
     //
     // Shuffled: nothing in its validation fixes an order. The keys count
     // within the subscale, the published item number beside each. The three
@@ -512,6 +522,7 @@ defineBlock("sex", [
         key: "sisses",
         name: "Desire",
         profile: false,
+        enough: 2 / 3, // of each subscale answered rather than declined, for it to be read
         instructions: "How much do you agree? If it has never happened, answer as you think you would react",
         format: {
             options: [
@@ -679,6 +690,7 @@ defineBlock("sex", [
         key: "kinks",
         name: "Kinks",
         profile: false,
+        enough: 2 / 3, // of the kinks answered rather than declined, for the count to be read
         type: "grid",
         instructions: "Does it turn you on, and have you done it?",
         format: KINK_GRID,

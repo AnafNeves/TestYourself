@@ -62,6 +62,10 @@
                                          // whole-run profile web and card
              results: false,             // optional: keep its norms but open no
                                          // section on its level — fed back nowhere
+             enough: 2 / 3,              // optional: the share of a dimension's items
+                                         // that must be answered rather than declined
+                                         // for it to be scored (below); all of them
+                                         // if left out
              instructions: "shown under every item of this one (HTML)",
              format: { … },              // the scale, below
              norms: {                    // no norms, no results: a dimension
@@ -174,7 +178,17 @@
    bounds and never counts it into a dimension's score, so its `value` is only
    a label for `showIf` to match (the convention is 99, or 0 for "Other" at
    the foot of a ladder of real codes). `small: true` beside it is the look;
-   this is the meaning.
+   this is the meaning. Choosing one holds the dimension unfinished, so one
+   such answer stops it being scored at all.
+
+   An option marked `declined: true` — "I'd rather not say" — is outside the
+   scale too, and saved like any other, but is no answer rather than a
+   different one: the engine leaves the item out of its dimension, which is
+   scored on the items really answered while the questionnaire's `enough` of
+   them are, and is otherwise answered and unscored, which a figure can say
+   (`declined` in app.js) rather than show nothing. Without `enough`, one
+   declined answer leaves the dimension unscored. A `score:` on the other
+   options needs none on it.
 
    Types: `"choice"` and `"input"` are read off the format and need not be
    written. `"multi"`, `"curve"` and `"slider"` are written, on the item or on the
@@ -257,22 +271,22 @@ function shuffle(arr) {
 // time. The places they take are the **slots** — the positions on this
 // timeline that carry it — and what goes in them is the person's to arrange.
 // At the end of the level before each slot, while more than one level is left
-// to fill it with, the next `n` standing (or as many as are left, if fewer)
-// are shown side by side, blurred, and the person picks which to take first;
-// the ones passed over stay in the running for the slot after, and the one
-// written first is marked as recommended. It is the one thing about the run's
-// order that is the participant's, there so that the descent is not one
-// straight line. Where an interlude opens the slot, the choice waits for it
-// and is offered under its `onward` briefing instead.
+// to fill it with, `n` of the levels still to place (or all of them, if fewer
+// are left) are drawn afresh and shown side by side, blurred, and the person
+// picks which to take next; the ones passed over go back among the rest, and
+// of those shown the one written first is marked as recommended. It is the
+// one thing about the run's order that is the participant's, there so that
+// the descent is not one straight line. Where an interlude opens the slot,
+// the choice waits for it and is offered under its `onward` briefing instead.
 //
 // **A fork is a run of levels written one after another with the same `n`.**
 // Two runs side by side with different numbers are two forks, each put in
 // order among itself and never across: in `mint` the core is `fork: 2` and the
 // rest `fork: 3`, so the core is finished before any of the rest is offered.
 // `n` is only how many are offered at once. Three levels at `fork: 2` are a
-// choice of two, then a choice between the one passed over and the third,
-// then the last as it falls; six at `fork: 3` are four choices of three, one
-// of two, and the last.
+// choice of two drawn out of the three, then a choice between the two left,
+// then the last as it falls; six at `fork: 3` are four choices of three, each
+// drawn out of whatever is left, one of two, and the last.
 //
 // A run of levels wrapped in `shuffle()` is the same rearrangement made *for*
 // the person rather than *by* them: their order is drawn once, when the file
@@ -282,19 +296,18 @@ function shuffle(arr) {
 // chosen is visible in the shape of the list rather than written as a word on
 // every line.
 //
-// **The two go together on both forks**, and on purpose. A fork offers the
-// levels in the order they are written — the first `n` first, the rest as
-// places come free — so the level written last among three at `fork: 2` can
-// never be met first, and whichever is written first is recommended to
-// everybody. So each fork's order is drawn and *then* chosen from: which are
-// offered first, and which of them is recommended, falls differently for
-// every person. On the core that is counterbalancing, since it is asked of
-// everybody. On the rest it is what lets a level's pull on its card be told
-// from the recommendation's (`data/collected/overview.qmd`, **Choices**):
-// written in a fixed order, the first level would be recommended every time
-// it was offered and the last never. Take a `shuffle()` away and that fork is
-// still a fork, with the same levels always offered first and the same one
-// always recommended.
+// **The two go together on both forks**, and on purpose. Which levels a
+// choice offers is drawn when it is offered, whatever is written, but which
+// of them is recommended is the one written first — so written in a fixed
+// order, the level written first would be recommended every time it was
+// offered and the last never, and on the core most people take what is
+// recommended. So each fork's order is drawn and *then* chosen from, and
+// which level is recommended falls differently for every person. On the core
+// that is counterbalancing, since it is asked of everybody. On the rest it is
+// what lets a level's pull on its card be told from the recommendation's
+// (`data/collected/overview.qmd`, **Choices**). Take a `shuffle()` away and
+// that fork is still a fork, with the same level always recommended whenever
+// it is offered.
 //
 // Both follow one rule: what is asked moves between places and where it is
 // asked does not, so a level's number, its depth, its colour and which side
@@ -398,6 +411,11 @@ const TIMELINE_ALL = [
         // (`?start=hyborian`) and then walked first, ahead of General (see
         // content/block_hyborian.js). Its minutes are a guess.
         { key: "Hyborian", name: "Your Hyborian Hero", blocks: ["hyborian"], fork: 3, minutes: 3 },
+        // ASIDE too, and in progress: a level on the dark side of personality,
+        // reached only by `?start=dark` (see content/block_dark.js). So far it
+        // asks ten "Never have I ever" grids and nothing scored, so it has no
+        // level screen yet; its minutes are a guess at the finished level.
+        { key: "Dark", name: "Light & Dark", blocks: ["dark"], fork: 3, minutes: 5 },
     ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
@@ -415,10 +433,10 @@ const TIMELINE_ALL = [
 //
 // **ASIDE is asked by no battery**: blocks on a timeline, so that their level
 // has a place, a key and a name, that a run meets only when a link names them
-// — `?start=hyborian` asks a block whatever the battery says and walks that
-// level first.
+// — `?start=hyborian` or `?start=dark` asks a block whatever the battery says
+// and walks that level first.
 const BATTERIES = { mint: TIMELINE_MINT, all: TIMELINE_ALL }
-const ASIDE = ["hyborian"]
+const ASIDE = ["hyborian", "dark"]
 
 // **The demographics are written on no level**: they open the run's first
 // levels, one apiece and in this order — the first opens level 1, the second

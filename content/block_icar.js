@@ -20,7 +20,14 @@ defineBlock("icar", [
             "<h2>A few puzzles.</h2>" +
             "<p>Most of this test asks what you are like. These questions ask how you <b>think</b>, with sixteen short problems of four kinds: " +
             "words, letters, patterns and shapes, each drawing on a different style of thinking. Each has one right answer.</p>" +
-            "<p><em>There is no time limit. If you are not sure, pick the answer that seems most likely.</em></p>",
+            // Said outright so that everybody works under the same rules: the
+            // letter series in particular invite counting along the alphabet on
+            // paper, and left unsaid, some would and some would think it not
+            // allowed. Allowed rather than forbidden, since nothing could enforce
+            // a ban and the ICAR was validated online, unproctored, with nobody
+            // stopping anybody; the calculator is out because it would turn two
+            // of the verbal items into typing.
+            "<p><em>There is no time limit, and you can use pen and paper if it helps, but no calculator. If you are not sure, pick the answer that seems most likely.</em></p>",
     },
 
     // ICAR-16 ==============================================================

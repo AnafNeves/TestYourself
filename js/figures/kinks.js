@@ -81,7 +81,27 @@ function makeKinks(shared) {
         return known(DIMENSION) && score(DIMENSION) !== undefined
     }
 
-    // The score is the share of the kinks; the figure reads it as a count.
+    // Whether the kinks were answered and too many of them declined to count.
+    function declined() {
+        return known(DIMENSION) && shared.declined(DIMENSION)
+    }
+
+    // How many of the kinks were answered rather than declined, or undefined
+    // when the answers cannot be read (a visitor's link carries scores alone).
+    function answered() {
+        let count = 0
+        for (const question of items()) {
+            const given = answer(question.key)
+            if (given === undefined) return undefined
+            if (question.declined.indexOf(given) === -1) count++
+        }
+        return count
+    }
+
+    // The score is the share of the kinks; the figure reads it as a count, of
+    // all of them, which is what the crowd is counted on. Where some were
+    // declined the share is of those answered, and the count on the crowd is
+    // what that share would come to over them all.
     function countOf(value) {
         return Math.round(value * items().length)
     }
@@ -211,9 +231,13 @@ function makeKinks(shared) {
             figure.addEventListener("mouseenter", tip)
             figure.addEventListener("mouseleave", hideTip)
 
+            // The words say what was answered, where the crowd places it: the
+            // turn-ons themselves, out of the kinks that were not declined.
+            const on = turnOns()
+            const of = answered()
             const side = holder.appendChild(text("div", "kinks__side"))
-            side.appendChild(counted(count))
-            const done = livedLine(count)
+            side.appendChild(counted(on ? on.length : count, of === undefined ? items().length : of))
+            const done = livedLine(on ? on.length : count)
             if (done) side.appendChild(done)
             const where = standing(value)
             if (where) side.appendChild(where)
@@ -225,23 +249,25 @@ function makeKinks(shared) {
 
     // "Turn you on" is held together by non-breaking spaces, so that a count
     // wrapping onto two lines breaks before it rather than leaving "on" alone
-    // on the second.
-    function counted(count) {
+    // on the second. `of` is how many were answered, which is all of them
+    // unless some were declined, and then the words say so.
+    function counted(count, of) {
         const said = text("p", "kinks__count")
-        const of = items().length
+        const all = of === items().length
+        const kinds = all ? " kinks" : " kinks you answered"
         const on = (verb) => " " + verb + " you on"
         if (count === 0) {
-            said.append("None of these " + of + " kinks" + on("turns"))
+            said.append((all ? "None of these " : "None of the ") + of + kinds + on("turns"))
             return said
         }
         if (count === of) {
             said.append("All ")
             said.appendChild(text("strong", "", String(count)))
-            said.append(" of these kinks" + on("turn"))
+            said.append((all ? " of these" : " of the") + kinds + on("turn"))
             return said
         }
         said.appendChild(text("strong", "", String(count)))
-        said.append(" of these " + of + " kinks" + on(count === 1 ? "turns" : "turn"))
+        said.append((all ? " of these " : " of the ") + of + kinds + on(count === 1 ? "turns" : "turn"))
         return said
     }
 
@@ -312,6 +338,7 @@ function makeKinks(shared) {
         KINKS_KEY: KINKS_KEY,
         DIMENSION: DIMENSION,
         ready: ready,
+        declined: declined,
         youAt: youAt,
         renderKinks: renderKinks,
     }

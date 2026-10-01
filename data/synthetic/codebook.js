@@ -135,7 +135,10 @@ timeline.forEach((entry, at) => {
                         {
                             value: option.value,
                             label: format.labels ? format.labels[position] : null,
-                            custom: !!option.custom,
+                            // Off the scale, which a declined answer ("I'd rather not
+                            // say") is too, so whatever reads `custom` keeps it off.
+                            custom: !!(option.custom || option.declined),
+                            declined: !!option.declined,
                             exclusive: !!option.exclusive,
                             small: !!option.small,
                             showIf: option.showIf || null, // the 31st, offered only after a month that has one

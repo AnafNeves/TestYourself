@@ -488,7 +488,10 @@ def fork_offers(book):
     A fork is a run of levels one after another with the same `fork`, the
     number being how many are offered at once — `FORKS` in app.js. A choice
     is made on the screen of the level *before* the one it decides, and the
-    last level of a run is what is left rather than a choice.
+    last level of a run is what is left rather than a choice. The app draws
+    what each choice offers out of every level still to place; the next
+    `fork` of them as written is one set that draw can give, and the one a
+    run walking the written order is offered.
     """
     runs = []
     for level in book["levels"]:

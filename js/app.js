@@ -245,11 +245,10 @@
     // offered at a time. The places a fork's levels take are its **slots** —
     // the level numbers carrying it — and `at` is the index of the slot the
     // coming choice fills. On finishing the level before that slot, while more
-    // than one level is left to fill it with, the `width` standing next (or
-    // all that are left, when fewer) are offered and the one picked takes the
-    // slot, the others staying in the running for the slot after — so a person
-    // who keeps passing a level over meets it again at every choice until it
-    // is the last one standing.
+    // than one level is left to fill it with, `width` of the levels still to
+    // place (or all of them, when fewer are left) are drawn afresh and offered,
+    // and the one picked takes the slot. Those passed over go back among the
+    // rest, and may or may not be drawn again for the next choice.
     //
     // **A fork is a run of levels written one after another with the same
     // `n`**, so two runs side by side with different numbers are two forks,
@@ -263,13 +262,15 @@
     // contiguous, but nothing here requires it, which is why a choice is a
     // *swap* of two places rather than a shuffling of one run (`swapLevels`),
     // and why `beneath` stays with the place rather than travelling with what
-    // is asked there. A swap is enough however many are offered: the next
-    // choice offers what stands in the next `width` slots, which is the ones
-    // passed over and one more, whichever of those slots each happens to be in.
+    // is asked there. A swap is enough however many are offered: the level
+    // taken and the one standing in the slot change places, so every level not
+    // yet taken is still in a slot after it, which is what the next choice is
+    // drawn from.
     //
     // A run of levels drawn instead of chosen needs nothing here at all —
     // `shuffle()` in content/ has already put them in an order by the time this
-    // runs, and a fork over a drawn run offers them in the drawn order.
+    // runs. Under a fork that order decides which of those offered is
+    // recommended (the one standing first) and nothing else.
     //
     // A battery that leaves one level of a fork leaves nothing to choose, and
     // that level is asked where it falls. A choice is not recorded here but on
@@ -299,7 +300,8 @@
                 // takes its first place as written and the choosing starts at
                 // the second. Only a battery gets there, since the run's own
                 // first level is fixed.
-                return { width: run.width, slots: slots, at: slots[0] === 1 ? 1 : 0 } // at: the index of the slot the coming choice fills
+                // at: the index of the slot the coming choice fills; offer: the slots it offers, once drawn
+                return { width: run.width, slots: slots, at: slots[0] === 1 ? 1 : 0, offer: null }
             })
             .filter(Boolean)
     })()
@@ -312,9 +314,21 @@
         return FORKS.find((fork) => fork.at < fork.slots.length - 1 && fork.slots[fork.at] === level + 1) || null
     }
 
-    // The places a fork's coming choice is between, as level numbers: the
-    // slot to fill and those after it, as many as the fork offers at once.
-    const offeredBy = (fork) => fork.slots.slice(fork.at, fork.at + fork.width)
+    // The places a fork's coming choice is between, as level numbers: as many
+    // as the fork offers at once, drawn out of every slot still to fill (the
+    // one being filled and all after it), or all of them when fewer are left.
+    // Drawn once a choice and kept, so that the cards coming back up (the
+    // briefing returned to, a reload on the level screen) offer the same
+    // levels rather than a second draw that a reload could be used to get.
+    function offeredBy(fork) {
+        if (!fork.offer) {
+            fork.offer = shuffle(fork.slots.slice(fork.at))
+                .slice(0, fork.width)
+                .sort((one, other) => one - other)
+            keep()
+        }
+        return fork.offer
+    }
 
     // The page is put back to the top underneath something that is covering
     // it. Moving smoothly there would be seen sliding about under the fade,
@@ -425,8 +439,12 @@
                     // its own, not a point on it. Its value is then only a
                     // label for `showIf` to match, so it takes no part in the
                     // scale's bounds, and `counted()` below never averages it
-                    // into a dimension.
-                    const scale = options.filter((one) => !one.custom)
+                    // into a dimension. One marked `declined: true` — "I'd
+                    // rather not say" — is outside the scale too, but is no
+                    // answer at all rather than a different one: `counted()`
+                    // leaves it out of the dimension instead of holding the
+                    // dimension unfinished (see `score()`).
+                    const scale = options.filter((one) => !one.custom && !one.declined)
                     const values = scale.map((o) => o.value)
 
                     // An option may say what choosing it is worth (`score:`)
@@ -471,6 +489,11 @@
                                     item.correct !== undefined ? 1 : worth ? Math.max.apply(null, worth) : scale.length ? Math.max.apply(null, values) : format.max,
                                 scores: worth ? Object.fromEntries(scale.map((one) => [one.value, one.score])) : null,
                                 custom: options.filter((one) => one.custom).map((one) => one.value),
+                                declined: options.filter((one) => one.declined).map((one) => one.value),
+                                // The share of a dimension's items that must be answered
+                                // rather than declined for it to be scored; all of them
+                                // unless the questionnaire says otherwise.
+                                enough: setting(item, questionnaire, "enough"),
                                 anchors: format.anchors,
                                 unit: format.unit,
                                 step: format.step,
@@ -657,11 +680,12 @@
 
     // An answer given by nobody: a point off the item's own scale, a number
     // inside the bounds of the field, or a word in place of the written one.
-    // A custom option is passed over where a real one exists, so a thinned
-    // scored item never holds its dimension shut with an answer off the scale.
+    // A custom or declined option is passed over where a real one exists, so a
+    // thinned scored item never holds its dimension shut with an answer off the
+    // scale.
     function anyAnswer(question) {
         if (question.input === "text") return "test"
-        const pool = offered(question).filter((one) => !one.custom)
+        const pool = offered(question).filter((one) => !one.custom && !one.declined)
         // A slider's options are only its ways out, and the line is the answer.
         const options = pool.length || question.type === "slider" ? pool : offered(question)
         // Several answers may be true at once, and one of them stands in for
@@ -992,6 +1016,9 @@
     function counted(question) {
         const answer = responses[question.key]
         if (answer === undefined) return undefined
+        // An answer declined is worth nothing either way: null, for `score()`
+        // to leave out.
+        if (question.declined.indexOf(answer) !== -1) return null
         // An answer outside the scale has no worth on it: a custom option
         // holds the dimension unfinished rather than feeding its label — an
         // arbitrary number — into the average.
@@ -1014,21 +1041,50 @@
     // answered, so no score of the run is ever read from it.
     let visitor = null
 
-    // The average of a dimension, once every one of its items is answered.
-    function score(dimension) {
-        if (visitor) return visitor.values[dimension]
+    // What a dimension's items are worth, once every one of them is answered:
+    // the answers really given, an answer declined ("I'd rather not say")
+    // being left out rather than counted as anything.
+    function given(dimension) {
         const answers = dimensions[dimension].map(counted)
         if (answers.some((answer) => answer === undefined)) return undefined
+        return answers.filter((answer) => answer !== null)
+    }
+
+    // How many of a dimension's items must be really answered for it to be
+    // scored: all of them, unless its questionnaire is written `enough`, a
+    // share of them.
+    function needed(dimension) {
+        const items = dimensions[dimension]
+        const share = Math.max.apply(null, items.map((question) => (question.enough === undefined ? 1 : question.enough)))
+        return Math.ceil(share * items.length - 1e-9)
+    }
+
+    // The average of a dimension, once every one of its items is answered and
+    // enough of them really were: the mean of those, the declined left out.
+    function score(dimension) {
+        if (visitor) return visitor.values[dimension]
+        const answers = given(dimension)
+        if (!answers || !answers.length || answers.length < needed(dimension)) return undefined
         return answers.reduce((total, answer) => total + answer, 0) / answers.length
     }
 
+    // Whether a dimension is answered and still cannot be scored: too many of
+    // its items declined. Its figure says so rather than say nothing. Never
+    // true of somebody else's results, which a link carries as scores alone.
+    function declined(dimension) {
+        if (visitor) return false
+        const answers = given(dimension)
+        return !!answers && (!answers.length || answers.length < needed(dimension))
+    }
+
     // The total of a dimension, once every one of its items is answered. The
-    // PHQ-4 is read from sums rather than averages.
+    // PHQ-4 is read from sums rather than averages. A sum over fewer items
+    // than the scale has is no sum on it, so one declined holds it unfinished.
     function total(dimension) {
         // A link carries the average; the sum is that over the items again.
         if (visitor) return visitor.values[dimension] === undefined ? undefined : visitor.values[dimension] * dimensions[dimension].length
-        const answers = dimensions[dimension].map(counted)
-        if (answers.some((answer) => answer === undefined)) return undefined
+        const answers = given(dimension)
+        if (!answers || answers.length < dimensions[dimension].length) return undefined
         return answers.reduce((sum, answer) => sum + answer, 0)
     }
 
@@ -2861,10 +2917,11 @@
     function renderFork(fork, paths, take) {
         paths.innerHTML = ""
 
-        // The places standing next, as level numbers: what is in them is what
-        // the cards show, and taking one is swapping it into the first. They
-        // are laid out in a random order, so the recommended one is not always
-        // on the left, and as many across as there are of them.
+        // The places drawn for this choice, as level numbers: what is in them
+        // is what the cards show, and taking one is swapping it into the slot
+        // being filled. They are laid out in a random order, so the
+        // recommended one is not always on the left, and as many across as
+        // there are of them.
         const offered = offeredBy(fork)
         const first = offered.reduce((best, one) => (PLAN[one - 1].written < PLAN[best - 1].written ? one : best))
         const sides = shuffle(offered.slice())
@@ -2969,6 +3026,7 @@
         }
 
         fork.at += 1
+        fork.offer = null // the next choice is drawn afresh
         renderSidebar()
         return words
     }
@@ -3387,6 +3445,7 @@
             levelLeft: levelLeft,
             swaps: swaps,
             forks: FORKS.map((fork) => fork.at),
+            offers: FORKS.map((fork) => fork.offer),
             auto: questions.filter((question) => question.auto).map((question) => question.key),
             responses: responses,
             log: log,
@@ -3420,6 +3479,11 @@
         }
         kept.forks.forEach((at, n) => {
             if (FORKS[n]) FORKS[n].at = at
+        })
+        // A choice already drawn and not yet made; a run kept before choices
+        // were drawn has none, and draws its next one when it comes.
+        ;(kept.offers || []).forEach((offer, n) => {
+            if (FORKS[n] && offer) FORKS[n].offer = offer
         })
         const auto = new Set(kept.auto)
         for (const question of questions) if (question.auto || auto.has(question.key)) question.auto = auto.has(question.key)
@@ -3659,6 +3723,8 @@
         ratingKey: levelKey,
         score: score,
         total: total,
+        // Answered and not scored, too many of its items declined.
+        declined: declined,
         percentile: percentile,
         tercile: tercile,
         levelProgress: levelProgress,

@@ -899,6 +899,19 @@
     white-space: nowrap;
 }
 
+/* A figure whose questions were declined, on a finished level: drawn as its
+   locked self, blurred, with this line under it in place of the Locked badge
+   (`declinedSection` in results.js), since there is nothing left to unlock. */
+.result__declined {
+    margin: 16px auto 0;
+    max-width: 520px;
+    text-align: center;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
 /* ------------------------ interoception, as a body ----------------------- */
 
 .soma,

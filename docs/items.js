@@ -395,7 +395,7 @@ const ITEMS = {
     ],
     "r36": [
         "If it were safe, I would take a treatment that made me more intelligent",
-        "It is good that we try to develop technology that would let people live for ever",
+        "It is good that we try to develop technology that would let people live forever",
         "There is something wrong with using technology to improve on human nature",
         "Parents should not be allowed to choose their children's traits, even if the technology were safe and available to everyone",
         "Differences in intelligence between people are mostly down to their genes",

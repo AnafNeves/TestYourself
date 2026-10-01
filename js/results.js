@@ -25,6 +25,7 @@ function makeResults(engine) {
     const ratingKey = engine.ratingKey
     const score = engine.score
     const total = engine.total
+    const declined = engine.declined
     const percentile = engine.percentile
     const tercile = engine.tercile
     const levelProgress = engine.levelProgress
@@ -342,6 +343,7 @@ function makeResults(engine) {
         dimensions: dimensions,
         score: score,
         total: total,
+        declined: declined,
         percentile: percentile,
         tercile: tercile,
         answer: answer,
@@ -384,6 +386,31 @@ function makeResults(engine) {
 
     /* ---------------------------- spider chart ---------------------------- */
 
+    // How far out a value sits on a web's axis: its standing against its norm,
+    // where it has one — the centile the words beside it give, so the point and
+    // the sentence on hover agree — and otherwise its reach along its own scale.
+    // Standings rather than reaches because a web's axes are different scales
+    // with different means, and drawn as reaches the average person came out a
+    // lopsided shape that the eye read as part of the person's; as standings the
+    // average is the same distance out on every axis, and what is irregular is
+    // the person's own. A stand-in is placed by its reach, which is the share it
+    // was hashed to: read against a norm it would land at one end or the other.
+    function onWeb(dimension, value, tease) {
+        const norm = normOf(dimension)
+        return outward(!norm || tease ? reachOf(dimension, value) : standFrom(value, norm).centile / 100)
+    }
+
+    // A share laid out from a little way off the middle rather than from the
+    // middle itself: a centile reaches the bottom of its axis far more often
+    // than a reach did, and points there would sit on the centre and on each
+    // other. Everything on a web goes through it — the rings too, so that the
+    // two inside the rim stay on the terciles an interpretation is picked by.
+    const WEB_FLOOR = 0.1
+    const outward = (share) => WEB_FLOOR + (1 - WEB_FLOOR) * share
+
+    // The average person stands at the middle of every axis that has a norm.
+    const AVERAGE_ON_WEB = outward(0.5)
+
     // Grows to `many` when it carries the whole profile; drawn as a `tease`, it
     // stands in for results not yet unlocked.
     function drawSpider(chart, list, tease) {
@@ -408,7 +435,7 @@ function makeResults(engine) {
         chart.innerHTML = ""
 
         for (let ring = 1; ring <= 3; ring++) {
-            const corners = list.map((_, position) => pointAt(position, (radius * ring) / 3).join(","))
+            const corners = list.map((_, position) => pointAt(position, radius * outward(ring / 3)).join(","))
             chart.appendChild(draw("polygon", { class: "chart__ring", points: corners.join(" ") }))
         }
 
@@ -447,18 +474,17 @@ function makeResults(engine) {
             })
             chart.appendChild(label)
 
-            const norm = normOf(dimension)
-            if (norm) average.push({ position: position, spot: pointAt(position, reachOf(dimension, norm.mean) * radius) })
+            if (normOf(dimension)) average.push({ position: position, spot: pointAt(position, AVERAGE_ON_WEB * radius) })
 
             if (value === undefined) return
-            found.push({ dimension: dimension, position: position, spot: pointAt(position, reachOf(dimension, value) * radius), colour: dimensions[dimension][0].color })
+            found.push({ dimension: dimension, position: position, spot: pointAt(position, onWeb(dimension, value, tease) * radius), colour: dimensions[dimension][0].color })
         })
 
         // The average person, dashed, under everything else: closed when there
         // is a mean on every axis, and otherwise drawn between neighbouring
-        // axes that have one, leaving a gap across those that have none (the
-        // reasoning's four, which carry no norms) rather than a line through
-        // them that would put an average where nobody has measured one.
+        // axes that have one, leaving a gap across those that have none rather
+        // than a line through them that would put an average where nobody has
+        // measured one.
         const compared = average.length > 2
         if (average.length === list.length && list.length > 2) {
             chart.appendChild(draw("polygon", { class: "chart__average", points: average.map((one) => one.spot.join(",")).join(" ") }))
@@ -663,6 +689,10 @@ function makeResults(engine) {
             // fork cards): see the head of js/figures/volcano.js.
             if (name === volcano.VOLCANO_OF) {
                 if (teaser || !onLevel(dimensionsOf(name), level)) continue
+                if (!locked && volcano.declined()) {
+                    declinedSection(into, "Desire", colourOf(volcano.DIMENSION), volcano.renderVolcano(true))
+                    continue
+                }
                 if (!locked && !volcano.ready()) continue
                 openSection(into, "Desire", colourOf(volcano.DIMENSION), locked).body.appendChild(volcano.renderVolcano(locked))
                 continue
@@ -671,6 +701,10 @@ function makeResults(engine) {
             // The sexuality level's crowd.
             if (name === kinks.KINKS_OF) {
                 if (!onLevel(dimensionsOf(name), level)) continue
+                if (!locked && kinks.declined()) {
+                    declinedSection(into, "Vanilla or Kinky", colourOf(kinks.DIMENSION), kinks.renderKinks(true))
+                    continue
+                }
                 if (!locked && !kinks.ready()) continue
                 openSection(into, "Vanilla or Kinky", colourOf(kinks.DIMENSION), locked).body.appendChild(kinks.renderKinks(locked))
                 continue
@@ -752,8 +786,27 @@ function makeResults(engine) {
         // comes under it, on the same terms.
         if (!locked && into.querySelector(".result")) {
             into.appendChild(starRating(level))
-            into.appendChild(levelShare(level))
+            // Nothing to share where every section was declined.
+            if (into.querySelector(".result:not(.result--declined)")) into.appendChild(levelShare(level))
         }
+    }
+
+    // A figure whose questions were mostly declined ("I'd rather not say",
+    // `declined` in app.js), on a level that is otherwise finished. There is
+    // nothing of the person's to draw it from, so it is drawn as its locked
+    // self — blurred, from the stand-in values, which is the shape of what the
+    // questions read and nothing of anybody's — with a line saying why in
+    // place of the Locked badge, since nothing is left to unlock. No vote:
+    // there is no reading to agree with.
+    function declinedSection(into, label, colour, built) {
+        const opened = openSection(into, label, colour, true)
+        opened.section.classList.add("result--declined")
+        opened.body.appendChild(built)
+        for (const badge of opened.body.querySelectorAll(".result__lock")) badge.remove()
+        const said = document.createElement("p")
+        said.className = "result__declined"
+        said.textContent = "You chose not to answer these questions"
+        opened.body.appendChild(said)
     }
 
     // The foot of a finished level carries a taste of the next: the same
@@ -893,9 +946,9 @@ function makeResults(engine) {
     // The web carries what a level's results name under its own name: a
     // dimension with norms, unless its questionnaire is read back as one
     // figure (the archetype, the wheel, the climb) or is written
-    // `profile: false` — or, written `profile: true`, a dimension without
-    // norms whose level names it anyway (the reasoning's four, each drawn as
-    // its share of items right, with no average person on its axis).
+    // `profile: false` — or, written `profile: true`, a dimension whose level
+    // names it whether or not it has norms (the reasoning's four; one without
+    // norms is drawn as its reach, with no average person on its axis).
     function onProfile(dimension) {
         const name = dimensions[dimension][0].questionnaire
         if (name === archetype.ARCHETYPE_OF || name === wheel.WHEEL_OF || climb.CLIMB_OF.indexOf(name) !== -1) return false
@@ -991,7 +1044,7 @@ function makeResults(engine) {
         c.strokeStyle = "rgba(255, 255, 255, 0.1)"
         c.lineWidth = 1
         for (let ring = 1; ring <= 3; ring++) {
-            trace(PROFILE.map((_, position) => spot(position, (radius * ring) / 3)), true)
+            trace(PROFILE.map((_, position) => spot(position, radius * outward(ring / 3))), true)
             c.stroke()
         }
         PROFILE.forEach((_, position) => {
@@ -1004,8 +1057,7 @@ function makeResults(engine) {
         // those that have none — the same as the web above the buttons.
         const means = {}
         PROFILE.forEach((dimension, position) => {
-            const norm = normOf(dimension)
-            if (norm) means[position] = spot(position, reachOf(dimension, norm.mean) * radius)
+            if (normOf(dimension)) means[position] = spot(position, AVERAGE_ON_WEB * radius)
         })
         c.setLineDash([6, 5])
         c.strokeStyle = "#767c92"
@@ -1025,7 +1077,7 @@ function makeResults(engine) {
 
         const yours = {}
         PROFILE.forEach((dimension, position) => {
-            if (values[dimension] !== undefined) yours[position] = spot(position, reachOf(dimension, values[dimension]) * radius)
+            if (values[dimension] !== undefined) yours[position] = spot(position, onWeb(dimension, values[dimension]) * radius)
         })
 
         c.strokeStyle = "#7c5cff"

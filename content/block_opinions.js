@@ -479,7 +479,7 @@ defineBlock("opinions", [
             {
                 key: "Opinion_Enhancement_Immortality",
                 dimension: "Enhancement",
-                text: "It is good that we try to develop technology that would let people live for ever",
+                text: "It is good that we try to develop technology that would let people live forever",
             },
             {
                 key: "Opinion_Enhancement_Nature",

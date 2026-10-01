@@ -158,6 +158,7 @@ Not asked yet. "Partly there" names what the test already asks on the same groun
 | Self and others | Shame and disgust | | |
 | Self and others | Social connection | | |
 | Self and others | Suggestibility | SSS (Kotov et al., 2004), as in IllusionGameSuggestibility; see **Fake news and reality**, below | |
+| Self and others | Dark traits, deception, antisocial behaviour | A level of its own, in active work: see **Light and dark** under Pop-Culture Hooks and `content/block_dark.js` | HEXACO Honesty-Humility (Character), HiTOP-BR's Dominance and Impulsivity (Mood & Health), SINS single (General) |
 | Self and others | PCS? | | |
 | Wellbeing and emotions | Coping | | CERQ-short (Mind & Heart) |
 | Wellbeing and emotions | Self-rated health | | Health single (General) |
@@ -258,13 +259,19 @@ with real norms where there are any (a comparison with a named crowd is what get
 whichever it is; a figure that works as the picture of the post; and an entry page under `start/` with a card of its own.
 Nothing on screen carries a live trademark, the Hyborian Age's rule about "Conan".
 
-- **Morality.** D&D-style alignment: Good–Evil from the Light Triad (Kaufman et al., 2019) against the Short Dark Triad
-  (Jones & Paulhus, 2014), both with published norms, and Lawful–Chaotic from a need-for-structure or rule-orientation
-  scale. Read back as the nine-cell alignment chart, which is a meme already, with a painted card a cell, and the Good–Evil
-  axis doubling as a light side and a dark side, after the Force in Star Wars. Alignment is in the D&D System Reference
-  Document (SRD 5.1, CC-BY-4.0), so it wants an attribution line and nothing more; "the Force", "Jedi" and "Sith" are
-  Lucasfilm's, so on screen it is a light side and a dark side and nothing named. Could also include our own Lie Profile
-  scale, and bullshitting frequency.
+- **Light and dark.** A level on the dark side of personality — antagonism, callousness, manipulation, deceit and
+  the ordinary wrongdoing that goes with them — framed as a light side and a dark side after the Force in Star Wars,
+  which the data support: Kaufman's Light Triad and the dark traits correlate only about −.5, so a person has two
+  strengths that vary separately. **In active work**: the plan — what is asked in forty items, what was cut and why,
+  the composed painted cards it closes on, where it goes and the Article 10 question — is written out in
+  `content/block_dark.js`, a comment and not yet a block, and is kept there rather than here.
+- **Moral alignment.** A different level from the one above, and not to be folded into it: the nine-cell
+  alignment chart of the D&D tradition, Good–Evil against Lawful–Chaotic, which is a meme already. The light-and-dark
+  level measures the person's antagonism; this would measure their *ethics* — the Good–Evil axis from a moral
+  foundations or care-harm measure rather than from dark traits, and Lawful–Chaotic from rule-orientation,
+  need-for-structure or the opinions level's Order. A painted card a cell. Alignment is in the D&D System Reference
+  Document (SRD 5.1, CC-BY-4.0), so it wants an attribution line and nothing more. Not started, and waits on the
+  light-and-dark level, so that the two are seen side by side before either borrows from the other.
 - **Which Philosopher.** Questions out of the 2020 PhilPapers Survey (the trolley, the experience machine, the
   teletransporter, free will, God, moral realism), read against the public answers of about 1,800 professional
   philosophers, with the Nietzscheanism scale (under Politics, above) and perhaps the Oxford Utilitarianism Scale (Kahane
@@ -284,6 +291,22 @@ Nothing on screen carries a live trademark, the Hyborian Age's rule about "Conan
 - **MBTI.** For the pop factor: the biggest audience of any, with a subreddit a type. Four letters out of open items (the
   OEJTS), then set against what the Character level measures, which makes it a Barnum probe beside the star sign.
   "MBTI" and "Myers-Briggs" are trademarks, so on screen it is "your four letters".
+
+## General Profile Improvement
+
+Ideas for the whole-run web (the Profile panel and the last screen) and the card it is shared as, out of a pilot's feedback
+(October 2026). Parked, not started.
+
+- **A one-line summary beside the web.** The web is sixteen axes and says nothing in words; a sentence drawn from its
+  shape ("Curious and steady, with a sharp eye for your own body") would be what a shared card is read for. It should be
+  written from the two or three axes furthest from the average person, in the register of the level readings, and say
+  nothing on ground the web keeps off (mood, politics, sex). Worth doing first, since it costs no picture.
+- **Which character are you?** A pilot pasted their web into a chatbot and asked which pop-culture character it was,
+  which is the identity-quiz hook the test is built round. Done here it would be a fixed set of character archetypes, each
+  a profile on the web's axes, the nearest one named (the Hyborian heroes' nearest-corner rule), with a painted card of
+  its own — never a live character's name or likeness, the Hyborian Age's rule about trademarks. Generated by a model at
+  the end of the run it would want a server, a model call per run and a way of keeping what it says off the ground the web
+  keeps off, so a fixed set is the version that fits the page as it is.
 
 ## Inspiration and Resources
 

@@ -190,6 +190,12 @@ function makeVolcano(shared) {
         return CHANNELS.every((channel) => now[channel.key] !== undefined)
     }
 
+    // Whether the questions were answered and too many of a channel's
+    // declined to draw it: the volcano wants all three, so one is enough.
+    function declined() {
+        return CHANNELS.some((channel) => known(channel.dimension) && shared.declined(channel.dimension))
+    }
+
     // The magma where it has begun to cool: its own colour, darker and
     // redder. Hot lava glows from inside a crust, which is what gives it an
     // edge at the white-hot end, where the colour alone would be pale.
@@ -981,6 +987,7 @@ function makeVolcano(shared) {
         DIMENSION: CHANNELS[0].dimension,
         VENT: VENT,
         ready: ready,
+        declined: declined,
         renderVolcano: renderVolcano,
     }
 }
