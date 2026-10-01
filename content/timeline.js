@@ -21,9 +21,22 @@
    A block is one stretch of the run that moves as a piece — a file of its own,
    `content/block_<name>.js`. Moving one between levels is moving its name from
    one line of a timeline to another, and a block named nowhere here is never
-   asked however completely it is written. The demographics are the one
+   asked however completely it is written. The demographics are one
    exception: they are named on no level but in `DEMOGRAPHICS`, below, and open
    the first levels of the run by place, whatever those levels hold.
+
+   An **interlude** is the other: an entry of a timeline written
+   `{ interlude: true, blocks: [...] }`, which is no level — no key, no name,
+   no results — but blocks asked *between* the level written before it and
+   the one written after. It opens the place after it, the way the
+   demographics open theirs, whatever the fork puts there, and belongs to that
+   place rather than to its level: nothing in it counts towards the level's
+   ring, countdown or quality control. A briefing of an interlude written
+   `onward: true` is left by choosing what comes next, while a fork is still
+   to fill the place the interlude opens: the cards a level screen would have
+   offered stand under it instead of its button, so the choice comes after
+   the interlude rather than before it. The interim between the core and the
+   rest of `mint` is the one there is.
 
    A questionnaire is the unit of shuffling and the only one: its items may
    come in any order but they come together, and everything around them holds
@@ -39,7 +52,9 @@
              type: "briefing",           // a screen with nothing to answer on:
              key: "Briefing_Example",    // a heading and a few paragraphs saying
              text: "<h2>…</h2><p>…</p>", // what the next stretch is about. Its
-           },                              // continue response and timings are recorded.
+                                         // continue response and timings are recorded.
+             celebrate: true,            // optional: a milestone rather than a pause,
+           },                              // lit in gold, sprays out of its heading
          {
              key: "example",             // what a score is traced back by
              name: "Interoception",      // what the results screen calls it
@@ -247,7 +262,8 @@ function shuffle(arr) {
 // the ones passed over stay in the running for the slot after, and the one
 // written first is marked as recommended. It is the one thing about the run's
 // order that is the participant's, there so that the descent is not one
-// straight line.
+// straight line. Where an interlude opens the slot, the choice waits for it
+// and is offered under its `onward` briefing instead.
 //
 // **A fork is a run of levels written one after another with the same `n`.**
 // Two runs side by side with different numbers are two forks, each put in
@@ -330,8 +346,8 @@ const WATER_SHARE = 2 / 3
 //
 // `mint` is the study the ethics application is being written for, asked
 // only by a link that says `?battery=mint`: General, then the core (the MINT,
-// the BAIT and the HiTOP-BR) as a drawn fork of two, then the rest as a drawn
-// fork of three.
+// the BAIT and the HiTOP-BR) as a drawn fork of two, then the interim, then
+// the rest as a drawn fork of three.
 const TIMELINE_MINT = [
     { key: "General", name: "General", blocks: ["fipi", "singles"], minutes: 3 },
     shuffle([
@@ -339,6 +355,12 @@ const TIMELINE_MINT = [
         { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2, minutes: 3 },
         { key: "MoodHealth", name: "Mood & Health", blocks: [shuffle(["mood", "health"]), "hitop"].flat(), fork: 2, minutes: 8 },
     ]),
+    // The end of the main part of the study, and the way into the rest: an
+    // interlude (see the head of this file), so it is asked after the last
+    // core level's results and before whichever level comes next, and its
+    // last screen is the choice of that level. Somebody who stops here has
+    // answered everything the study needs of them.
+    { interlude: true, blocks: ["interim"] },
     shuffle([
         { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
         { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
@@ -388,7 +410,8 @@ const TIMELINE_ALL = [
 // of it by hand, for testing, and `?start=a,b` brings the levels holding those
 // blocks to the front — from whichever timeline has them, so `?start=sex`
 // under `mint` walks the sexuality level first and `mint` after it. `closing`
-// is always asked, since the run ends through it.
+// is always asked, since the run ends through it, and an interlude cannot be
+// started on or brought in, being no level.
 //
 // **ASIDE is asked by no battery**: blocks on a timeline, so that their level
 // has a place, a key and a name, that a run meets only when a link names them
@@ -409,6 +432,7 @@ const ASIDE = ["hyborian"]
 // `closing` is never one of those places, the run ending through it; a run
 // with fewer levels than this puts what is left at the head of its last. Every
 // battery asks them, and `?only=` and `?skip=` name them like any other block.
+// An interlude opening the same place goes before them.
 const DEMOGRAPHICS = ["demographics1", "demographics2", "demographics3"]
 
 // Blocks that come and go together, because one figure is drawn from both:

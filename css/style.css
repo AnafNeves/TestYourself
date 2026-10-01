@@ -1393,14 +1393,16 @@ h1 {
 #instructions,
 .text,
 .scale,
-.briefing {
+.briefing,
+.briefing__paths {
     transition: opacity 0.26s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .turning #instructions,
 .turning .text,
 .turning .scale,
-.turning .briefing {
+.turning .briefing,
+.turning .briefing__paths {
     opacity: 0;
     transform: translateY(12px);
 }
@@ -1749,6 +1751,148 @@ h1 {
 
 .briefing__body p:last-child {
     margin-bottom: 28px;
+}
+
+/* The briefing that ends an interlude, while what comes next is still to be
+   chosen: its one button gives way to the cards a level screen's fork shows
+   (`.level__paths`, results.css), set under the box across the survey's own
+   width. Out on the water rather than on a level screen's dimmed backdrop,
+   each card takes the briefing's surface, so the blurred figures still read. */
+.briefing--onward .briefing__body p:last-child {
+    margin-bottom: 0;
+}
+
+/* The choice of what comes next, at the foot of that briefing's words: set
+   off from the debrief over it, and headed the way a level screen heads its
+   fork, since the cards under the box are the same cards. */
+.briefing__next {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+}
+
+.briefing__body .briefing__next h3 {
+    margin: 0 0 8px;
+    font-family: var(--serif);
+    font-size: clamp(24px, 3.4vw, 30px);
+    font-weight: 500;
+    color: var(--gold-pale);
+}
+
+.briefing__body .briefing__next p {
+    margin: 0;
+}
+
+.briefing__paths {
+    margin-top: 22px;
+}
+
+.briefing__paths[hidden] {
+    display: none;
+}
+
+.briefing__paths .level__path {
+    background: var(--surface);
+    backdrop-filter: blur(8px);
+}
+
+/* A link in a briefing's words — the debrief's sources of support — reads as
+   a link in the prose, and not as a call to act. */
+.briefing__body a {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.35);
+    text-underline-offset: 3px;
+}
+
+.briefing__body a:hover,
+.briefing__body a:focus-visible {
+    text-decoration-color: currentColor;
+}
+
+/* The SONA credit, under the debrief: the one thing on that screen a
+   participant from SONA came for, so a box and a button of its own, set apart
+   from the prose round it. */
+.briefing__credit {
+    margin: 22px 0 0;
+    padding: 18px 20px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(217, 164, 65, 0.4);
+    background: rgba(217, 164, 65, 0.07);
+    text-align: center;
+}
+
+.briefing__body .briefing__credit p {
+    margin: 0 0 14px;
+    font-size: 15px;
+}
+
+/* Green, the colour of a thing to collect, so it is not read as one more way
+   on beside the level cards under it, which are in the app's own blue. */
+.briefing__body .briefing__credit .btn {
+    display: inline-block;
+    color: var(--bg);
+    text-decoration: none;
+    background: linear-gradient(135deg, #6ee7a8, #22c55e);
+    box-shadow: 0 16px 44px -18px #22c55e, inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.briefing__body .briefing__credit .btn:hover {
+    box-shadow: 0 22px 54px -18px #22c55e, inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* A briefing that marks a milestone (`celebrate` in content/): the end of
+   the main part of the study. The one briefing that is a reward rather than
+   a pause, so it is lit rather than quiet — centred, edged in gold, its
+   emoji popping in over a heading in gold — and three sprays go up out of the
+   heading as it arrives (`renderBriefing`). */
+.briefing--celebrate {
+    text-align: center;
+    border-color: rgba(217, 164, 65, 0.45);
+    box-shadow:
+        0 0 70px -24px rgba(217, 164, 65, 0.45),
+        0 30px 80px -46px rgba(0, 0, 0, 0.9);
+}
+
+/* Across rather than down: a heading on two lines would otherwise have one
+   line pale and the other gold. */
+.briefing--celebrate .briefing__body h2 {
+    font-size: clamp(28px, 4.6vw, 40px);
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-pale) 30%, #fff6df 50%, var(--gold-pale) 70%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 22px rgba(217, 164, 65, 0.35));
+}
+
+.briefing__body .briefing__cheer {
+    margin: 0 0 12px;
+    font-size: 64px;
+    line-height: 1;
+    color: inherit;
+    animation: cheer 0.9s cubic-bezier(0.2, 1.5, 0.4, 1) 0.2s both;
+}
+
+@keyframes cheer {
+    from {
+        transform: scale(0.2) rotate(-30deg);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.18) rotate(8deg);
+        opacity: 1;
+    }
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .briefing__body .briefing__cheer {
+        animation: none;
+    }
 }
 
 /* Scales whose options carry a text label. Stacked full width unless the item
@@ -3175,7 +3319,8 @@ h1 {
     .turning #instructions,
     .turning .text,
     .turning .scale,
-    .turning .briefing {
+    .turning .briefing,
+    .turning .briefing__paths {
         transform: none;
     }
 }

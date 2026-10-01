@@ -67,7 +67,10 @@ KEEP_FLAGGED <- FALSE # TRUE draws the page over every run, flagged or not
 # screens belong to no questionnaire.
 given <- long[!is.na(long$questionnaire) & !is.na(long$response), ]
 finished_levels <- grep("^QC_.+_TimeFinished$", names(wide), value = TRUE)
-random_said <- Filter(function(item) item$key == "Demographics_SurveyAccuracy", codebook$items)
+# Asked twice in a `mint` run, at the end of the core (the interim) and at the
+# end of the run, on the same two options; either said is enough.
+SERIOUS <- c("Interim_SurveyAccuracy", "Demographics_SurveyAccuracy")
+random_said <- Filter(function(item) item$key %in% SERIOUS, codebook$items)
 random_said <- if (length(random_said)) {
   unlist(lapply(random_said[[1]]$options, function(one) if (identical(as.numeric(one$value), 0)) one$text))
 } else character()
@@ -94,7 +97,7 @@ runs <- do.call(rbind, lapply(seq_len(nrow(wide)), function(row) {
     battery = wide$battery[row],
     subset = walked < length(level_keys),
     no_source = is.na(wide$source[row]) | wide$source[row] %in% c("", "Unknown"),
-    random = "Demographics_SurveyAccuracy" %in% names(wide) && wide$Demographics_SurveyAccuracy[row] %in% random_said,
+    random = any(vapply(intersect(SERIOUS, names(wide)), function(key) wide[[key]][row] %in% random_said, logical(1))),
     stringsAsFactors = FALSE
   )
 }))
@@ -128,7 +131,7 @@ if (!KEEP_FLAGGED) {
 - **scripted**: a headless browser (a window 0 pixels wide) or answer times too even for a person (SD under `r STEADY_CV` of the mean);
 - **tryout**: a hand-picked subset of the levels (`?only=`, `?skip=`);
 - **no source**: the link named none (`?source=` empty, saved as "Unknown"), so nobody sent it: a test, a link passed on, somebody guessing the address;
-- **said random**: answered "`r if (length(random_said)) random_said[1] else "No"`" to whether they took it seriously.
+- **said random**: answered "`r if (length(random_said)) random_said[1] else "No"`" to whether they took it seriously, at the end of the core or at the end of the run.
 
 ```{r}
 #| label: screen-plot
@@ -201,7 +204,11 @@ if (nrow(flagged)) {
 
 # Which level an item was on: each level screen (`Level_<N>`) follows the last
 # item of its level, so the Nth run of items between screens is the Nth level
-# in `levels_walked`.
+# in `levels_walked`. An interlude's items (the interim, between the core and
+# the rest) stand at the head of the next run but belong to no level, and the
+# codebook says which they are (`between`): they are left out of every level's
+# time.
+between_keys <- unlist(lapply(codebook$items, function(item) if (isTRUE(item$between)) item$key))
 levels_of <- function(one) {
   row <- wide[wide$participant == one, ]
   walked <- strsplit(row$levels_walked, SEP, fixed = TRUE)[[1]]
@@ -215,6 +222,7 @@ levels_of <- function(one) {
     participant = one,
     key = items$key,
     screen = screen,
+    between = items$key %in% between_keys,
     level = walked[at],
     position = at,
     onset = when(items$time_onset),
@@ -230,8 +238,10 @@ finished <- function(one, key) {
   column %in% names(wide) && !is.na(wide[wide$participant == one, column])
 }
 
-# Wall time from the level's first onset to its last response, briefings in.
-spans <- do.call(rbind, lapply(split(items[!items$screen, ], list(items$participant[!items$screen], items$level[!items$screen]), drop = TRUE), function(one) {
+# Wall time from the level's first onset to its last response, briefings in
+# and an interlude out.
+answering <- items[!items$screen & !items$between, ]
+spans <- do.call(rbind, lapply(split(answering, list(answering$participant, answering$level), drop = TRUE), function(one) {
   data.frame(
     participant = one$participant[1],
     level = one$level[1],
@@ -661,8 +671,11 @@ if (length(unnamed)) {
 MIN_RUNS <- 2
 NOT_SCALES <- c("icar16") # right or wrong, and the values are positions in a list
 
+# An interlude's items belong to no level, so they are no ray on any level's
+# radar: the codebook writes them at the place they stand, which is the head
+# of whichever level comes next, and a different level for everybody.
 scale_items <- Filter(function(item) {
-  item$type %in% c("choice", "slider", "curve") && is.null(item$check) &&
+  item$type %in% c("choice", "slider", "curve") && is.null(item$check) && !isTRUE(item$between) &&
     !grepl("^demographics", item$questionnaire) && !item$questionnaire %in% NOT_SCALES &&
     !is.null(item$lowest) && !is.null(item$highest) && item$highest > item$lowest
 }, codebook$items)

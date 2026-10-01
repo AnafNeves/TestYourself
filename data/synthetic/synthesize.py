@@ -517,6 +517,19 @@ def fork_choices(book):
     }
 
 
+def onward(book):
+    """The briefing that ends an interlude, keyed by the level it opens, and
+    the words it is answered with: the fork choice of what stands there, which
+    it offers in place of the level screen before it (`onward` in app.js) —
+    taken as recommended, the levels offered in the order written."""
+    heads = {item["level"]: item["key"] for item in book["items"] if item.get("onward")}
+    return {
+        heads[level]: [one["name"] for one in offered]
+        for level, offered in fork_offers(book)
+        if level in heads
+    }
+
+
 def screens(book):
     """One item per level screen, keyed by the level it showed.
 
@@ -526,7 +539,8 @@ def screens(book):
     fork as written (or all that are left, when fewer), the first of them is
     the one taken and the rest follow it as the ones passed over; otherwise
     it is the words on the one button, which say so when the way on goes
-    through the seabed.
+    through the seabed. A choice an interlude offers after it instead is not
+    the level screen's but the interlude's briefing's (`onward`).
     """
     # A briefing row carries no `dimension` at all — codebook.js writes one
     # only onto an item there is something to answer on — so it is asked for
@@ -540,7 +554,8 @@ def screens(book):
     rock = [level["level"] for level in book["levels"] if level["level"] in scored and level["beneath"]]
     floor = water[-1] if water and rock else None
 
-    taken = {level - 1: [one["name"] for one in offered] for level, offered in fork_offers(book)}
+    opened = {item["level"] for item in book["items"] if item.get("onward")}
+    taken = {level - 1: [one["name"] for one in offered] for level, offered in fork_offers(book) if level not in opened}
 
     return {
         level["level"]: {
@@ -560,6 +575,7 @@ def walked(book, answers):
     its `order`, with each level screen standing after the last item of the
     level it showed — which is where `container()` splices them in."""
     shown = screens(book)
+    chosen = onward(book)
     out = []
     standing = None
     for item in book["items"]:
@@ -571,7 +587,7 @@ def walked(book, answers):
             {
                 "key": item["key"],
                 "questionnaire": item["questionnaire"],
-                "response": None if item["type"] == "briefing" else said(item, answers.get(item["key"]), answers),
+                "response": chosen.get(item["key"]) if item["type"] == "briefing" else said(item, answers.get(item["key"]), answers),
                 "timeOnset": None,
                 "timeResponse": None,
             }

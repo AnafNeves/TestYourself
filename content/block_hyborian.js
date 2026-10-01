@@ -94,11 +94,7 @@ defineBlock("hyborian", [
         key: "Briefing_Hyborian",
         text:
             "<h2>An age undreamed of.</h2>" +
-            "<p>Nearly a century ago, a young writer in a small Texan town invented a world: an age between the sinking " +
-            "of Atlantis and the rise of history, with kingdoms, gods and a philosophy of its own. Its heroes trusted " +
-            "their own strength, its gods mostly did not listen, and its cities were softer than the wilds " +
-            "around them.</p>" +
-            "<p>The next statements are about that philosophy: what the world is, and how to live in it. There " +
+            "<p>The next statements are about attitudes and beliefs that might hold now just as they did in some bygone age. There " +
             "is no right answer. At the end you will find out which of its heroes you would have been.</p>",
     },
 
@@ -108,7 +104,8 @@ defineBlock("hyborian", [
         // Nothing here is placed against other people, and a person's
         // metaphysics has no business on a card made to be shared.
         profile: false,
-        instructions: "Please indicate the extent to which you agree or disagree with each statement",
+        instructions:
+            "Please indicate the extent to which you agree or disagree with each statement",
         format: {
             options: [1, 2, 3, 4, 5, 6, 7],
             anchors: ["Strongly disagree", "Strongly agree"],
@@ -215,7 +212,12 @@ defineBlock("hyborian", [
             // guile pole is the Thief's and the Sorcerer's real position —
             // honour as a luxury with a price — which people split over,
             // where "a clever lie is a weapon like any other" was rejected
-            // by almost everybody and told nobody apart.
+            // by almost everybody and told nobody apart. It is stated flat:
+            // "Honour is a fine thing until it gets you killed" was read as
+            // a quip by some and as a claim by others, and a maxim answered
+            // on its tone tells nobody apart (the no-joke rule above). A
+            // promise rather than honour, so that it is concrete and sits
+            // against the first item's promise to an enemy.
             {
                 key: "Hyborian_Code_1",
                 dimension: "The Code",
@@ -229,7 +231,7 @@ defineBlock("hyborian", [
             {
                 key: "Hyborian_Code_3",
                 dimension: "The Code",
-                text: "Honour is a fine thing until it gets you killed",
+                text: "No promise is worth dying for",
                 reverse: true,
             },
 
@@ -239,8 +241,11 @@ defineBlock("hyborian", [
             // ("barbarism must always ultimately triumph"), cut to one
             // claim; the second draft's "whim of circumstance" was opaque
             // out of context. The reversed item answers the first directly
-            // and keeps the three nouns, where "the finest things humankind
-            // has ever made" was agreed with by nearly everyone.
+            // and keeps the three nouns — but not the word: "better, not
+            // softer" two items after "grown soft" read as the same item
+            // asked twice, so it answers softness with strength instead —
+            // where "the finest things humankind has ever made" was agreed
+            // with by nearly everyone.
             {
                 key: "Hyborian_Barbarism_1",
                 dimension: "Barbarism",
@@ -254,7 +259,7 @@ defineBlock("hyborian", [
             {
                 key: "Hyborian_Barbarism_3",
                 dimension: "Barbarism",
-                text: "Cities, laws and learning have made people better, not softer",
+                text: "Cities, laws and learning have made people stronger, not weaker",
                 reverse: true,
             },
 
@@ -362,13 +367,16 @@ defineBlock("hyborian", [
             // confounded the scale with religiosity, a secular hedonist
             // rejecting the word and landing as an ascetic; "nothing to be
             // ashamed of" met near-universal agreement. So the anti-ascetic
-            // claim stated plainly, Howard's feasts kept with the soul in
-            // them and a real opposite beside them, and the reversed item
-            // the ascetic's.
+            // claim stated plainly — and concretely: "There is no virtue in
+            // self-denial" left what was being denied to the reader, who
+            // could take it for thrift or for modesty, so it names the body
+            // and its pleasures, which is what the dimension is about —
+            // Howard's feasts kept with the soul in them and a real opposite
+            // beside them, and the reversed item the ascetic's.
             {
                 key: "Hyborian_Pleasure_1",
                 dimension: "Sacred Pleasure",
-                text: "There is no virtue in self-denial",
+                text: "There is nothing noble in denying the body its pleasures",
             },
             {
                 key: "Hyborian_Pleasure_2",

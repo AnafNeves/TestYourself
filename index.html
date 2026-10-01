@@ -384,6 +384,13 @@
                     <div class="briefing__body" id="briefing-body"></div>
                     <button class="btn" id="briefing-go">Continue</button>
                 </div>
+                <!-- Or, under the briefing that ends an interlude while a fork
+                     is still to fill the place after it, the levels offered
+                     in place of its button, as a level screen offers them.
+                     Filled by renderBriefing. -->
+                <div class="level__room">
+                    <div class="level__paths briefing__paths" id="briefing-paths" hidden></div>
+                </div>
 
                 <div class="survey__foot">
                     <button class="btn btn--ghost" id="back">← Previous</button>
@@ -415,7 +422,9 @@
                             <p class="level__next-word">What next?</p>
                             <p class="level__fork-note">Choose the next part of yourself you want to test.</p>
                         </div>
-                        <div class="level__paths" id="level-paths"></div>
+                        <div class="level__room">
+                            <div class="level__paths" id="level-paths"></div>
+                        </div>
                     </div>
                     <button class="btn" id="level-continue">Continue the test →</button>
                 </div>
@@ -615,6 +624,7 @@
         <script src="content/block_opinions.js"></script>
         <script src="content/block_sex.js"></script>
         <script src="content/block_hyborian.js"></script>
+        <script src="content/block_interim.js"></script>
         <script src="content/block_closing.js"></script>
         <script src="content/block_UNUSED.js"></script>
         <script src="js/draw.js"></script>

@@ -766,10 +766,28 @@ function makeResults(engine) {
     // with the level's title small underneath — or, at a fork, where the
     // level's number is not yet decided, the `word` handed in (the level's
     // name) and no title.
+    //
+    // Whatever words a figure sets round itself go with the rows, for the same
+    // reason: a lead line over a blurred name and a blurred reading (the
+    // compass, the wheel), a legend for a point that is not anybody's, the
+    // plane's pole labels crowding a card a third of the width they were
+    // written for, and the opinions' blurred spectra.
+    const NOT_TEASED = [
+        ".rows",
+        ".taste",
+        ".result__lock",
+        ".legend",
+        ".stance__legend",
+        ".stance__pole",
+        ".stance__beyond",
+        ".compass__all > p",
+        ".wheel__all > p",
+    ].join(", ")
+
     function renderTeaser(into, level, title, word, about) {
         renderResults(into, level, true, true)
 
-        for (const extra of into.querySelectorAll(".rows, .taste, .result__lock")) extra.remove()
+        for (const extra of into.querySelectorAll(NOT_TEASED)) extra.remove()
         for (const section of into.querySelectorAll(".result")) {
             if (!section.querySelector(".result__body").children.length) section.remove()
         }
@@ -1524,14 +1542,15 @@ function makeResults(engine) {
                 soma.drawSoma(figure, false, true)
                 return crop(figure, soma.BADGE[0], soma.BADGE[1], soma.BADGE[2])
             }
-            // The star sign, which is the one reading in the app that is
-            // already a single mark — and the temperament plane where there
-            // is no birthday to read a sign from, which is a battery without
-            // the first demographics.
+            // The star sign, out of the woodcut its stretch of the sky shows
+            // on hover — or its glyphs, where the sky names two signs it
+            // could be — and the temperament plane where there is no
+            // birthday to read a sign from, which is a battery without the
+            // first demographics.
             if (name === theories.OLD_THEORIES_OF) {
                 const built = theories.renderOldTheories(false)
                 const sky = built.querySelector("[data-glyph]")
-                if (sky) return emblem(sky.dataset.glyph)
+                if (sky) return theories.badge(sky) || emblem(sky.dataset.glyph)
                 // The point and the quarter round it (`badgeCrop`, which
                 // knows where the woodcut is on its drawing).
                 const plane = figureIn(built, "svg.theory__figure")

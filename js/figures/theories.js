@@ -443,6 +443,9 @@ function makeTheories(shared) {
         if (lit.length) {
             const glyphs = lit.map(plain).join(" ")
             figure.dataset.glyph = glyphs
+            // One sign for certain, and the badge is its woodcut (`badge`);
+            // two it could be, and the badge is their two glyphs.
+            if (lit.length === 1) figure.dataset.sign = lit[0].name.toLowerCase()
             figure.appendChild(draw("circle", { class: "sky__seal", cx: mid, cy: mid, r: 23 }))
             figure.appendChild(draw("circle", { class: "sky__ring", cx: mid, cy: mid, r: 19.5 }))
             const glyph = draw("text", { class: "sky__glyph" + (lit.length > 1 ? " sky__glyph--two" : ""), x: mid, y: mid, "text-anchor": "middle", "dominant-baseline": "central" })
@@ -494,6 +497,22 @@ function makeTheories(shared) {
         const half = 55
         const keep = (value, low, high) => Math.min(high - half, Math.max(low + half, value))
         return [keep(Number(you.getAttribute("cx")), x0, x0 + PLANE), keep(Number(you.getAttribute("cy")), y0, y0 + DEPTH), 2 * half]
+    }
+
+    // The badge on the shelf for a sign read for certain: that sign out of
+    // the German woodcut, the picture its stretch of the sky shows on hover,
+    // filling the square with its caption cropped off the top (`.sky__badge`).
+    // Nothing where the sky names two signs, and the glyphs stand instead.
+    function badge(sky) {
+        if (!sky.dataset.sign) return null
+        const token = document.createElement("span")
+        token.className = "shelf__badge-emblem"
+        const picture = document.createElement("img")
+        picture.className = "sky__badge"
+        picture.src = SIGN_ART + sky.dataset.sign + ".jpg"
+        picture.alt = ""
+        token.appendChild(picture)
+        return token
     }
 
     // A quarter of the woodcut, as a box.
@@ -772,6 +791,7 @@ function makeTheories(shared) {
         TEMPERAMENT_KEY: TEMPERAMENT_KEY,
         renderOldTheories: renderOldTheories,
         badgeCrop: badgeCrop,
+        badge: badge,
         birthdayStandIn: birthdayStandIn,
     }
 }

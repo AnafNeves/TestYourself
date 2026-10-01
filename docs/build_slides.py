@@ -104,6 +104,7 @@ ROWS = [
     ("Climate, animals and the environment", ["views"], ["Opinion_Planet_", "Opinion_Animals_"]),
     ("Beauty against purpose", ["views"], ["Opinion_Beauty_"]),
     ("Words Can Harm Scale, items 6 and 8 and one reversed item, adapted (WCHS; Pratt et al., 2026)", ["views"], ["Opinion_Words_"]),
+    ("Interim items, at the end of the core", ["interim"], None),
     ("Closing items", ["closing"], None),
 ]
 

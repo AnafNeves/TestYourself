@@ -105,6 +105,11 @@
     const named = TIMELINE.flatMap((entry) => entry.blocks).concat(DEMOGRAPHICS)
     const everywhere = Object.values(BATTERIES).flat()
     const elsewhere = (name) => everywhere.find((entry) => entry.blocks.indexOf(name) !== -1)
+    // The blocks of an interlude, on any timeline: written between two levels
+    // rather than on one (`interlude: true`), so no link can start on one or
+    // bring one in, and a place keeps one where it is when a fork moves the
+    // level after it.
+    const INTERLUDED = everywhere.filter((entry) => entry.interlude).flatMap((entry) => entry.blocks)
 
     const asked = new Set(named.filter((name) => ASIDE.indexOf(name) === -1))
     const only = namesIn("only")
@@ -131,7 +136,7 @@
         query.get("card") === "1" && query.get("s") ? everywhere.find((entry) => entry.key === query.get("level")) : undefined
     const brought = namesIn("start").concat(sharedLevel ? sharedLevel.blocks : [])
     for (const name of brought) {
-        if (name === "closing" || !elsewhere(name)) continue
+        if (name === "closing" || !elsewhere(name) || INTERLUDED.indexOf(name) !== -1) continue
         const group = HELD_TOGETHER.find((one) => one.indexOf(name) !== -1) || [name]
         for (const one of group) asked.add(one)
     }
@@ -173,14 +178,23 @@
     // nowhere else. **`opening` belongs to the place and not to what is asked
     // there**, so `swapLevels` leaves it where it is: the second level of the
     // run opens on `demographics2` whichever level the fork puts there.
+    //
+    // An interlude (`interlude: true` on the timeline) is no level, and is
+    // taken off the plan the same way: it opens the first place written after
+    // it — not one a link brought forward, and never the closing — ahead of
+    // any demographics there, and with only the closing after it is not asked
+    // at all, its way on being into levels there are none of.
     const PLAN = (() => {
-        const plan = TIMELINE.map((entry, at) =>
+        const written = TIMELINE.map((entry, at) =>
             Object.assign({}, entry, { blocks: entry.blocks.filter((name) => asked.has(name)), written: at }),
         ).filter((entry) => entry.blocks.length)
+        const plan = written.filter((entry) => !entry.interlude)
+        const interludes = written.filter((entry) => entry.interlude)
 
         const starts = namesIn("start").filter((name) => {
             if (name === "closing") console.warn("closing is where the run ends, so it cannot start it; ignored")
             else if (DEMOGRAPHICS.indexOf(name) !== -1) console.warn(name + " opens a place, not a level, so it cannot start the run; ignored")
+            else if (INTERLUDED.indexOf(name) !== -1) console.warn(name + " is asked between levels, not as one, so it cannot start the run; ignored")
             else if (!elsewhere(name)) console.warn("No block called " + name + " on any timeline; ignored")
             else return true
             return false
@@ -206,6 +220,10 @@
 
         for (const entry of walked) entry.opening = []
         const places = rest.filter((entry) => entry.blocks.indexOf("closing") === -1)
+        for (const interlude of interludes) {
+            const after = places.find((entry) => entry.written > interlude.written)
+            if (after) after.opening.push(...interlude.blocks)
+        }
         if (!places.length) places.push(walked[walked.length - 1])
         DEMOGRAPHICS.forEach((name, at) => {
             if (asked.has(name)) places[Math.min(at, places.length - 1)].opening.push(name)
@@ -213,9 +231,13 @@
         return walked
     })()
 
-    // Whether an item is one of the demographics at the head of its place,
-    // which a fork leaves where it is while the level after it moves.
-    const opens = (question) => DEMOGRAPHICS.indexOf(question.block) !== -1
+    // Whether an item belongs to its place rather than to the level asked
+    // there — the demographics at its head, or an interlude — which a fork
+    // leaves where it is while the level after it moves.
+    const placed = (question) => DEMOGRAPHICS.indexOf(question.block) !== -1 || INTERLUDED.indexOf(question.block) !== -1
+    // Whether an item is an interlude's: asked between two levels and part of
+    // neither, so nothing that counts a level's answers counts it.
+    const between = (question) => INTERLUDED.indexOf(question.block) !== -1
 
     /* -------------------------------- forks ------------------------------- */
 
@@ -362,10 +384,17 @@
                 // shuffles items can reach it there. Its `options` are empty,
                 // so everything that reads a scale off an item finds nothing.
                 if (entry.type === "briefing") {
+                    // Left by choosing what comes next (`renderBriefing`), which
+                    // only means anything at the head of a place a fork fills.
+                    if (entry.onward && INTERLUDED.indexOf(name) === -1) {
+                        throw new Error("only an interlude's briefing is left by choosing what comes next: " + entry.key)
+                    }
                     authored.push({
                         key: entry.key,
                         text: entry.text,
                         type: "briefing",
+                        onward: entry.onward === true,
+                        celebrate: entry.celebrate === true,
                         options: [],
                         shuffle: false,
                         block: name,
@@ -714,8 +743,11 @@
     // The items of a level that are actually being asked, in order. A
     // briefing is not among them: it is a pause with nothing to
     // answer, so it is owed none and must never be what holds a level shut.
+    // Nor is an interlude's item: it stands at the head of the place but
+    // belongs to no level, so it fills no ring, is counted down by nothing and
+    // is no part of how the level was answered.
     function askedIn(level) {
-        return questions.filter((question) => question.level === level && !isBriefing(question) && shown(question))
+        return questions.filter((question) => question.level === level && !isBriefing(question) && !between(question) && shown(question))
     }
 
     // An answer can close a branch that was open. What it held was given under
@@ -742,8 +774,16 @@
     // month, worded from the month — without being several items with several
     // keys. The accessor it is handed is read-only: wording a question is not
     // answering one.
+    //
+    // It is handed the run as well: who is taking it and where the link was
+    // handed out, both already made safe above — the participant code to
+    // `[A-Za-z0-9_-]`, the source to words — which is how the interim's last
+    // screen offers a SONA participant the link that grants their credit,
+    // their code on the end of it, and nobody else anything.
+    const runFacts = Object.freeze({ participant: participant, source: source })
+
     function worded(text) {
-        return typeof text === "function" ? text((key) => responses[key]) : text
+        return typeof text === "function" ? text((key) => responses[key], runFacts) : text
     }
 
     // An answer as it was read on screen: "Male", not 1, and "-3" where that is
@@ -1868,11 +1908,44 @@
     // screen over rather than being a screen of its own, so that everything
     // guarding on `screen === "survey"` — the keyboard, the back button, the
     // timing — goes on holding while it is up.
+    const CHEER_DELAY = 420 // ms for a celebrated briefing to rise in before the sprays go up out of it
+
     function renderBriefing(question) {
         // The options of the item before it would otherwise still be sitting in
         // the screen behind it, answerable by anything that finds them.
         $("options").innerHTML = ""
         $("briefing-body").innerHTML = worded(question.text)
+
+        // A briefing that marks a milestone (`celebrate`) is a reward rather
+        // than a pause: lit, and the finale's three sprays out of its heading
+        // once it has risen in — unless the run has moved on by then, when the
+        // heading is no longer on screen to spray out of.
+        $("briefing").classList.toggle("briefing--celebrate", question.celebrate)
+        if (question.celebrate) {
+            const heading = $("briefing-body").querySelector("h2")
+            FINALE_COLOURS.forEach((colour, at) =>
+                setTimeout(() => {
+                    if (questions[index] !== question || screen !== "survey") return
+                    burst(heading, colour, { count: 26, reach: 150 + at * 60 })
+                }, CHEER_DELAY + at * FINALE_STEP),
+            )
+        }
+
+        // The briefing that ends an interlude is left by choosing what comes
+        // next, while a fork is still to fill the place it opens: the cards a
+        // level screen would have offered stand under it in place of its one
+        // button. Laid out once for each choice, so coming back to it does
+        // not deal the cards again under the person reading them.
+        const fork = question.onward ? forkAfter(question.level - 1) : null
+        const paths = $("briefing-paths")
+        $("briefing-go").hidden = !!fork
+        $("briefing").classList.toggle("briefing--onward", !!fork)
+        paths.hidden = !fork
+        if (!fork) return
+        const dealing = question.key + " " + fork.at
+        if (paths.dataset.dealt === dealing && paths.children.length) return
+        paths.dataset.dealt = dealing
+        renderFork(fork, paths, (side, shown) => goOnward(fork, side, shown))
     }
 
     let leadShown = "" // the last questionnaire lead-in put on screen
@@ -1888,6 +1961,7 @@
         $("text").hidden = pausing
         $("scale").hidden = pausing
         $("briefing").hidden = !pausing
+        $("briefing-paths").hidden = true // until a briefing that offers them says otherwise
         $("instructions").hidden = pausing || !question.instructions
 
         if (pausing) {
@@ -1950,7 +2024,10 @@
         const progress = levelProgress(question.level)
         const left = progress.size - progress.answered
         const counting =
-            scoredLevels.indexOf(question.level) !== -1 && left > 0 && left <= Math.min(COUNTDOWN, Math.ceil(progress.size * COUNTDOWN_SHARE))
+            scoredLevels.indexOf(question.level) !== -1 &&
+            !between(question) &&
+            left > 0 &&
+            left <= Math.min(COUNTDOWN, Math.ceil(progress.size * COUNTDOWN_SHARE))
         note.hidden = !counting
         if (!counting) return
         note.textContent = left === 1 ? "Last answer to unlock this level" : left + " more answers to unlock this level"
@@ -2120,11 +2197,12 @@
 
     // How long a level is said to take, as the badge over its teaser writes it:
     // the `minutes` written in the timeline from the pilot runs, or nothing
-    // where a level carries none. It travels with what is asked, not with the
-    // place, so a fork swaps it with the name (`swapLevels`).
+    // where a level carries none. The number alone, with no "about" in front:
+    // nobody reads a duration on a badge as a promise. It travels with what is
+    // asked, not with the place, so a fork swaps it with the name (`swapLevels`).
     function aboutMinutes(level) {
         const minutes = PLAN[level - 1].minutes
-        return minutes ? "About " + minutes + " minute" + (minutes === 1 ? "" : "s") : ""
+        return minutes ? minutes + " minute" + (minutes === 1 ? "" : "s") : ""
     }
 
     // The line is divided equally between the levels, so a level sits at the
@@ -2724,16 +2802,28 @@
         // there is one with something to open: the closing level scores
         // nothing, so the last scored level is followed by nothing here. Where
         // the run forks, it carries a taste of each of the levels offered with
-        // a way into any of them instead, and the one button is put away.
-        const fork = forkAfter(level)
+        // a way into any of them instead, and the one button is put away —
+        // unless the next place opens on an interlude that offers the choice
+        // itself, after it (`onwardIn`): then the way on is the one button,
+        // and no taste, since what stands next is not yet decided.
+        const offering = forkAfter(level)
+        const waits = !!offering && !!onwardIn(level + 1)
+        const fork = waits ? null : offering
         const screen = levelItem(level) // this screen's own item: what was read, and the way on that was taken
         const next = scoredLevels[scoredLevels.indexOf(level) + 1]
         $("level-next").hidden = true
         $("level-fork").hidden = !fork
         $("level-continue").hidden = !!fork
-        if (fork) renderFork(fork, screen)
+        if (fork) {
+            renderFork(fork, $("level-paths"), (side, shown) => {
+                if (screen.response !== null) return // a second press while the screen is leaving
+                screen.response = takeFork(fork, side, shown)
+                screen.timeResponse = new Date().toISOString()
+                leaveLevel()
+            })
+        }
         // Named without its number: "Next" has already said where it falls.
-        else if (next) results.renderTeaser($("level-next"), next, levelName(next), "", aboutMinutes(next))
+        else if (next && !waits) results.renderTeaser($("level-next"), next, levelName(next), "", aboutMinutes(next))
         // From the floor, the way on is down through it rather than on.
         $("level-continue").textContent = level === floorLevel ? "Go beneath the floor →" : "Continue the test →"
 
@@ -2757,13 +2847,18 @@
         )
     }
 
+    // The briefing at the head of a place that offers the choice of what
+    // stands there, after the interlude it ends, rather than the level screen
+    // before it (`onward`, content/block_interim.js).
+    const onwardIn = (level) => questions.find((question) => question.level === level && question.onward) || null
+
     // The levels offered, side by side, each as the taste the way on would
     // carry of it alone — its name over its blurred figures — with a way into
     // it underneath, and the one the timeline writes first marked as the
-    // recommended one. Pressing one is the choice, and is what this level
-    // screen's item is answered with.
-    function renderFork(fork, screen) {
-        const paths = $("level-paths")
+    // recommended one. Pressing one is the choice (`take`), and is what the
+    // screen it is on is answered with: the level screen's item, or the
+    // briefing that ends an interlude.
+    function renderFork(fork, paths, take) {
         paths.innerHTML = ""
 
         // The places standing next, as level numbers: what is in them is what
@@ -2800,11 +2895,7 @@
             go.type = "button"
             go.className = "btn"
             go.textContent = "Go this way →"
-            go.addEventListener("click", () => {
-                if (screen.response !== null) return // a second press while the screen is leaving
-                takeFork(fork, side, screen, shown)
-                leaveLevel()
-            })
+            go.addEventListener("click", () => take(side, shown))
             path.appendChild(go)
             paths.appendChild(path)
         }
@@ -2819,8 +2910,8 @@
     // and the `level` stamped on every item moved, which is what the scoring,
     // the gauge and the results read a level off. Nothing in either level has
     // been answered when a choice is offered, so no answer moves. The
-    // demographics a place opens on are the place's (`opening`), and stay: the
-    // level coming in lands behind them.
+    // demographics a place opens on, and an interlude, are the place's
+    // (`opening`), and stay: the level coming in lands behind them.
     function swapLevels(one, other) {
         const low = Math.min(one, other)
         const high = Math.max(one, other)
@@ -2833,8 +2924,8 @@
             PLAN[high - 1][field] = held
         }
 
-        const up = questions.filter((question) => question.level === low && !opens(question))
-        const down = questions.filter((question) => question.level === high && !opens(question))
+        const up = questions.filter((question) => question.level === low && !placed(question))
+        const down = questions.filter((question) => question.level === high && !placed(question))
         const top = questions.indexOf(up[0])
         // The later run goes back first: splicing there leaves every index
         // before it where it was, so `top` still points at the earlier one.
@@ -2855,29 +2946,54 @@
     // screen is then the first of the chosen level, and the stops on the
     // gauge take the names they now hold. What is recorded is the level taken
     // and then the ones passed over, in the order the timeline writes them,
-    // since which slot each was standing in says nothing to anybody. How the
-    // cards were laid out and which was recommended go onto this level's
-    // entry in `levels` (`choices`), which is what the pull of the
-    // recommendation and of a card's place is read from. The level whose
-    // screen it is has been finished, so no swap can move it from its place.
-    function takeFork(fork, side, screen, shown) {
+    // since which slot each was standing in says nothing to anybody; those
+    // words are handed back, to be the answer of the screen the choice was
+    // made on. How the cards were laid out and which was recommended go onto
+    // the entry in `levels` of the level before the slot (`choices`), which is
+    // what the pull of the recommendation and of a card's place is read from —
+    // the level whose screen offers the choice, or, where an interlude offers
+    // it instead, the level whose screen came before the interlude. That level
+    // has been finished, so no swap can move it from its place.
+    function takeFork(fork, side, shown) {
         const target = fork.slots[fork.at]
         const passed = offeredBy(fork)
             .filter((one) => one !== side)
             .sort((one, other) => PLAN[one - 1].written - PLAN[other - 1].written)
         // Read before the swap, or two cards would name the same level.
         const words = [PLAN[side - 1].name].concat(passed.map((one) => PLAN[one - 1].name))
-        choices[screen.level] = { offered: shown.offered, recommended: shown.recommended, chosen: PLAN[side - 1].key }
+        choices[target - 1] = { offered: shown.offered, recommended: shown.recommended, chosen: PLAN[side - 1].key }
 
         if (side !== target) {
             swapLevels(target, side)
             swaps.push([target, side])
         }
 
-        screen.response = words
-        screen.timeResponse = new Date().toISOString()
         fork.at += 1
         renderSidebar()
+        return words
+    }
+
+    // The choice made on the briefing that ends an interlude: taken as a level
+    // screen's is, and saved as this briefing's answer, the way a level
+    // screen saves its own — then on, the way passing any briefing goes on,
+    // into the level chosen, which now stands next.
+    function goOnward(fork, side, shown) {
+        if (locked || screen !== "survey") return
+        const question = questions[index]
+        if (!question.onward || forkAfter(question.level - 1) !== fork) return // a second press, the choice already made
+        const at = index
+        const words = takeFork(fork, side, shown)
+        // The swap puts the run at the head of the place, and the head of the
+        // place is behind this briefing: it stays where it was, before the
+        // stretch that moved.
+        index = at
+        const entry = log[question.key] || {}
+        entry.response = words
+        entry.timeResponse = new Date().toISOString()
+        log[question.key] = entry
+        stageItems([question.key])
+        stageFrame()
+        advance()
     }
 
     /* -------------------------------- flow ------------------------------- */
@@ -3012,14 +3128,21 @@
 
     // A briefing has one possible response: leaving it by pressing its continue
     // button. Store that response and its completion time like any other item.
+    //
+    // The briefing that ends an interlude is left by the choice under it while
+    // there is one to make, and not by this; passed again afterwards, on the
+    // way back down to the level chosen, it keeps that choice as its answer.
     function passBriefing() {
         if (locked || screen !== "survey" || !isBriefing(questions[index])) return
         const question = questions[index]
+        if (question.onward && forkAfter(question.level - 1)) return
         const entry = log[question.key] || {}
-        entry.response = $("briefing-go").textContent.trim()
-        entry.timeResponse = new Date().toISOString()
-        log[question.key] = entry
-        stageItems([question.key])
+        if (!(question.onward && Array.isArray(entry.response))) {
+            entry.response = $("briefing-go").textContent.trim()
+            entry.timeResponse = new Date().toISOString()
+            log[question.key] = entry
+            stageItems([question.key])
+        }
         advance()
     }
 
@@ -3609,8 +3732,12 @@
         const question = questions[index]
 
         // A briefing has nothing to answer, so the only key that
-        // carries it on is the one that means "yes, on we go".
+        // carries it on is the one that means "yes, on we go" — except on a
+        // card of the choice that ends an interlude, or a link in the words
+        // (the debrief's, the credit), which own their keys, as any button or
+        // link does.
         if (isBriefing(question)) {
+            if (e.target && e.target.closest && e.target.closest("#briefing-paths, #briefing-body a")) return
             if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault() // space would scroll the screen instead
                 passBriefing()

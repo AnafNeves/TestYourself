@@ -39,17 +39,26 @@ const content = new Function(source + "\nreturn { QUESTIONNAIRES, BLOCKS, BATTER
 // it is sent to people. Anything ASIDE is taken off it, as app.js takes it
 // off, and a level left with no block is dropped, so the numbering stays that
 // of a `mint` run.
-const timeline = content.BATTERIES.mint
-    .map((entry) => Object.assign({}, entry, { blocks: entry.blocks.filter((name) => content.ASIDE.indexOf(name) === -1) }))
+const written = content.BATTERIES.mint
+    .map((entry, at) => Object.assign({}, entry, { blocks: entry.blocks.filter((name) => content.ASIDE.indexOf(name) === -1), written: at }))
     .filter((entry) => entry.blocks.length)
+const timeline = written.filter((entry) => !entry.interlude)
 
 // The demographics are written on no level: the first opens level 1, the
 // second level 2 and the third level 3, whatever those hold, never the closing
 // level, and what is left over when there are fewer levels at the head of the
-// last — as app.js places them (`opening`) for a run no link started on. The
-// rule is worked out in both places, so a change to one wants the same here.
+// last — as app.js places them (`opening`) for a run no link started on. An
+// interlude (`interlude: true`) is no level either: it opens the first level
+// written after it, the closing excepted, ahead of any demographics there, and
+// with only the closing after it is not asked. The rules are worked out in
+// both places, so a change to one wants the same here.
 const places = timeline.filter((entry) => entry.blocks.indexOf("closing") === -1)
 const opening = places.map(() => [])
+const interluded = written.filter((entry) => entry.interlude).flatMap((entry) => entry.blocks)
+for (const interlude of written.filter((entry) => entry.interlude)) {
+    const after = places.findIndex((entry) => entry.written > interlude.written)
+    if (after !== -1) opening[after].push(...interlude.blocks)
+}
 content.DEMOGRAPHICS.forEach((name, at) => opening[Math.min(at, places.length - 1)].push(name))
 places.forEach((entry, at) => (entry.blocks = opening[at].concat(entry.blocks)))
 
@@ -100,8 +109,18 @@ timeline.forEach((entry, at) => {
             // Nothing to answer on a briefing, but the app records one in
             // `items[]` like any other step, so a synthetic file wants the
             // same row (with nothing in it) to have the same columns.
+            // One that ends an interlude (`onward`) is answered, in a run, by
+            // the choice of the level that comes next.
             if (entry.type === "briefing") {
-                items.push({ key: entry.key, level: level, block: name, questionnaire: null, type: "briefing" })
+                items.push({
+                    key: entry.key,
+                    level: level,
+                    block: name,
+                    between: interluded.indexOf(name) !== -1,
+                    questionnaire: null,
+                    type: "briefing",
+                    onward: entry.onward === true,
+                })
                 continue
             }
 
@@ -131,6 +150,9 @@ timeline.forEach((entry, at) => {
                         key: item.key,
                         level: level,
                         block: name,
+                        // An interlude's: at the head of this level's place but
+                        // part of no level, so no level's count or time holds it.
+                        between: interluded.indexOf(name) !== -1,
                         questionnaire: questionnaire.key,
                         type: typeOf(item, questionnaire),
                         instructions: setting(item, questionnaire, "instructions") || null,

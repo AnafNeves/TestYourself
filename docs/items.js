@@ -424,6 +424,10 @@ const ITEMS = {
         "Some words can be hurtful, but people get over them in time"
     ],
     "r40": [
+        "Did you take the test seriously so far? (This won't impact your results, but will help us improve the test.)",
+        "Is there anything you would like to share so far? Any feedback or thoughts about the test, or about what it has told you, are very welcome. Please note that whatever you write here may be made publicly available (for instance as part of the published data), so do not include anything that could identify you or anybody else unless you are happy for it to be public."
+    ],
+    "r41": [
         "One last thing. Did you take the test seriously? (This won't impact your results, but will help us improve the test.)",
         "Is there anything you would like to share? Any feedback or thoughts about the test, or about what it told you, are very welcome. Please note that whatever you write here may be made publicly available (for instance as part of the published data), so do not include anything that could identify you or anybody else unless you are happy for it to be public."
     ]

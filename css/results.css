@@ -308,6 +308,16 @@
     color: var(--muted);
 }
 
+/* The room the cards have is the row's own width and not the window's: the
+   gauge and the shelf take the sides of a wide window and move to the foot
+   and the top of a narrow one, so a 740px window gives the row more room
+   than a 900px one does. `.level__room` is the wrapper measured, one round
+   each row (the level screen's and the onward briefing's), since a grid
+   cannot ask its own width how many columns it should have. */
+.level__room {
+    container: paths / inline-size;
+}
+
 .level__paths {
     display: grid;
     grid-template-columns: repeat(var(--paths, 2), minmax(0, 1fr));
@@ -315,16 +325,16 @@
     align-items: stretch;
 }
 
-@media (max-width: 640px) {
+/* Side by side while each card has about 200px; below that, one under
+   another, rather than squeezed until the figures in them cannot be read.
+   Never two over one, which would make the third look like an afterthought. */
+@container paths (width < 440px) {
     .level__paths {
         grid-template-columns: 1fr;
     }
 }
 
-/* Three or more across want a wide window: below one, they are laid one
-   under another, as two are on a phone, rather than squeezed until the
-   figures in them are too small to read (about 200px a side, here). */
-@media (max-width: 920px) {
+@container paths (width < 640px) {
     .level__paths--many {
         grid-template-columns: 1fr;
     }
@@ -392,12 +402,73 @@
     box-shadow: none;
 }
 
+/* Every card is the one height: the figures in it are shown through a window
+   of fixed height, a short one centred in it and a tall one — the body, drawn
+   for a whole card — cropped at its foot (`safe`: centred only while it
+   fits), so that its brain is what the card shows and no card is a column
+   while the ones beside it are squares. The badge over the figure is placed
+   against this box, so it stays over the middle of what shows. */
+.level__path .result__body {
+    height: 300px;
+    overflow: hidden;
+    align-content: safe center;
+}
+
+/* Stacked, the cards are read one after another down the page, and three
+   full-height windows make a choice two screens long: each figure is drawn
+   smaller and through a shorter window, so that the cards stay one choice.
+   The figures sit in holders of their own (`.result__chart`, the robot's,
+   the heads' chart, the opinions plane), so it is whatever is in the window
+   but the badge over it that is held narrower. */
+@container paths (width < 440px) {
+    .level__path .result__body {
+        height: 190px;
+    }
+
+    .level__path .result__body > :not(.result__lock) {
+        width: 100%;
+        max-width: 190px;
+        margin-inline: auto;
+    }
+}
+
+@container paths (width < 640px) {
+    .level__paths--many .level__path .result__body {
+        height: 190px;
+    }
+
+    .level__paths--many .level__path .result__body > :not(.result__lock) {
+        width: 100%;
+        max-width: 190px;
+        margin-inline: auto;
+    }
+}
+
+/* The kinks' crowd is held at 270px beside its words on a results screen;
+   on a card of about 200px, with its words taken out, it would push the card
+   wider than its column, so it shrinks to the card instead. */
+.level__path .kinks__stage .kinks__crowd {
+    flex: 0 1 270px;
+    width: 100%;
+}
+
+/* A figure's own title says again what the card's level name has just said,
+   and on a card it pushes the figure down out of its window. */
+.level__path .robotview__head,
 .level__path .climbview__head,
 .level__path .seaview__head,
 .level__path .headsview__head,
 .level__path .stance__head,
 .level__path .kinks__head {
     display: none;
+}
+
+/* A teaser takes the plane's poles out (`NOT_TEASED` in results.js), so the
+   plane takes the width they leave rather than sitting between two empty
+   columns. */
+.level__next .stance__map {
+    grid-template-columns: minmax(0, 300px);
+    grid-template-areas: "plane";
 }
 
 /* ------------------------------- results -------------------------------- */
@@ -2079,6 +2150,20 @@
 .lore__art--oval {
     width: 112px;
     border-radius: 50%;
+}
+
+/* The badge: the sign's woodcut filling the square, drawn a fifth larger and
+   moved up so that the caption printed along its top edge falls outside it
+   and the figure alone shows. */
+.sky__badge {
+    position: absolute;
+    left: -10%;
+    top: -16%;
+    width: 120%;
+    height: 120%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 60%;
 }
 
 .lore__name {

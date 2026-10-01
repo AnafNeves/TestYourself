@@ -753,9 +753,10 @@ if (check_only) {
 # 5. `clean/` IS NOT THE PUBLIC FILE. It still holds what must not be released:
 #    the platform's id where one came in on `?sub=` (`participant`), the day of
 #    birth (`Demographics_BirthDay`, which with the month and the age is most
-#    of a date of birth) and the free text of `Closing_Comments`. Before any of
-#    it is made public the id goes, the day is dropped or grouped (into the star
-#    sign, or the half of the month either side of the cusp), and the comments
-#    are read — the consent sheet and the ethics application promise all three.
+#    of a date of birth) and the free text of `Interim_Comments` and
+#    `Closing_Comments`. Before any of it is made public the id goes, the day
+#    is dropped or grouped (into the star sign, or the half of the month either
+#    side of the cusp), and the comments are read — the consent sheet and the
+#    ethics application promise all three.
 #    That step is not written yet, and is a release script's business rather
 #    than this one's.
