@@ -352,7 +352,7 @@ const TIMELINE_MINT = [
     { key: "General", name: "General", blocks: ["fipi", "singles"], minutes: 3 },
     shuffle([
         { key: "BrainBody", name: "Brain-Body Axis", blocks: ["mint"], fork: 2, minutes: 8 },
-        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 2, minutes: 3 },
+        { key: "AIExpertise", name: "AI Attitudes", blocks: ["bait"], fork: 2, minutes: 3 },
         { key: "MoodHealth", name: "Mood & Health", blocks: [shuffle(["mood", "health"]), "hitop"].flat(), fork: 2, minutes: 8 },
     ]),
     // The end of the main part of the study, and the way into the rest: an
@@ -379,7 +379,7 @@ const TIMELINE_ALL = [
     { key: "General", name: "General", blocks: ["fipi", "singles"], minutes: 3 },
     shuffle([
         { key: "BrainBody", name: "Brain-Body Axis", blocks: ["mint"], fork: 3, minutes: 8 },
-        { key: "AIExpertise", name: "AI Expertise & Usage", blocks: ["bait"], fork: 3, minutes: 3 },
+        { key: "AIExpertise", name: "AI Attitudes", blocks: ["bait"], fork: 3, minutes: 3 },
         { key: "MoodHealth", name: "Mood & Health", blocks: [shuffle(["mood", "health"]), "hitop"].flat(), fork: 3, minutes: 8 },
         { key: "Character", name: "Character", blocks: ["hexaco"], fork: 3, minutes: 5 },
         { key: "Archetypes", name: "Archetypes", blocks: ["archetypes"], fork: 3, minutes: 4 },
@@ -397,7 +397,7 @@ const TIMELINE_ALL = [
         // be shared in the fandom, reached only by a link naming it
         // (`?start=hyborian`) and then walked first, ahead of General (see
         // content/block_hyborian.js). Its minutes are a guess.
-        { key: "Hyborian", name: "The Hyborian Age", blocks: ["hyborian"], fork: 3, minutes: 3 },
+        { key: "Hyborian", name: "Your Hyborian Hero", blocks: ["hyborian"], fork: 3, minutes: 3 },
     ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()

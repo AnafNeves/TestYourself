@@ -82,7 +82,9 @@
    RIGHTS. Howard died in 1936, so his texts and the characters as he wrote
    them are public domain in the UK and EU. "Conan" is a live trademark, so
    the name is on no screen: the heroes are archetypes (the Barbarian, not
-   Conan) and the level is named for the age. Later likenesses — Frazetta,
+   Conan) and the level is named for the hero in the person, not for Conan
+   (Your Hyborian Hero; The Hyborian Age until October 2026). Later
+   likenesses — Frazetta,
    the 1982 film — are not drawn on, and the figure draws emblems rather
    than faces for that reason. Howard's peoples are written on racial lines,
    and no hero is a people.
@@ -100,7 +102,7 @@ defineBlock("hyborian", [
 
     {
         key: "hyborian",
-        name: "The Hyborian Age",
+        name: "Your Hyborian Hero",
         // Nothing here is placed against other people, and a person's
         // metaphysics has no business on a card made to be shared.
         profile: false,

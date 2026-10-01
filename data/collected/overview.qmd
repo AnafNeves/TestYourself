@@ -296,13 +296,18 @@ reading <- rows(summarise(read, "seconds"), met)
 left <- paste(screens$participant, screens$level)
 stopped_on <- done[!paste(done$participant, done$level) %in% left, ]
 reading$closed <- as.integer(table(factor(stopped_on$level, levels = table$level)))
+
+# The core is every level before the interim, which the codebook places at the
+# head of the first optional level: what somebody who stops there has taken.
+interim_at <- min(unlist(lapply(codebook$items, function(item) if (isTRUE(item$between)) item$level)), Inf)
+core_keys <- level_keys[seq_along(level_keys) < interim_at]
 ```
 
 `r nrow(wide)` runs `r if (KEEP_FLAGGED) "in all" else "kept"`: `r sum(wide$completed)` finished, `r sum(!wide$completed)` stopped partway.
 
 ## How long a level takes
 
-Answering: first item shown to last answer, finished levels only. Results screen: until the way on was pressed. Anything over `r BREAK` minutes is a break rather than a time and is left out of both (`r breaks` so far). Total: the levels' medians added up (and their minima and maxima, for the range), which is how long the whole test would take somebody typical on every level, over the levels timed so far.
+Answering: first item shown to last answer, finished levels only. Results screen: until the way on was pressed. Anything over `r BREAK` minutes is a break rather than a time and is left out of both (`r breaks` so far). Total: the levels' medians added up (and their minima and maxima, for the range), which is how long the whole test would take somebody typical on every level, over the levels timed so far. Core: the same over the levels before the interim (`r paste(level_names[level_keys %in% core_keys], collapse = ", ")`), which is what somebody who stops there has taken.
 
 ```{r}
 #| label: plot
@@ -366,20 +371,24 @@ added <- function(summary, digits) {
   c(median = sprintf("%.*f", digits, sum(summary$median[has])),
     range = sprintf("%.*f to %.*f", digits, sum(summary$min[has]), digits, sum(summary$max[has])))
 }
-if (nrow(table)) {
-  answering <- added(table, 1)
-  results <- added(reading, 0)
-  shown <- rbind(shown, data.frame(
-    Level = sprintf("**Total** (%d levels)", sum(table$n > 0)),
+subtotal <- function(label, keep) {
+  answering <- added(table[keep, ], 1)
+  results <- added(reading[keep, ], 0)
+  data.frame(
+    Level = sprintf("**%s** (%d levels)", label, sum(table$n[keep] > 0)),
     `Answering: n` = "",
     `median (min)` = answering[["median"]],
     `range (min)` = answering[["range"]],
     `Results: n` = "",
     `median (s)` = results[["median"]],
     `range (s)` = results[["range"]],
-    `Closed on results` = sum(reading$closed),
+    `Closed on results` = sum(reading$closed[keep]),
     check.names = FALSE
-  ))
+  )
+}
+if (nrow(table)) {
+  if (length(core_keys) && is.finite(interim_at)) shown <- rbind(shown, subtotal("Core", table$level %in% core_keys))
+  shown <- rbind(shown, subtotal("Total", rep(TRUE, nrow(table))))
 }
 knitr::kable(shown, align = "lrrrrrrr")
 ```
@@ -423,8 +432,11 @@ if (nrow(liked)) {
 # `_Recommended`, `_Chosen`, in keys). One from before says only what was taken
 # and what was passed over, in the words on the cards (`Level_<N>`, the taken
 # first), so where its cards stood and which was recommended are unknown; its
-# names are read back to keys through the codebook, which holds today's names.
-key_of <- setNames(level_keys, level_names)
+# names are read back to keys through the codebook, which holds today's names,
+# and through what a level was called before it was renamed: a name on screen
+# is free to change, and an older file still carries the one it was read under.
+FORMER_NAMES <- c("AI Expertise & Usage" = "AIExpertise") # renamed AI Attitudes, October 2026
+key_of <- c(setNames(level_keys, level_names), FORMER_NAMES)
 unnamed <- character()
 picks <- list()
 column <- function(name, row) if (name %in% names(wide)) as.character(wide[[name]][row]) else NA_character_

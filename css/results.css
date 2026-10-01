@@ -372,9 +372,12 @@
     box-shadow: 0 0 0 1px rgba(217, 164, 65, 0.18), 0 24px 50px -40px rgba(217, 164, 65, 0.45);
 }
 
+/* Held to one line's height on every card, the recommended one's words and
+   the others' empty tag alike, so that the names under them stand level. */
 .level__path-tag {
     min-height: 1.2em;
     margin: 0;
+    line-height: 1.2;
     font-size: 10.5px;
     font-weight: 700;
     letter-spacing: 0.26em;
@@ -386,8 +389,20 @@
     width: 100%;
 }
 
+/* The level's name is sized by the card and not by the window, so that it
+   stays on one line however narrow the cards get: a name that breaks onto two
+   pushes its figure and its button down out of line with the cards beside it.
+   The cards of a row are one width, so their names come out one size. 12cqi
+   fits the longest name a card carries (Where You Stand, 7.7 times its font
+   size across) with room to spare; a new name longer than that wants
+   measuring against it, or a shorter name. */
+.level__path {
+    container-type: inline-size;
+}
+
 .level__path .level__next-word {
-    font-size: clamp(22px, 3.4vw, 30px);
+    font-size: clamp(18px, 12cqi, 30px);
+    white-space: nowrap;
 }
 
 /* The taste inside a side is the figure alone, not a card: the side is
@@ -844,6 +859,22 @@
 .result--locked .faces svg {
     filter: blur(5px);
     opacity: 0.5;
+}
+
+/* On a fork's cards the figure is the reason to pick one, so it is blurred
+   less than in a locked panel: enough to see what is waiting, and still not
+   enough to read anything off it. The teaser has already taken every row,
+   reading and number out of the card (`NOT_TEASED`), and the figure itself
+   is drawn from stand-in values that mean nothing. */
+.level__path .result--locked .result__chart svg,
+.level__path .result--locked .faces svg {
+    filter: blur(2.5px);
+    opacity: 0.8;
+}
+
+.level__path .result--locked .blank {
+    filter: blur(3px);
+    opacity: 0.8;
 }
 
 /* Nothing in a locked section answers to being hovered or clicked. */
@@ -2770,6 +2801,15 @@
 .result--locked .headsview__chart {
     filter: blur(5px);
     opacity: 0.5;
+}
+
+/* On a fork's card, lighter, as every card's figure is (see
+   `.level__path .result--locked` above) — but less so than the rest, since
+   this one is names and percentages in HTML, and at the blur the drawings
+   get its stand-in numbers can nearly be read. */
+.level__path .result--locked .headsview__chart {
+    filter: blur(4px);
+    opacity: 0.8;
 }
 
 /* One half: its glyph and name down the left, its two rows to the right. */

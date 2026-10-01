@@ -2,6 +2,8 @@
 
 The big dispositional characteristics survey.
 
+- [**Documentation**](realitybendinglab.com/TestYourself/docs)
+
 ## Levels
 
 Every level closes on results of its own. Each link below starts the test on that level, and the rest of the run follows.
@@ -21,8 +23,8 @@ Every level closes on results of its own. Each link below starts the test on tha
   </tr>
   <tr>
     <td align="center" width="50%">
-      <b>AI Expertise &amp; Usage</b><br>
-      <a href="https://realitybendinglab.com/TestYourself/?start=bait&amp;source=README"><img src="assets/readme/aiexpertise.jpg" alt="The results of AI Expertise &amp; Usage" width="100%"></a><br>
+      <b>AI Attitudes</b><br>
+      <a href="https://realitybendinglab.com/TestYourself/?start=bait&amp;source=README"><img src="assets/readme/aiexpertise.jpg" alt="The results of AI Attitudes" width="100%"></a><br>
       <a href="https://realitybendinglab.com/TestYourself/?start=bait&amp;source=README"><b>Take the AI Test!</b></a>
     </td>
     <td align="center" width="50%">
@@ -73,7 +75,7 @@ The pictures are drawn from stand-in scores, not anybody's answers, by `assets/r
 
 **Sexuality.** Asked only by the `all` battery, since it is not yet covered by the ethics application. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=sex&battery=all&source=README).
 
-**The Hyborian Age.** A short level on the philosophy of Robert E. Howard's world, closing on which of its heroes you would have been and which of its gods would have claimed you. Asked by no battery: a link naming it walks it first, ahead of the rest of the test. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=hyborian&source=README).
+**Your Hyborian Hero.** A short level on the philosophy of Robert E. Howard's world, closing on which of its heroes you would have been and which of its gods would have claimed you. Asked by no battery: a link naming it walks it first, ahead of the rest of the test. [Start on it](https://realitybendinglab.com/TestYourself/index.html?start=hyborian&source=README).
 
 ## Includes
 
@@ -92,7 +94,7 @@ Everything a link can say about a run goes after the address, e.g.
 |---|---|---|
 | `?source=` | Where the link was handed out (a project, an experimenter, a page). Written into the saved file and its name, never shown. A link without one is saved as `Unknown`. | `?source=Prolific-Pilot` |
 | `?sub=` | The participant's code, for a prewritten list or a platform's own id. Only `A-Z a-z 0-9 _ -` survive, 32 characters at most; otherwise a code is made up. | `?sub=P0042` |
-| `?battery=` | Walk a named timeline out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run walks `all`: everything, the sexuality level included, with General first and every other level in one fork of three. `mint` is the test as the ethics application covers it, General, then the core (MINT, BAIT, HiTOP-BR), then the rest, and is asked only when named. The Hyborian Age is asked by neither, and is reached only by `?start=hyborian`. | `?battery=all` |
+| `?battery=` | Walk a named timeline out of `BATTERIES` in `content/timeline.js`. With none, or an unknown name, the run walks `all`: everything, the sexuality level included, with General first and every other level in one fork of three. `mint` is the test as the ethics application covers it, General, then the core (MINT, BAIT, HiTOP-BR), then the rest, and is asked only when named. Your Hyborian Hero is asked by neither, and is reached only by `?start=hyborian`. | `?battery=all` |
 | `?only=` | Ask exactly these blocks (comma-separated), for testing. Applied over `battery`. | `?only=mint,icar` |
 | `?skip=` | Ask everything but these blocks. Applied after `only`. | `?skip=opinions` |
 | `?start=` | Bring the levels holding these blocks to the front, in the order named; the rest follow as usual. Moves whole levels, and brings a level the battery does not hold off the timeline that does. | `?start=icar` |
@@ -101,9 +103,9 @@ Everything a link can say about a run goes after the address, e.g.
 | `?card=1&level=&s=` | Show one level's results out of a shared link, with `m=` and `d=` (a birth month and a stand-in day) for level 1's star sign. Made by a level's "Copy link". | `?card=1&level=Character&s=…` |
 
 Options combine with `&`. The blocks, in timeline order, are `fipi`, `singles` (General);
-`mint` (Brain-Body Axis); `bait` (AI Expertise & Usage); `mood`, `health`, `hitop`
+`mint` (Brain-Body Axis); `bait` (AI Attitudes); `mood`, `health`, `hitop`
 (Mood & Health); `hexaco` (Character); `archetypes`; `primals` (The World); `icar` (How You Think); `regulation`
-(Mind & Heart); `opinions` (Where You Stand); `sex` (Sexuality, asked only by `battery=all`); `hyborian` (The Hyborian Age, asked by no battery and reached only by `start=hyborian`); and `closing`, which is
+(Mind & Heart); `opinions` (Where You Stand); `sex` (Sexuality, asked only by `battery=all`); `hyborian` (Your Hyborian Hero, asked by no battery and reached only by `start=hyborian`); and `closing`, which is
 always asked. `mood` and `hitop` are asked or
 skipped together. `demographics1`, `demographics2` and `demographics3` belong to no level: they open the first three
 levels, whatever those turn out to be, or the three after the levels `?start=` brings forward, which open on their own
@@ -136,7 +138,7 @@ Not asked yet. "Partly there" names what the test already asks on the same groun
 | Unusual experiences | Unusual sensory experiences | | HiTOP-BR's Unusual Experiences (Mood & Health) |
 | Unusual experiences | Fantasy proneness | | |
 | Unusual experiences | Psychotic experiences | | HiTOP-BR's Unusual Experiences (Mood & Health) |
-| Reality | Fake news and reality | A level of its own: see below | CMQ's Suspicion (Where You Stand), BAIT (AI Expertise & Usage) |
+| Reality | Fake news and reality | A level of its own: see below | CMQ's Suspicion (Where You Stand), BAIT (AI Attitudes) |
 | Identity | Masculine–feminine | | |
 | Hormones | Menstrual cycle phase, contraceptive use, last sexual activity | For females. Needs a line saying why it is asked (conscious experience is shaped by hormonal state, which influences cognition and emotion) and a way to skip | |
 | Sleep | Parasomnias and boundary failures | IOWA / MPS. **Ask Giulia about the validation of her scale** | |
@@ -165,7 +167,7 @@ Not asked yet. "Partly there" names what the test already asks on the same groun
 | Wellbeing and emotions | Aesthetic experiences | | `Aesthetics_Beauty` single (General) |
 | Politics | Words Can Harm Scale (WCHS) | | |
 | Politics | Nietzscheanism | Would go in Which Philosopher (see Pop-Culture Hooks) | |
-| Relationship with AI | Relationship | See below | BAIT (AI Expertise & Usage) |
+| Relationship with AI | Relationship | See below | BAIT (AI Attitudes) |
 | Relationship with AI | Revelation | See below | |
 | Relationship with AI | Roles given to a chatbot | Companion, friend, therapist, romantic partner, sexual partner, as one tick-any-number item, after Buck & Maheux (2026, *JMIR*) | |
 
@@ -261,7 +263,7 @@ Nothing on screen carries a live trademark, the Hyborian Age's rule about "Conan
   scale. Read back as the nine-cell alignment chart, which is a meme already, with a painted card a cell, and the Good–Evil
   axis doubling as a light side and a dark side, after the Force in Star Wars. Alignment is in the D&D System Reference
   Document (SRD 5.1, CC-BY-4.0), so it wants an attribution line and nothing more; "the Force", "Jedi" and "Sith" are
-  Lucasfilm's, so on screen it is a light side and a dark side and nothing named. Could also include our own Lie Profile 
+  Lucasfilm's, so on screen it is a light side and a dark side and nothing named. Could also include our own Lie Profile
   scale, and bullshitting frequency.
 - **Which Philosopher.** Questions out of the 2020 PhilPapers Survey (the trolley, the experience machine, the
   teletransporter, free will, God, moral realism), read against the public answers of about 1,800 professional
