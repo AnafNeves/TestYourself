@@ -4,252 +4,190 @@
 **ER/MB2021/2**, with amendment ER/MB2021/3, "Validation of the MINT
 questionnaire"; <https://github.com/RealityBending/InteroceptionScale>).
 
+This draft follows the University's new **Main Ethics Application Form**
+(numbered 1.0 to 9.16), which replaced the old A1–A10 / B1–B22 form on
+Sussex Direct. What the applicants have entered so far is
+`draft_041026.pdf` beside this file (exported 4 October 2026), and §1 below
+goes through it question by question. **The form takes plain text only.**
+
 ---
 
-## 0. Remaining to do
+## 0. TODO
+
+**The application is complete** (4 October 2026: every field filled in and
+every document uploaded; to be submitted on 5 October). What is left is the
+app and the data, before the study launches.
 
 **The aim is an approval with as little friction as possible** (the author's
-call, 24 September 2026). This list holds factual errors in the draft and
-things the study cannot run without, not disclosures for their own sake:
-implementation details (the share links, DataPipe's infrastructure) stay out of
-the application, and nothing is added to the consent sheet that would raise a
-reviewer's suspicion over something trivial. Anonymity is argued at the level
-of the compiled data file, which a script makes from the raw files and which is
-where the researchers work.
+call, 24 September 2026): this list holds errors and things the study cannot
+run without, not disclosures for their own sake. Implementation details (the
+share links, DataPipe's infrastructure) stay out of the application, and
+anonymity is argued at the level of the compiled data file, which a script
+makes from the raw files and which is where the researchers work.
 
-**Checked against the app on 24 September 2026** (commit `d97e715` plus that
-day's edits): the item counts in §6, the three core attention checks, the level
-order and the measures listed in the Project Description all match `content/`;
-the Content table is up to date (`build_slides.py --check`) and the published
-deck and app are the same as the repository. Corrected that day: DataPipe's
-operator (B11a, which had it as a Princeton department), the ERS being six
-items and not the whole scale, the CMQ items being adapted, the opinions
-level's item formats, the order the demographics fall in, the fork in the
-optional set, the seriousness question at the end, and the two self-placements
-among the single items. **Changed with the app on 27 September 2026**: the
-core parts are now chosen by the participant from a pair drawn at random
-rather than drawn outright, and the optional set is offered three at a time
-rather than two (the Project Description, and the completion-screen note
-below).
+### Before launch (the app and the data)
 
-**Before submission — still to fill in**
+- [ ] **The reference**: once approved, put it in place of `XX/XXXX/XX` in
+  `index.html` (and in `consent_form.docx`, highlighted, if it is kept).
+- [ ] **Recruitment links** carry `?battery=mint` (without it a participant
+  gets the whole test, including the sexuality level, which is not in this
+  application); SONA's also `&source=SONA&sub=%SURVEY_CODE%`.
+- [ ] **SONA credit URL**: replace the placeholder `SONA_CREDIT` in
+  `content/block_interim.js` once the study is set up on SONA (2 credits).
+- [ ] **Prolific completion**: the app has no Prolific completion URL. Build
+  one on the debrief screen, or drop Prolific from 6.1, 6.3.1, 7.6.1 and the
+  description.
+- [ ] **Check the core's length on the first runs**: if the median time to
+  the end of the core is well over 30 minutes, the credit and the consent
+  form's duration want raising, by amendment.
+- [ ] **Do not publish the DataPipe deposit as it is**: it holds the raw files
+  (platform codes, days of birth, unscreened comments). Publish the compiled
+  file as a record of its own, then delete the raw files as 9.8 says.
+- [ ] **Raw data storage**: `data/collected/raw/` is in Dropbox; 9.4.1, 9.5 and
+  9.8 say University-approved storage.
+- [ ] **Real norms** after the pilot (all but the MINT's and the HiTOP-BR's are
+  placeholders, read to participants as comparisons with other people).
+- [ ] **Remove the test-mode consent bypass** (`checkConsent` in `js/app.js`).
+- [ ] Optional: **"Prefer not to say"** on gender and on the diagnoses and
+  treatment questions.
 
-- **Applicant status** for Asel Tohlukov (UG or PG), and **whether there is a
-  co-applicant** at all: the draft was written for two students.
-- **Consent sheet blanks** (in `index.html`): the C-REC reference and the
-  duration. The second contact is filled in (Asel Tohlukov).
-- **Timed pilot**, for the duration quoted in the consent sheet and the SONA
-  advert, and hence for the SONA credit and the Prolific rate (see §6).
-- **Debrief** — a brief paragraph on the completion screen (where participants
-  get their reward): aim of the study, what interoception is, the
-  confidentiality reminder, contacts, and signposting to support services. The
-  parent study's `ethics/mint_validation/Debrief.pdf` is the model, but it
-  signposts nothing, and B5 promises the Samaritans, Mind and the University's
-  wellbeing service.
-- **Project start date.** 01-Oct-2026 is a week away, and nothing may be
-  collected before approval. Move it, or write "on approval".
-- **Confirm the answer to A5.** The opinions level (Where You Stand,
-  `content/block_opinions.js`) went into the Project Description, A5, A6, A10
-  and §6 on 23 September 2026, once its items were final (35 items). A5 is
-  now answered **Yes**, on the reading that political opinions are
-  "beliefs" in the question's sense and that answering No to a question
-  about beliefs while asking thirty political statements would be the thing
-  a reviewer picked up; the explanation says why no disclosure carries a
-  risk. That is a drafting call and wants the applicant's own decision.
-- **Item list**: print the deck (`@media print`) and attach that PDF beside the
-  link (§5).
-- **Re-check `python docs/build_slides.py --check` and push** on the day of
-  submission, so the published table matches `content/` at that moment.
+**Decided on 4 October 2026**: 1.0's "personal data" unticked, with 6.9 No to
+match, and 5.7 kept Yes because the demographics ask for ethnic origin; 6.7 No,
+the question being about third-party material and the figures being the
+study's own; 7.6.1 names no funder for Prolific, which leaves the research
+budget understood; 9.1 No, the question being about transfers between
+institutions in a collaboration; the core takes 20 to 25 minutes (4.0.1) and is rewarded as 30, 2 SONA
+credits, to allow for slower participants (consent form, advert, 7.6.1);
+the committee is the Faculty Research Ethics Committee: Science, Engineering
+and Technology (F-REC), formerly the Sciences & Technology Cross-Schools
+Research Ethics Committee (C-REC), at frecsemset@sussex.ac.uk.
 
-**Before submission — where the draft and the app disagree**
-
-- **The political feedback does show the average person.** The Project
-  Description says "no position on them is compared with anybody else's in the
-  feedback" and A10 "never a comparison with other people", but the Where You
-  Stand figure draws "The average person" as a dashed ring on the plane and a
-  tick on each spectrum (`js/figures/stance.js`). Either take the average out
-  of the figure, or say "with no percentile or ranking" instead, which is true
-  with it there. (The symptom feedback had the same problem, a percentile in
-  the bars' tooltip; the number was taken out on 24 September 2026 and A4 now
-  says "no score, percentile or ranking".)
-- **The parent study's consent sheet may not be the parent study's.**
-  `ethics/mint_validation/Consent.pdf` carries the reference ER/EB672/2 and
-  names Ana Neves as contact, while the parent application is ER/MB2021/2
-  (Maisie Bennett). §5 and the comment in `index.html` call it "the MINT
-  study's own sheet". Check which study it came from before saying so to the
-  committee.
-
-**Parked**
-
-- **Attention checks are not disclosed to participants**, though the Project
-  Description says they are told that failing them may mean withholding credit
-  or payment. The parent study said it on the screen after consent: "Please
-  note that various checks will be performed to ensure the validity of the
-  data. We reserve the right to withhold credit awards or reimbursement should
-  we detect non-valid responses (e.g., random patterns of answers, instructions
-  not read, failed attention checks...)". Either the app says it or the
-  description stops claiming it.
-- **Where the debrief and the closing questions fall** (a real issue, parked
-  for brainstorming on 24 September 2026). The run is: the core (levels 1–4),
-  then the completion screen (not built yet), then the optional levels 5–10,
-  then the closing level (11: "Did you take the test seriously?" and the
-  comments box), then the end. The Project Description puts the seriousness
-  question, the comments box and the debrief at the end. Most participants
-  will take their credit at the completion screen and stop, so as things stand
-  they are **not debriefed** (the committee is told everybody is), **most of
-  the core sample has no seriousness answer** (a data problem: it is the one
-  self-reported quality check), and they never see the comments box (minor:
-  the stars under each level already say how they found it). Suggestions:
-  - **The debrief goes on the completion screen**, which everybody who
-    finishes the core passes, whether or not they go on. Those who continue
-    can see it again at the end, or a line pointing back to it. People who
-    leave during the core get none, as in any online study; the consent sheet
-    carries the contacts.
-  - **The seriousness question is asked at the end of the core**, as the first
-    thing on the completion screen or the item just before it. It cannot be
-    written as the last item of level 4, since the order of levels 2–4 is drawn
-    and then chosen and the last is a different level for each person; it
-    belongs to the completion screen, saved as that screen's own item the way a
-    level screen's way on is (`Level_<N>`).
-  - **Ask it again at the end** for those who went on, under a second key, so
-    each stretch has its own answer: somebody tired by level 9 may say so, and
-    that should not cast doubt on their core.
-  - **One comments box**, either at the end as now or as an optional field on
-    the completion screen, not both.
-  - **The fork meets it.** The first choice of the optional set is made at the
-    end of level 4, so the completion screen falls between level 4's results
-    and that choice: "continue" could lead to the "What next?" cards, or the
-    cards could sit on the completion screen under "If you would like to go
-    on".
-  - **Then the Project Description** lists the parts as consent, demographics,
-    core, feedback with the debrief and the credit, then the optional set (with
-    its own closing comments), and its "Feedback and debriefing" paragraph says
-    the debrief comes at the end of the core.
-
-**Before launch**
-
-- **Completion screen.** After the fourth level: a "you have completed the
-  study" message, the way to claim the reward (SONA credit link or Prolific
-  completion URL, in a new tab), the debrief, the seriousness question, and the
-  choice to continue or stop (see **Parked**, on where the debrief and the
-  closing questions fall). The app has no such screen, and **where it falls
-  is the only thing that defines the core**, since the recruitment link asks
-  for the whole timeline (no battery). Until it exists, no participant is told
-  they have finished and no reward can be granted.
-- **Record recruitment-platform identifiers.** The app reads `?sub=` (the
-  participant code) and `?source=` (where the link was handed out, which is
-  what keeps the SONA, Prolific and social-media samples apart, as B2
-  promises). It records no platform identifier as such. Two ways to do it: put
-  the platform's own placeholder into `?sub=` (SONA's `%SURVEY_CODE%`,
-  Prolific's `{{%PROLIFIC_PID%}}`, both of which pass the 32-character
-  `[A-Za-z0-9_-]` rule), which needs no code but replaces the random code with
-  the platform's, contrary to B7's "and"; or add a small named set of URL
-  variables saved beside the participant code, sanitised the same way and
-  listed in `AGENTS.md` under **Who is taking it**. Either way, the completion
-  screen has to build the SONA credit URL from the survey code.
-- **Real norms, after the pilot.** All but the MINT's and the HiTOP-BR's are
-  placeholders, and the feedback reads them to participants as comparisons
-  with other people ("Higher than 84% of people").
-- **The test-mode consent bypass** (`checkConsent` in `js/app.js`) goes. The
-  "Test mode" link on the landing page is already gone (23 September 2026);
-  the bypass is now reachable only by typing `?test=true`.
-- Optional: **"Prefer not to say"** on gender and on the diagnoses and
-  treatment questions, which have none (ethnicity and the day of birth do).
+**Note**: `ethics/mint_validation/Consent.pdf` carries ER/EB672/2 and names Ana
+Neves, while the parent application is ER/MB2021/2 (Maisie Bennett), and the
+comment in `index.html` calls it "the MINT study's own sheet". Nothing in the
+form depends on it any more.
 
 ---
 
-## 1. Header fields
+## 1. The form, question by question
 
-- **Project Title** —
+"As filled" is what `draft_041026.pdf` holds. **OK** means leave it; anything
+else has text to paste or a change to make. Text blocks are plain text, ready
+to paste.
+
+### Screening and project details
+
+- **1.0** — Human participants ticked; personal data unticked (decided, see §0). OK.
+  Everything else unticked, OK.
+- **2.0** — New application. OK.
+- **2.1** — "Placement Project: MINT questionnaire validation follow-up". OK.
+- **Applicant** — Miss Asel Tohlukov, at775@sussex.ac.uk, Undergraduate,
+  Faculty of Social Sciences, Psychology. OK.
+- **Supervisor** — Dr Dominique Makowski, D.Makowski@sussex.ac.uk. OK.
+- **2.2** — Yes, ER/MB2021/2. OK.
+- **2.5** — Yes: Miss Ada Erdem, ae455@sussex.ac.uk, Undergraduate. OK. Add
+  her under Roles if she needs access. The consent sheet and the debrief name
+  only Dr Makowski and Asel Tohlukov as contacts, which is fine.
+- **2.7** — No. OK.
+- **2.13** — No. Done.
+- **3.0** — 06/10/2026. Done (move it again if submission slips).
+- **3.1** — 01/10/2028. OK.
+- **3.2** — Research. OK.
+- **3.5** — No. OK.
+- **3.6** — No (primary data collection). OK.
+
+### 4.0.1 Background summary and context — done
+
+Shortened to the core: the measures in detail are in 4.1.1, and the reasons
+for the demographics in 5.7.1.
 
 ```
-Placement Project: MINT questionnaire validation follow-up
+This study is an online survey continuing the validation of the MINT, a new
+questionnaire measuring interoception: how people sense and make sense of the
+signals from inside their body, such as their heartbeat, breathing or stomach.
+The previous study (ER/MB2021/2) established the structure of the MINT and its
+relationships with other interoceptive scales. The present study repeats its
+design, procedure, recruitment, consent arrangements and data handling, with the
+same research team, in a new and larger sample, to replicate that structure and
+to examine the MINT's convergent and discriminant validity.
+
+The core of the study, completed by all participants and the only part for
+which credit or payment is given, takes about 20 to 25 minutes. After the
+information sheet and consent form, participants answer:
+
+- standard demographic questions, the same set our group collects across its
+  studies (see 5.7.1);
+- a brief personality inventory and single-item trait scales;
+- the MINT, the questionnaire being validated;
+- a questionnaire on beliefs about artificial intelligence (BAIT);
+- symptom measures: anxiety and depression (PHQ-4), sleep quality, mental
+  health history and the HiTOP Brief Report.
+
+The MINT, the PHQ-4, the measure of life satisfaction, the mental health
+history, the measure of somatic complaints and the demographic questions were
+also asked in the previous study.
+
+After each part, participants see a descriptive, non-diagnostic graphical
+summary of their answers. When the core is complete they are debriefed and
+given their credit, and may then stop, or continue through an optional set of
+further questionnaires for their own interest, which carries no reward. The
+measures, their order and the optional set are described under 4.1.1.
 ```
 
-- **Applicant** — Asel Tohlukov (<at775@sussex.ac.uk>)
-- **Applicant Status** — [UG or PG]
-- **Co-applicant** — [second student, if there is one]. Dr Dominique Makowski
-  (<d.makowski@sussex.ac.uk>) is the supervisor. He and Asel Tohlukov are the
-  two contacts named on the consent sheet, and will be on the debrief.
-- **Department** — Psychology
-- **Project Start Date** — 01-Oct-2026
-- **Project End Date** — 01-Oct-2028
-- **External Funding in place** — No
-- **External Collaborators** — No
+### 4.0.2 Research question and/or hypothesis — done
 
----
-
-## 2. Project Description
-
-Consent, participants and risks are not restated here: each is a field of its
-own (B13–B17, B1–B2, B5 and A10) and the form is read as one document.
-
-Text to paste:
+No directional hypothesis per MINT dimension is written; add any the team
+holds.
 
 ```
-The present study is an online survey continuing the validation of the MINT, a
-new questionnaire measuring interoceptive traits (ER/MB2021/2). The previous
-study established the structure of the MINT and its relationships with other
-interoceptive scales. The present study administers the MINT to a new sample
-alongside a broader set of trait, symptom and disposition measures, in order to
-examine its convergent and discriminant validity against constructs it should
-and should not be related to.
+The study asks three questions about the MINT:
 
-The survey contains the following parts:
+1. Does the structure found in its first validation replicate in a new and
+   larger sample? We expect its three dimensions (Bodily Awareness, Bodily
+   Sensitivity and Bodily Clarity) to be recovered.
+2. Does it show convergent and discriminant validity? We expect it to relate
+   to measures of emotion regulation, emotion reactivity and affective and
+   somatic symptoms, and to be distinct from general personality traits and
+   from beliefs unrelated to the body.
+3. Does the response format change the answers? Each participant is randomly
+   assigned one of three formats (two seven-point scales labelled differently,
+   or a slider), all scored the same way, to test whether the way a scale is
+   presented affects responses to it.
 
-1. Study information and consent form.
-2. Standard demographic questions.
-3. A core set of questionnaires completed by all participants.
-4. An optional further set of questionnaires, which participants may complete if
-   they wish but which is not required in order to receive credit.
-5. Feedback and debriefing information.
+Exploratory: how the MINT's dimensions relate to the six dimensions of
+psychopathology of the HiTOP Brief Report, which describes mental ill health as
+dimensions rather than diagnoses.
+```
 
-Relationship to the previous study
+### 4.0.3 Rationale and expected benefits — done
 
-This study repeats the design, the procedure and a substantial part of the
-measures of ER/MB2021/2, in a new and larger sample. The following measures are
-the same or near-identical in the two studies:
+```
+Interoception, the sensing and interpretation of signals from inside the body,
+is linked to emotion, self-awareness and mental health, but the questionnaires
+that measure it differ in what they capture. The MINT was developed to measure
+interoceptive traits more precisely. A new questionnaire is only useful once
+its structure has been replicated and its relationships with other constructs
+established in independent samples, which is what this study does. Testing
+whether the response format changes the answers is relevant to questionnaire
+research in general, and relating the MINT to the HiTOP framework places it
+within a current dimensional model of mental health.
 
-- The MINT itself, the instrument being validated, with the same items.
-- The PHQ-4 (Kroenke et al., 2009), refined five-option version, measuring
-  anxiety and depression symptoms over the past two weeks.
-- A single-item measure of life satisfaction.
-- The Primals Inventory-18 (Clifton & Yaden, 2021), measuring beliefs about the
-  character of the world.
-- The Cognitive Emotion Regulation Questionnaire (Garnefski & Kraaij, 2006), in
-  its short form here.
-- A measure of emotion reactivity: six items of the Emotion Reactivity Scale
-  (Nock et al., 2008), two per facet, here, and a brief version of the same
-  construct in the previous study.
-- Mental health history: reported psychiatric diagnoses and treatment.
-- Somatic and psychosomatic complaints, measured here by the somatic scale of
-  the HiTOP Brief Report.
-- The demographic questions.
-- Feedback questions asking participants how they found the survey.
+Expected benefits: for the research community, a validated, freely available
+measure of interoception and an openly shared, de-identified dataset. For
+participants, an engaging survey that gives them immediate, descriptive feedback
+on each part, a debrief explaining the study, and, for students, first-hand
+experience of taking part in research. Participants' own judgements of whether
+the feedback describes them are themselves informative about how well the
+measures work.
+```
 
-The two studies therefore cover the same constructs: interoception, emotion
-regulation, emotion reactivity, affective symptoms, somatic complaints, beliefs
-about the world, and mental health history. They also share the same design,
-procedure, recruitment strategy, consent arrangements and data handling, and the
-same research team. The present study adds the further trait and disposition
-measures listed below.
+### 4.1 Methods — Questionnaires. OK.
 
-Demographic information
+### 4.1.1 Details on methods — done
 
-Participants report their age, month and day of birth, gender, educational level, field
-of study, student status, ethnicity, country of current residence, subjective
-financial comfort and subjective social status. This is the same set our group
-collects across its studies, which is what allows the datasets to be pooled and
-reused, and it is what allows the composition and the diversity of the
-validation sample to be characterised and reported; the reasons are set out in
-full under A10.
+The attention-check sentence that opened it is gone (see §0).
 
-Questionnaires
-
-Participants are informed that the study aims to validate a questionnaire and
-that it includes attention check items, and are advised that failing these
-checks may result in withholding their rewards (e.g., credits or payment).
-
+```
 The core set, completed by all participants, is:
 
 - The MINT, the instrument under validation.
@@ -284,113 +222,116 @@ The optional set, offered after the core set, is:
   climate, nuclear power and the moral standing of animals, how much
   beauty should count against cost and use, and whether words alone can do
   lasting harm (adapted from the Words Can Harm Scale; Pratt et al., 2026),
-  a question on whether a range of
-  views or a range of backgrounds matters more, and a question on diet, most
-  of them written or adapted for this study. These are political opinions and are treated as special category
-  data (see A5, A6 and A10); they are collected anonymously like the health
-  items, and no position on them is compared with anybody else's in the
-  feedback.
+  a question on whether a range of views or a range of backgrounds matters
+  more, and a question on diet, most of them written or adapted for this
+  study. These are political opinions and are treated as special category
+  data (see 5.7.1 and 5.9.1); they are collected anonymously like the health
+  items, and the feedback on them shows no percentile or ranking.
 
 The survey always opens with age, month and day of birth and gender, and the
 brief trait scales. The participant then chooses the order of the three
-remaining parts of the core set — the MINT, the AI beliefs questionnaire, and
-the symptom measures: two of them, drawn at random for each participant, are
+remaining parts of the core set (the MINT, the AI beliefs questionnaire, and
+the symptom measures): two of them, drawn at random for each participant, are
 offered first, and the participant picks which to answer, then picks between
 the one left and the third. The random draw means that no one instrument is
 always answered first and none always answered last. The other demographic
 questions open the second part, whichever it is (education, field of study,
 student status, ethnicity and country), and the third (financial comfort and
-social status). The items within each questionnaire are
-presented in a random order, except where an instrument was validated in a
-fixed order, in which case that order is kept. The optional questionnaires are
-offered three at a time, the participant choosing which to answer next. In
-both sets the choice changes only the order, never what is asked.
+social status). The items within each questionnaire are presented in a random
+order, except where an instrument was validated in a fixed order, in which case
+that order is kept. The optional questionnaires are offered three at a time,
+the participant choosing which to answer next. In both sets the choice changes
+only the order, never what is asked.
 
 The complete list of every questionnaire and every item asked, with its source
 and reference, is published as part of the study documentation and can be
 consulted at https://realitybendinglab.com/TestYourself/docs/ (select the
-"Content" slide, and any row of the table to see that instrument's items).
+"Content" slide, and any row of the table to see that instrument's items). A
+PDF copy is attached under 6.6.1.
 
 Optional continuation
 
 After completing the core set, participants are told that they have completed
-the study and are given the link that awards their credit. They may then either
-stop or continue through the optional questionnaires for their own interest. The
-continuation is entirely voluntary, carries no additional reward, and may be
-abandoned at any point; receiving credit does not depend on it, and participants
-are told so.
+the main part of the study and are given the link that awards their credit.
+They may then either stop or continue through the optional questionnaires for
+their own interest. The continuation is entirely voluntary, carries no
+additional reward, and may be abandoned at any point; receiving credit does not
+depend on it, and participants are told so.
 
 Feedback and debriefing
 
-After each block of questionnaires, participants are shown a graphical summary
-of their own answers, and are asked whether it matches their experience of
-themselves and how they found that part of the survey. These responses are
-themselves informative about how well the measures describe people. The summary
-is descriptive and explicitly non-diagnostic: no clinical label, cut-off or risk
+After each part, participants are shown a graphical summary of their own
+answers, and are asked whether it matches their experience of themselves and
+how they found that part of the survey. These responses are themselves
+informative about how well the measures describe people. The summary is
+descriptive and explicitly non-diagnostic: no clinical label, cut-off or risk
 score is shown at any point.
 
-At the end, participants are asked whether they took the survey seriously, may
-write any comments they wish to share, and are then shown a debriefing screen
-stating the aim of the survey, giving further information about interoception,
-reminding them that their data are anonymised, and signposting sources of
-support.
+When the core set is complete, participants are asked whether they took the
+survey seriously, may write any comments they wish to share, and are shown a
+debriefing screen stating the aim of the study, explaining interoception and
+the random assignment of the response format, reminding them that their
+answers are confidential and stored de-identified, giving the research team's
+contact details and signposting sources of support. Those who continue through
+the optional set are asked the same two questions again at the end.
 ```
 
----
+- **4.2** — No. OK. **4.3** — No. OK.
 
-## 3. Section A — Checklist
+### Risk
 
-- **A1. Vulnerable participants / unable to consent / dependent position?** — **No.**
-  Adults 18+, recruited through platforms. SONA participants are our own
-  students; the consent form states that taking part does not affect grades.
-- **A2. Participation without consent or knowledge, or deception?** — **No.**
-- **A3. Could participants be identified through a research output?** — **No.**
-  A run carries a randomly generated participant code and, where a platform
-  supplies one, that platform's own identifier, resolvable only inside the
-  platform. Nothing goes from collection to publication in one step: DataPipe
-  deposits into a repository record that is an unpublished private draft for the
-  whole of collection; those files are compiled into a single de-identified data
-  file, at which stage the platform identifier is dropped, the day of birth is
-  removed or grouped (into the star sign it falls under), and the one free-text
-  field is read and edited or deleted where it holds anything that could
-  identify an individual; only that compiled file is made open-access. See B11a
-  and B12a.
-- **A4. Might the study induce psychological stress or anxiety, or humiliation or harm beyond everyday risk?** — **No.**
-  The items are standard screening items of the kind used in general population
-  surveys, and the feedback presents no clinical label, cut-off or risk score,
-  never characterises a pattern of answers as a disorder, and on the symptom and
-  health measures shows no score, percentile or ranking, and no place on the
-  whole-survey summary. See B5 and A10.
-- **A5. Risk of disclosures about beliefs, illegal actions, or threats to self/others?** — **Yes**,
-  as to beliefs: the optional continuation includes a set of questions on
-  social and political views (redistribution, law and order, equality between
-  groups, human enhancement, heredity, the climate, animals, whether words
-  can do lasting harm), answered as
-  agreement with statements, and a left-right self-placement. These are
-  opinions of the kind asked in general population social surveys (the
-  British Social Attitudes and European Social Survey items among them). No
-  item asks about illegal activity, self-harm or suicide, and no answer is
-  identifiable (A3, A10), so no disclosure can be attributed to a person or
-  carry a consequence for them. See A6 and A10.
-- **A6. Collecting special category information in identifiable form?** — **Yes**
-  (ethnicity; gender identity; health data — psychiatric diagnoses and
-  treatment, symptom reports; political opinions, in the optional set of
-  questions on social and political views), **not in identifiable form**. See
-  A10.
-- **A7. Drugs, placebos, substances, invasive procedures?** — **No.**
-- **A8. Hazardous substances or equipment?** — **No.**
-- **A9. Human tissue under the HTA?** — **No.**
+- **5.0** — No. OK.
+- **5.1** — No. OK.
+- **5.2** — No. Done.
+- **5.3** — No. OK. **5.4** — No. OK. **5.5** — No. OK. **5.6** — No. OK.
+- **5.7** — Yes. OK.
 
-**Recruitment-platform identifiers.** SONA and Prolific each put a
-per-participant code in the survey URL, and the app records it. Such a code is a
-key to the participant's identity *held by the platform*, never by the research
-team, and it is kept so that a completed run can be matched to a credit or a
-payment if a query arises. It is stripped at the preprocessing stage, before any
-file is published. A3, A6, B7, B8 and B11a are written on that basis.
+### 5.7.1 Why special category data are necessary — done
 
-### A10 — case for the application being considered LOW risk
+The two paragraphs pasted are fine; add the third, since the field asks about
+the health and political items too, not only the demographics.
 
-Text to paste:
+```
+Participants are asked to report their age, gender, ethnicity, educational level
+and country of current residence, and to answer standard self-report
+questionnaires which include items about mental health history and about
+psychological and somatic symptoms. Participants who choose to go on past the
+core set may also answer a set of questions on their social and political
+views, of the kind asked in general population social surveys.
+
+These demographic variables are collected for two reasons. First, for continuity
+with our group's existing studies: we have collected the same demographic
+information throughout, and keeping the set identical is what allows datasets
+from different studies to be pooled, compared and reused. Second, because
+characterising the composition of a sample is a central part of questionnaire
+validation. The psychometric properties of an instrument are established in a
+particular sample, and the diversity of that sample, or its lack of diversity,
+is what determines how far the findings can be generalised. Reporting these
+variables is what allows us and other researchers to be critical about
+representation, to avoid overgeneralising, and to identify where validation in
+other cultural and linguistic contexts is needed.
+
+The health measures are needed because establishing how interoception relates
+to symptoms of mental and physical ill health is one of the aims of the study:
+a questionnaire of interoception cannot be validated against these constructs
+without measuring them. The questions on social and political views are in the
+optional set only; they provide constructs the MINT should not be strongly
+related to (discriminant validity), and allow the relationship between bodily
+awareness and social attitudes to be explored.
+```
+
+### 5.8 Other ethical issues, including conflicts of interest — done
+
+```
+None beyond those covered above. There are no conflicts of interest.
+```
+
+- **5.9** — Yes. OK.
+
+### 5.9.1 Case for low risk — done
+
+One change from what is pasted: "never a comparison with other people" is now
+"with no percentile or ranking" (see §0).
 
 ```
 Participants are asked to report their age, gender, ethnicity, educational level
@@ -422,16 +363,16 @@ and it is removed before any data are published. The day of birth is asked only
 to derive the star sign shown in the feedback; since, together with the month and
 the age, it approaches a date of birth, it is likewise removed, or replaced by a
 coarser grouping such as the star sign, before any data are published. The
-research team cannot link a set of responses to an individual. No item asks about suicidal ideation,
-self-harm or illegal activity. The health items and the questions on social
-and political views are special category data under UK GDPR Article 9; they
-are collected under the same anonymity as everything else, and the feedback
-on the political items shows a participant their own position only, never a
-comparison with other people.
+research team cannot link a set of responses to an individual. No item asks
+about suicidal ideation, self-harm or illegal activity. The health items and the
+questions on social and political views are special category data under UK GDPR
+Article 9; they are collected under the same anonymity as everything else, and
+the feedback on the political items shows a participant their own position,
+with no percentile or ranking.
 
-The graphical summary shown to participants at the end of each block is
+The graphical summary shown to participants at the end of each part is
 descriptive and explicitly non-diagnostic: no clinical label, cut-off or risk
-score is shown at any point. The debriefing page signposts sources of support.
+score is shown at any point. The debriefing screen signposts sources of support.
 
 Questionnaires of this kind, with immediate personal feedback, are widely and
 freely available online, including on mental health and political attitudes:
@@ -444,169 +385,185 @@ they encounter in everyday life, and the feedback here is more cautious than
 most, presenting no score, percentile or ranking on the symptom measures.
 ```
 
----
+### Recruitment
 
-## 4. Section B — Data collection and analysis
+- **6.0** — 300. OK.
 
-### B1. Participants: how many, who, and how selected
+### 6.0.1 Sample size justification — done
+
+Power figures computed for n = 300, two-tailed α = .05, power .80.
 
 ```
-The study will attempt to recruit a minimum of 300 participants for the core
-set of questionnaires, based on typical sample sizes of comparable validation
-studies.
+The study aims to recruit a minimum of 300 participants for the core set of
+questionnaires. This is in line with the sample sizes of comparable validation
+studies and is considered adequate for the confirmatory factor analysis of a
+questionnaire's structure. With 300 participants, the study has 80% power to
+detect correlations of r = .16 or larger (two-tailed, alpha = .05), which covers
+the small-to-moderate relationships expected between the MINT and the other
+measures, and to detect a small-to-moderate difference (f = .18) between the
+three randomly assigned response formats.
+```
 
+### 6.1 Selection, inclusion and exclusion — done
+
+```
 Participants are adults aged 18 or over, recruited through participant
-recruitment platforms. There are no exclusion criteria other than the minimum
-age.
+recruitment platforms (SONA and Prolific) and through posts on social media.
+There are no exclusion criteria other than the minimum age.
 ```
 
-### B2. Recruitment
+- **6.2** — No. OK. **6.3** — Yes. OK.
 
-SONA and Prolific are both applied for here, in one application, so that the
-study can run on either without an amendment later.
+### 6.3.1 Initial contact — done
 
 ```
 Participants will be recruited via online recruitment platforms - SONA, the
 University's own participant pool, and Prolific - and potentially by convenience
-sampling via social media. The samples from different methods of recruitment
-will be collected separately in case they differ (the incentive type, e.g.,
-student credits or payment, and its amount, or the absence of one, will thus be
-known and can be accounted for).
+sampling via social media, through posts on the research group's own accounts
+linking to the study. The samples from different methods of recruitment will be
+collected separately in case they differ (the incentive type, e.g., student
+credits or payment, and its amount, or the absence of one, will thus be known
+and can be accounted for). No personal data are obtained in recruiting: people
+follow a link and take part anonymously.
 
 Participants recruited through SONA receive course credit, and participants
-recruited through Prolific are paid at that platform's recommended hourly rate,
-for completing the core set of questionnaires. The optional questionnaires
-offered afterwards carry no additional credit or payment, and participants are
-told this before deciding whether to continue.
+recruited through Prolific are paid at no less than the University's minimum
+rate for study compensation, for completing the core set of questionnaires. The
+optional questionnaires offered afterwards carry no additional credit or
+payment, and participants are told this before deciding whether to continue.
 ```
 
-### B3. Method
+- **6.4** — Yes. OK.
+
+### 6.5 Invitation text — **upload** `advert.docx`
+
+Make a PDF of the two texts below once the duration and the credit are known.
 
 ```
-Online survey.
+SONA advert
+
+Study name: Your body, your mind - validating a questionnaire on bodily sensations
+
+Brief abstract: An online questionnaire study about how people notice and make
+sense of the signals from inside their body.
+
+Description: In this online study you will answer questionnaires about
+yourself, the sensations you notice in your body, your views of artificial
+intelligence, and your mood and health over the past weeks and months. After
+each part you will see a graphical summary of your answers. The study takes
+about 30 minutes and you receive 2 credits for completing it. Afterwards
+you can carry on with further optional questionnaires for your own interest;
+they earn no further credit. Please take part on a computer or a phone, in a
+quiet place, when you have time to finish in one go.
+
+Eligibility: aged 18 or over.
+
+Researchers: Dr Dominique Makowski (D.Makowski@sussex.ac.uk), Asel Tohlukov
+(at775@sussex.ac.uk), Ada Erdem (ae455@sussex.ac.uk), School of Psychology,
+University of Sussex.
+
+Social media post
+
+How well do you know your own body? Take part in a University of Sussex study
+on how people sense the signals from inside their body, and see a summary of
+your own answers as you go. About 30 minutes, online, anonymous, 18+.
+[link]
 ```
 
-### B4. Location
+- **6.6** — Yes. OK.
+
+### 6.6.1 Participant-facing documents — **upload**
+
+- **The item list**: `items.docx` (uploaded), the core's three questionnaires (MINT,
+  BAIT, HiTOP-BR), one a page, written out of `data/synthetic/codebook.js`;
+  the rest is in the deck, which 4.1.1 links to.
+- **The debrief**: `debrief.docx`, the text below. It is the debrief screen of the
+  app (`Briefing_Onward` in `content/block_interim.js`), shown after the core
+  set; keep the two in step.
 
 ```
-The survey will be completed online, at a time and place of the participant's
-choosing.
+About this study
+
+This study is validating a new questionnaire of interoception: how you sense and
+make sense of the signals from inside your body, such as your heartbeat, your
+breathing or your stomach, which have been linked to emotion, self-awareness
+and well-being. The other questionnaires show how it relates to mood, health
+and views of AI, and the questions about your body were answered on circles or
+on a slider, drawn at random, to find out whether the way a question is
+answered changes the answer. The results you were shown describe your answers:
+none of them is a diagnosis.
+
+Your answers are kept confidential and stored de-identified. For any question
+or concern, contact Dr Dominique Makowski (D.Makowski@sussex.ac.uk) or Asel
+Tohlukov (at775@sussex.ac.uk). If anything here brought up something
+difficult, the Samaritans (116 123, free, day or night) and Mind (0300 123 3393)
+are there to listen, and so are the University of Sussex's health and wellbeing
+services for its students.
+
+[For participants recruited through SONA:] Your SONA credit is for the main
+part, which you have finished, so it is yours whatever you do next. Claim it
+now, in a new tab, before you go on or close this page.
+
+What next? The test goes on, and every level will reveal something new about
+you. They are optional [and earn no further credit], so you can stop at any
+point you feel like. Choose which part of yourself to explore next.
 ```
 
-### B5. Participant wellbeing
+### 6.7 Pictures — No (decided, see §0)
 
-**Yes**, with the mitigation below. The core set includes the HiTOP-BR, which
-asks about low mood, anxiety, unusual perceptual experiences and one item about
-thinking about death, plus the PHQ-4 and mental-health history.
+Kept in case a reviewer asks, or for the box under it about materials that may develop:
 
 ```
-The survey includes standard self-report items about psychological and somatic
-symptoms over the past two weeks and the past year, and about mental health
-history. These are routine screening items of the kind used in general
-population surveys, and no item asks about suicidal ideation or self-harm.
-
-Participants are told before starting that participation is voluntary, that they
-may stop at any point without giving a reason and without any penalty, and that
-they may skip the study entirely by closing the browser. The graphical summary
-of their answers shown during the survey is descriptive and explicitly
-non-diagnostic, and presents no clinical label, cut-off or risk score. The
-debriefing page signposts sources of support, including the Samaritans, Mind and
-the University's own student wellbeing service, together with the contact
-details of the research team.
+Participants see the figures of the reasoning test's matrix and rotation
+problems (the published ICAR sample items) and a graphical summary of their own
+answers after each part. None of these is distressing. The full set of
+materials can be consulted at https://realitybendinglab.com/TestYourself/docs/
+and is attached under 6.6.1.
 ```
 
-### Confidentiality and anonymity — the Yes/No items
+- **6.8** — Yes. OK.
+- **6.8.1** — **Upload** `consent_form.docx` version 2 (beside this file):
+  this study's information sheet and consent form, which are one document.
+- **6.9** — No, to match 1.0. Done.
+- **6.10** — No. OK. **6.11** — No. OK. **6.12** — No. OK.
 
-- **B6. Completed anonymously and returned indirectly?** — Yes.
-- **B7. Identifiable only by unique identifier?** — Yes. A randomly generated
-  12-character participant code and, where the recruitment platform supplies
-  one, that platform's own participant identifier, which is removed before
-  publication. See B11a.
-- **B8. Lists linking identifiers to names stored separately?** — N/A. No names
-  are collected, and the research team holds no list linking a platform
-  identifier to a person; such a list exists only inside SONA or Prolific, under
-  those platforms' own governance.
-- **B9. Place names / institutions changed?** — Yes.
-- **B10. Personal information kept confidential, never disclosed to third parties?** — Yes.
-  Responses are transmitted through DataPipe to a Zenodo deposit; these are
-  data-hosting services rather than third parties receiving personal
-  information, and no personal information is in what they hold. Both are named
-  in B11a.
-- **B11. Records held per data protection regulations?** — Yes.
-- **B12. Data used for any purpose other than consented?** — No.
+### Informed consent and withdrawal
 
-### B11a. How identifiable personal and research data will be managed and stored
+- **7.0** — Yes. OK. **7.0.2** — In writing/online form. OK.
+- **7.0.4** — `consent_form.docx`: **replace** version 1 with version 2.
+- **7.1** — Yes. OK.
 
-The deposit's identifier is deliberately not given: it is an unpublished draft
-with no public address, and quoting one would imply there is something a
-reviewer could go and look at.
+### 7.2 Suitable format — done
 
 ```
-The survey is anonymous: no name, email address or IP address is collected. Each
-set of responses carries only a randomly generated participant code, which is
-created by the survey itself and is not linked to any identifying information.
-
-Responses are transmitted through DataPipe (pipe.jspsych.org), a free,
-open-source service run by the developers of the jsPsych library, which
-forwards data from browser-based studies to a data repository, keeping no copy
-once they are delivered, without the researchers operating a server of their
-own. Each response is transmitted as it is given, and the complete set is
-transmitted again when the survey is finished, so that a participant who stops
-partway through still contributes the answers they had given. The data are
-deposited in a Zenodo record (Zenodo being the research data repository
-operated by CERN) held by the research group: one file for a participant who
-finishes, and, for one who stops partway, a file of the responses given up to
-that point, written about fifteen minutes after they stop.
-
-That repository record is unpublished and private for the whole of data
-collection: it has no public address, it is not indexed, and it is readable only
-by the research team. The files in it are downloaded and compiled into a single
-de-identified data file, and it is at that stage that anonymisation is carried
-out - any identifier supplied by a recruitment platform is removed, the day of
-birth is removed or replaced by a coarser grouping (such as the star sign it
-falls under), and free-text responses are read and edited or deleted where they contain anything
-that could identify an individual. Only the compiled, de-identified file is made
-publicly available, as stated in the consent form that participants read and
-agree to before taking part.
-
-Where participants are recruited through SONA or Prolific, the survey URL
-carries a code generated by that platform for the purpose of awarding credit or
-payment, and this code is recorded with the responses so that a completed run
-can be matched to its reward if a query arises. It contains no personal
-information and can be resolved to an individual only within that platform, by
-staff with access to that system; it is not resolvable by the research team from
-the research data, and it is removed before any data are published.
+Participants are adults, most of them university students, recruited online.
+The information sheet is written in plain English, is shown on screen before
+any question, and the survey cannot be started until it has been scrolled to
+the end. No translation, child-specific documents or oral consent are needed.
+The survey shows one question at a time and works on phones, tablets and
+computers. Participants are given the research team's contact details to ask
+any question before, during or after taking part.
 ```
 
-### B12a. Further information on confidentiality and data use
+### 7.3 Time to consider taking part — done
 
 ```
-The potential for anonymous data sharing is included in the consent form.
-
-The survey ends with an optional free-text box in which participants may write
-any comments they wish to share. The item states that what is written there may
-be made public. Every free-text response will be read before the data are
-published, and any response containing information that could identify an
-individual will be edited to remove it, or the response deleted. This is done at
-the same stage as the rest of the anonymisation, on the compiled data file,
-before anything is made publicly available.
+As long as they wish. The study advert describes the study before anybody
+follows the link, the information sheet can be read at the participant's own
+pace before starting, and the study stays open for the whole of data
+collection, so nobody has to decide on first reading. Participants can close
+the page at any time without having started.
 ```
 
-### Informed consent and recruitment — the Yes/No items
+- **7.4** — Yes. OK. **7.5** — No. OK.
 
-- **B13. Information sheet, adequate time to read?** — Yes. The consent text is
-  shown before any item and the start button is disabled until it has been
-  scrolled through.
-- **B14. Signed consent form for interviews/focus groups?** — N/A.
-- **B15. Consent shown by a specific and identifiable action?** — Yes (see B17).
-- **B16. Told they can withdraw at any time?** — Yes, in the sense that they may
-  stop at any time; what they have already answered stays. **The point of no
-  return is the first answer, not the last**: responses are transmitted as they
-  are given, so closing the browser no longer discards anything, and the consent
-  form says so in plain words. This is the one substantive change from the
-  protocol the committee approved before, and should be flagged to them.
+### 7.5.2 Why data cannot be withdrawn — done
 
-### B17. Further information on informed consent
+**The point of no return is the first answer, not the last**: answers go out
+as they are given, so closing the browser no longer discards anything. This is
+the one substantive change from the protocol approved for ER/MB2021/2, and the
+consent sheet's third statement was reworded for it, so the committee is told
+here which statement changed and why.
 
 ```
 Participants are shown the information sheet and consent statements before any
@@ -620,71 +577,161 @@ their answers are recorded as they give them rather than only at the end, so
 that the answers given before they stop are kept and may be used in the
 research, and that because the data are anonymous, responses cannot be
 identified and therefore cannot be withdrawn once they have been given.
+
+This differs from the previous study (ER/MB2021/2), where answers were saved
+only at the end. The consent statements are the University's standard wording
+except the third, which said that withdrawing data would be impossible "once I
+have completed it" and now says "once it has been given, whether or not I
+finish the study".
 ```
+- **7.6** — Yes.
 
-### Context — the Yes/No items
-
-- **B18. DBS clearance needed?** — No.
-- **B19. Other ethical clearances or permissions?** — No. SONA use at Sussex is
-  embedded in the School's research participation scheme and needs nothing
-  beyond C-REC approval.
-- **B20. Fieldwork?** — No.
-- **B21. Lone working?** — No.
-
-### B22. Any other ethical considerations
-
-**No.** The graphical summary is covered in A4, A10 and B5, and the free-text
-box in A3 and B12a.
-
-The block below is kept **unused**, in case a reviewer would rather see the
-summary flagged in its own field. Do not paste it unless that happens.
+### 7.6.1 Payment and who funds it — done
 
 ```
-Participants are shown a graphical summary of their own answers, including on
-measures of psychological symptoms. This is done because it makes participation
-more informative for the participant, and because their judgement of whether the
-summary describes them is itself relevant to the validity of the measures. The
-summary is descriptive and explicitly non-diagnostic by design: it presents no
-clinical label, no cut-off and no risk score, and the accompanying text does not
-characterise any pattern of answers as a disorder or a problem. The debriefing
-page signposts sources of support.
+SONA participants receive 2 course credits, the scheme's conversion for a
+study of about 30 minutes, and Prolific participants are paid at no less than
+the University's minimum rate for study compensation for 30 minutes, for
+completing the core set only; the optional continuation is unrewarded. Course
+credit has no cost.
 ```
+
+### 7.7 Direct quotes — No, done
+
+Nothing needs typing: the free-text comments are covered by 9.5.3's
+"free-text responses are read and edited or deleted".
+
+### Safety and wellbeing
+
+- **8.0** — No. OK. **8.1** — No. OK. **8.2** — No. OK.
+- **8.3** — OK as pasted.
+- **8.4** — No. OK. **8.5** — No. OK.
+- **8.6** — Yes, done. If it opens a box:
+
+```
+The survey includes standard self-report items about psychological and somatic
+symptoms over the past two weeks and the past year, about mental health
+history and about ethnicity, and an optional set of questions on social and
+political views. These are routine items of the kind used in general
+population surveys, answered anonymously and not discussed with anybody, and
+no item asks about suicidal ideation or self-harm. Participants may stop at
+any point without giving a reason. The graphical summary of their answers is
+descriptive and explicitly non-diagnostic, and the debriefing screen signposts
+sources of support, including the Samaritans, Mind and the University's
+wellbeing services, together with the contact details of the research team.
+```
+
+- **8.7** — No. OK.
+
+### 8.8 Feeding back the findings — done
+
+```
+Participants receive immediate, individual feedback throughout the survey: a
+descriptive, non-diagnostic graphical summary of their own answers after each
+part, and a debrief explaining the aims of the study when they finish the main
+part. The group findings will be published open access, with a freely available
+preprint, and the de-identified data will be shared on an open repository;
+both will be linked from the research group's website.
+```
+
+### Data storage and management
+
+- **9.1** — No (decided: the question is about transfers between institutions
+  in a collaboration).
+- **9.2** — No. OK, on the anonymity argument (and Zenodo is in Switzerland,
+  which has UK adequacy).
+- **9.3** — Yes. OK.
+- **9.4** — Other. OK.
+
+### 9.4.1 Where the data are stored — done
+
+```
+During data collection, responses are deposited in a private, unpublished
+Zenodo record (Zenodo being the research data repository operated by CERN)
+held by the research group and readable only by the research team: one file
+for a participant who finishes, and, for one who stops partway, a file of the
+responses given up to that point. For analysis, the files are downloaded to
+University-approved storage, where they are compiled into a single
+de-identified data file. Only that file is published, on an open repository.
+```
+
+### 9.5 Access and analysis — done
+
+```
+Only the research team (Dr Dominique Makowski, Asel Tohlukov and Ada Erdem) has
+access to the raw data, which are held in a private, unpublished repository
+record and on University-approved storage. No names, email addresses or IP
+addresses are collected; the only identifier a recruitment platform may supply
+(the code it uses to award credit or payment) can be resolved to a person only
+within that platform. Only the compiled, de-identified data file is made
+public.
+
+The data will be analysed in R. The structure of the MINT will be tested by
+confirmatory factor analysis; its convergent and discriminant validity by its
+correlations with the other measures; the effect of the response format by
+comparing the three randomly assigned formats (measurement invariance and
+score distributions); and its relationship with the HiTOP Brief Report's six
+dimensions by correlation and regression. Results are reported at group level
+only.
+```
+
+- **9.5.1** — Survey/questionnaire responses (online). OK.
+- **9.5.3** — OK as pasted.
+- **9.6** — No. OK.
+- **9.7** — Yes. OK, on the anonymity argument.
+
+### 9.8 Retention and deletion — done
+
+The retention period is the supervisor's decision; check it against the
+University's research data management policy.
+
+```
+No audio, video or media files are recorded. The raw response files are kept,
+private, until data collection has ended and any credit or payment queries are
+resolved, and no later than the project end date. They are then compiled into a
+single de-identified data file: the identifier supplied by a recruitment
+platform is removed, the day of birth is removed or reduced to the star sign it
+falls under, and free-text responses are read and edited or deleted where they
+could identify anybody. The raw files are then deleted from the repository
+record and from University storage. The de-identified data file is kept
+indefinitely on an open research data repository, as stated in the consent
+form.
+```
+
+- **9.9** — No.
+- **9.9.1** — done:
+
+```
+No names are collected, and the research team holds no list linking a platform
+identifier to a person; such a list exists only inside SONA or Prolific, under
+those platforms' own governance.
+```
+
+- **9.10** — No. OK. **9.11** — No. OK.
+- **9.12** — Yes, done.
+- **9.13** — "Used in future research projects", "Published on an open access
+  repository" and "Transferred to supervisor for future use". Done.
+
+### 9.14 Consent to publish and reuse — done
+
+```
+Consent is obtained before participation, through the consent statements
+participants agree to before starting: that their data will be stored in a
+de-identified way and may be made publicly available through secured scientific
+online data repositories, and that their data will be used for the purposes of
+this research and handled according to data protection legislation and the
+University's Privacy Notice. Only de-identified data are shared, so they can be
+reused in future research, including being pooled with the research group's
+other datasets on the same measures.
+```
+
+- **9.15** — Leave empty (it is for replying to changes the F-REC requests).
+- **9.16** — Nothing needed. The parent approval (ER/MB2021/2) can go here if
+  the team wants the "continuation" framing to have evidence beside it.
 
 ---
 
-## 5. Supporting documents
-
-- **Consent sheet — drafted, in `index.html`.** Modelled on the sheet in
-  `ethics/mint_validation/Consent.pdf` (which carries ER/EB672/2 rather than
-  the parent study's ER/MB2021/2 — see §0): the same headings in the same
-  order, the six consent statements kept as the committee's wording, and the
-  text around them describing this study. The third statement is the one
-  exception — it said withdrawal was impossible "once I have completed it",
-  which stopped being true when answers began going out as they are given, and
-  it now reads "once it has been given, whether or not I finish the study".
-  Tell the reviewer which one was amended and why. Print the `.gate` to PDF for
-  the attachment, or lift the text.
-  - Two blanks remain: the C-REC reference and the duration. The second
-    contact is Asel Tohlukov (at775@sussex.ac.uk).
-  - The DataPipe/Zenodo route is not named on the sheet: the standard statement
-    it carries ("De-identified data may be made publicly available through
-    secured scientific online data repositories") is the committee's own wording
-    and covers it, and B11a names both services to the reviewers.
-- **Debrief.pdf** — to be written; see §0. The app has no debriefing screen at
-  all.
-- **Item list — a link, and a PDF of it.** The Content table in
-  `docs/index.html` is generated from the app's own questions by
-  `docs/build_slides.py`, so it cannot drift from what is asked; picking a row
-  shows every item of that instrument. The Project Description points at it,
-  and a PDF printed from the deck (`@media print`) on the day of submission is
-  attached beside it, so the committee has a fixed copy of what it approved.
-  The deck is live at <https://realitybendinglab.com/TestYourself/docs/> and the
-  app at <https://realitybendinglab.com/TestYourself/>; both matched the
-  repository on 24 September 2026.
-
----
-
-## 6. Length and burden
+## 2. Length and burden
 
 Item counts from the Content table in `docs/index.html`. These are maxima: some
 items are conditional follow-ups that most participants will not see.
@@ -693,7 +740,8 @@ items are conditional follow-ups that most participants will not see.
 - Level 2 — demographics, MINT: **43**
 - Level 3 — demographics, BAIT: **29**
 - Level 4 — PHQ-4, sleep, mental-health history, HiTOP-BR: **53**
-- **Mandatory core: 147**
+- **Mandatory core: 147**, plus the two questions after it (seriousness,
+  comments)
 - Optional continuation (HEXACO + KSE-G, archetypes, primals, ICAR-16,
   attention and emotion measures, opinions, closing items): **192**, of which
   the opinions level is 38
@@ -701,15 +749,13 @@ items are conditional follow-ups that most participants will not see.
 
 Three attention checks fall in the core (MINT, BAIT, HiTOP-BR).
 
-**Duration — pending the pilot.** The previous study quoted ~30 min for 12
-questionnaires. A rough estimate here is **20–25 minutes for the mandatory
-core** and **45–60 minutes for the whole survey**, but this needs a timed run
-before it goes in the consent form and the SONA advert, since the figure quoted
-determines the credit awarded.
+**Duration — 20 to 25 minutes for the core, rewarded as 30** (2 SONA credits,
+set on 4 October 2026, to allow for slower participants; the previous study
+quoted ~30 minutes for 12 questionnaires), and roughly 45–60 minutes for the
+whole survey. The first runs will say whether the core holds to it (see §0).
 
 **Credit and payment.** Both are set against the **core only**, the continuation
 being unrewarded, and both are standard rates rather than anything chosen for
-this study: **Prolific** at the University's minimum rate for study compensation
-as set out in the Sussex guidelines, and **SONA** credit following the scheme's
-own conversion from the median completion time. Neither number can be written
-down until the timed pilot has given a duration.
+this study: **Prolific** at no less than the University's minimum rate for
+study compensation, and **SONA** credit following the scheme's own conversion
+for a 30-minute study, which is 2 credits.

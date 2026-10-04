@@ -453,10 +453,40 @@
                     // them apart. Then the scores are the scale's bounds and
                     // what `counted()` reads, and every option on the scale
                     // wants one, or an answer would count as nothing at all.
+                    //
+                    // An item may feed more than one dimension: `dimension` a
+                    // list, and each option's `score` an object naming what it
+                    // is worth to each. That is how a grid, two scales at one
+                    // press, is scored on both of them (the deeds', in
+                    // content/block_dark.js). The first dimension named is the
+                    // item's own; the others are carried as `also` and read
+                    // through views of the item in the scoring below.
+                    const feeds = [].concat(item.dimension || [])
                     const scored = scale.some((one) => one.score !== undefined)
-                    if (scored && scale.some((one) => typeof one.score !== "number"))
-                        throw new Error(item.key + ": a scale scored by `score:` wants one on every option but its ways out")
-                    const worth = scored ? scale.map((one) => one.score) : null
+                    const worthTo = (dimension) =>
+                        scale.map((one) => (one.score !== null && typeof one.score === "object" ? one.score[dimension] : one.score))
+                    if (feeds.length > 1 && !scored)
+                        throw new Error(item.key + ": an item feeding several dimensions wants a `score:` on every option, naming what it is worth to each")
+                    if (scored && (feeds.length ? feeds : [undefined]).some((dimension) => worthTo(dimension).some((worth) => typeof worth !== "number")))
+                        throw new Error(item.key + ": a scale scored by `score:` wants one on every option but its ways out, for every dimension it feeds")
+
+                    // What an answer is worth to a dimension, and so the
+                    // bounds of the scale on it. A typed answer has no options,
+                    // so its bounds are the scale; an item with a right answer
+                    // counts 1 or 0 whatever its options are numbered, so those
+                    // are its bounds; and a scale scored by `score:` is bounded
+                    // by its scores.
+                    const scoring = (dimension) => {
+                        const worth = scored ? worthTo(dimension) : null
+                        return {
+                            lowest:
+                                item.correct !== undefined ? 0 : worth ? Math.min.apply(null, worth) : scale.length ? Math.min.apply(null, values) : format.min,
+                            highest:
+                                item.correct !== undefined ? 1 : worth ? Math.max.apply(null, worth) : scale.length ? Math.max.apply(null, values) : format.max,
+                            scores: worth ? Object.fromEntries(scale.map((one, at) => [one.value, worth[at]])) : null,
+                        }
+                    }
+                    const own = scoring(feeds[0])
 
                     // A slider's way out is found by its value, in `said()` and
                     // in `counted()`, so a value the line itself can give would
@@ -472,22 +502,17 @@
                                 key: item.key,
                                 text: item.text,
                                 type: type,
-                                dimension: item.dimension,
+                                dimension: feeds[0],
+                                also: feeds.slice(1).map((dimension) => Object.assign({ dimension: dimension }, scoring(dimension))),
                                 instructions: setting(item, questionnaire, "instructions"),
                                 options: options,
                                 input: format.input,
                                 placeholder: format.placeholder,
                                 multiline: format.multiline,
                                 optional: format.optional,
-                                // A typed answer has no options, so its bounds are the scale;
-                                // an item with a right answer counts 1 or 0 whatever its
-                                // options are numbered, so those are its bounds, and a
-                                // scale scored by `score:` is bounded by its scores.
-                                lowest:
-                                    item.correct !== undefined ? 0 : worth ? Math.min.apply(null, worth) : scale.length ? Math.min.apply(null, values) : format.min,
-                                highest:
-                                    item.correct !== undefined ? 1 : worth ? Math.max.apply(null, worth) : scale.length ? Math.max.apply(null, values) : format.max,
-                                scores: worth ? Object.fromEntries(scale.map((one) => [one.value, one.score])) : null,
+                                lowest: own.lowest,
+                                highest: own.highest,
+                                scores: own.scores,
                                 custom: options.filter((one) => one.custom).map((one) => one.value),
                                 declined: options.filter((one) => one.declined).map((one) => one.value),
                                 // The share of a dimension's items that must be answered
@@ -1001,13 +1026,20 @@
     const dimensions = {}
     const dimensionOrder = []
 
+    // An item feeding a second dimension (`also`) is counted into it through
+    // a view of itself: the same item, read with that dimension's worths and
+    // bounds. The view inherits everything else rather than copying it, so the
+    // level a fork re-stamps on the item (`swapLevels`) is the level it reads.
     for (const question of authored) {
         if (!question.dimension) continue // attention checks and the like
-        if (!dimensions[question.dimension]) {
-            dimensions[question.dimension] = []
-            dimensionOrder.push(question.dimension)
+        const fed = [question].concat(question.also.map((feed) => Object.assign(Object.create(question), feed)))
+        for (const one of fed) {
+            if (!dimensions[one.dimension]) {
+                dimensions[one.dimension] = []
+                dimensionOrder.push(one.dimension)
+            }
+            dimensions[one.dimension].push(one)
         }
-        dimensions[question.dimension].push(question)
     }
 
     // What an answer is worth to the dimension it feeds. An item written the
@@ -3738,6 +3770,9 @@
         },
         // A vote or a star has been given or taken back: stage it (`noted`).
         noted: noted,
+        // Where this run's link was handed out, which a link it shares carries
+        // on with `_shared` after it (`SHARED_SOURCE` in results.js).
+        source: source,
         showScreen: showScreen,
         burst: burst,
         still: still,

@@ -249,13 +249,18 @@ defineBlock("sex", [
     // life and a small part of the science, and that where it is studied it
     // is too often studied as a problem — and that here it is asked as the
     // ordinary thing it is. Like every briefing it says nothing about where
-    // in the run it falls, so the level can move.
+    // in the run it falls, so the level can move. Its privacy paragraph
+    // (October 2026) is the dark level's word for word (Briefing_Dark in
+    // block_dark.js, where why it says what it says — and why it does not
+    // yet say the committee has approved it — is written); a change to one
+    // wants making in the other.
     {
         type: "briefing",
         key: "Briefing_Sexuality",
         text:
             "<h2>Sexuality.</h2>" +
             "<p>Few things matter as much to a life and have been studied as little as sexuality. Where psychology has looked at sexuality at all, it has mostly looked at it as a problem: as deviance, dysfunction or addiction. For nearly everybody it is none of these. It is a normal, natural and important part of being alive, and it deserves to be measured as such.</p>" +
+            "<p>A reminder on privacy before you go on. Your answers are anonymous: nothing in them identifies you, they are analysed together with everybody else's and never on their own, and anything that could be traced back to you is removed. It is vital for us that you feel comfortable answering truthfully, and the way your answers are kept has been carefully designed for that.</p>" +
             "<p><em>There are no right answers, and nothing here is judged. Answer as honestly as you can.</em></p>",
     },
 

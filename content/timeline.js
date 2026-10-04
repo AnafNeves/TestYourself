@@ -413,8 +413,8 @@ const TIMELINE_ALL = [
         { key: "Hyborian", name: "Your Hyborian Hero", blocks: ["hyborian"], fork: 3, minutes: 3 },
         // ASIDE too, and in progress: a level on the dark side of personality,
         // reached only by `?start=dark` (see content/block_dark.js). So far it
-        // asks ten "Never have I ever" grids and nothing scored, so it has no
-        // level screen yet; its minutes are a guess at the finished level.
+        // asks twenty deeds, wrongs and good turns, and weighs them on a
+        // balance; its minutes are a guess at the finished level.
         { key: "Dark", name: "Light & Dark", blocks: ["dark"], fork: 3, minutes: 5 },
     ]),
     { key: "Closing", name: "Closing", blocks: ["closing"] },

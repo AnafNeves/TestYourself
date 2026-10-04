@@ -474,7 +474,8 @@
 .level__path .seaview__head,
 .level__path .headsview__head,
 .level__path .stance__head,
-.level__path .kinks__head {
+.level__path .kinks__head,
+.level__path .balance__head {
     display: none;
 }
 
@@ -4918,6 +4919,206 @@
     .hyborian__back,
     .hyborian__pips .hyborian__pip--on,
     .hyborian__pips .hyborian__pip--on::after {
+        animation: none;
+    }
+}
+
+/* =========================================================================
+   The balance — the Light & Dark level's scales (js/figures/balance.js): a
+   title, the scales with a crowd standing in each pan, each side's name and
+   standing under its pan, which way it tips and a vote. As the card opens
+   the crowds fill from their feet, and then the beam swings over to the
+   heavier side and settles, the pans going down and up with it.
+   ========================================================================= */
+.balance__head {
+    margin: 0 0 10px;
+    text-align: center;
+    animation: rise 0.8s var(--ease) both;
+}
+
+.balance__title {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--gold-pale);
+    text-shadow: 0 0 40px rgba(217, 164, 65, 0.35);
+}
+
+.balance__stage {
+    max-width: 640px;
+    margin: 0 auto;
+    animation: fade 1s var(--ease) 0.15s both;
+}
+
+.balance__scales {
+    display: block;
+    overflow: visible;
+}
+
+.balance__arc {
+    fill: none;
+    stroke: rgba(241, 216, 154, 0.4);
+    stroke-width: 1.5;
+}
+
+.balance__tick {
+    stroke: rgba(241, 216, 154, 0.65);
+    stroke-width: 1.5;
+}
+
+.balance__needle {
+    fill: #f1d89a;
+}
+
+.balance__eye {
+    fill: #241806;
+}
+
+.balance__chain {
+    stroke: #d9b36a;
+    stroke-width: 1.3;
+    stroke-dasharray: 2.5 3;
+    opacity: 0.8;
+}
+
+.balance__lip {
+    fill: none;
+    stroke: #f6e6c4;
+    stroke-opacity: 0.5;
+    stroke-width: 1.2;
+}
+
+.balance__crowd {
+    cursor: help;
+}
+
+.balance__spine {
+    stroke: var(--side);
+    stroke-opacity: 0.35;
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+}
+
+.balance__beyond {
+    fill: var(--side);
+    fill-opacity: 0.1;
+    stroke: var(--side);
+    stroke-opacity: 0.55;
+    stroke-width: 1.2;
+}
+
+.balance__reached {
+    filter: drop-shadow(0 0 7px var(--side));
+}
+
+.balance__mark {
+    stroke: var(--gold-pale);
+    stroke-width: 1.6;
+    stroke-dasharray: 3 2;
+    animation: fade 0.6s ease 1.4s both;
+}
+
+/* The fill rises out of the foot of its crowd: the clip it is drawn through
+   starts a crowd's height down and comes up to where the person reaches. */
+.balance__rise {
+    animation: balance-rise 1s var(--ease) 0.4s both;
+}
+
+@keyframes balance-rise {
+    from {
+        transform: translateY(var(--rise));
+    }
+}
+
+/* The beam turns about the pivot (PIVOT in balance.js), and each pan moves
+   by as much as its hanger does, on the same curve, so the chains stay on
+   the beam's ends throughout the swing, overshoot and all. */
+.balance__beam {
+    transform-box: view-box;
+    transform-origin: 320px 66px;
+    transform: rotate(var(--tilt));
+    animation: balance-tip 1.7s cubic-bezier(0.3, 1.45, 0.5, 1) 1.2s both;
+}
+
+@keyframes balance-tip {
+    from {
+        transform: rotate(0deg);
+    }
+}
+
+.balance__pan {
+    transform: translate(var(--dx), var(--dy));
+    animation: balance-hang 1.7s cubic-bezier(0.3, 1.45, 0.5, 1) 1.2s both;
+}
+
+@keyframes balance-hang {
+    from {
+        transform: translate(0, 0);
+    }
+}
+
+/* Each side's name and standing, under its pan: the pans stand at a quarter
+   and three quarters of the figure's width, which is where two even columns
+   centre. */
+.balance__readings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: -4px;
+    text-align: center;
+}
+
+.balance__side {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--side);
+}
+
+.balance__stand {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.balance__stand strong {
+    font-size: 16px;
+    color: var(--text);
+}
+
+.balance__verdict {
+    margin: 16px 0 0;
+    font-family: var(--serif);
+    font-size: clamp(19px, 2.6vw, 23px);
+    text-align: center;
+    text-wrap: balance;
+    color: var(--gold-pale);
+    animation: rise 0.8s var(--ease) 0.4s both;
+}
+
+.balance__vote {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    animation: rise 0.8s var(--ease) 0.5s both;
+}
+
+.balance__ask {
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .balance__rise,
+    .balance__beam,
+    .balance__pan {
         animation: none;
     }
 }

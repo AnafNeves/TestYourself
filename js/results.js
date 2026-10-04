@@ -32,6 +32,7 @@ function makeResults(engine) {
     const answer = engine.answer
     const visit = engine.visit
     const noted = engine.noted
+    const source = engine.source
     const showScreen = engine.showScreen
     const burst = engine.burst
     const still = engine.still
@@ -376,6 +377,7 @@ function makeResults(engine) {
     const kinks = makeKinks(shared)
     const volcano = makeVolcano(shared)
     const hyborian = makeHyborian(shared)
+    const balance = makeBalance(shared)
 
     // The climb is one section for two questionnaires, rendered where the
     // first of them falls in the run and skipped where the other would; the
@@ -710,6 +712,18 @@ function makeResults(engine) {
                 continue
             }
 
+            // The Light & Dark level's scales, the deeds weighed on two sides.
+            if (name === balance.BALANCE_OF) {
+                if (!onLevel(dimensionsOf(name), level)) continue
+                if (!locked && balance.declined()) {
+                    declinedSection(into, "Light & Dark", colourOf(balance.DIMENSION), balance.renderBalance(true))
+                    continue
+                }
+                if (!locked && !balance.ready()) continue
+                openSection(into, "Light & Dark", colourOf(balance.DIMENSION), locked).body.appendChild(balance.renderBalance(locked))
+                continue
+            }
+
             // The Hyborian Age's hero card carries no norms, so it goes
             // through `dimensionsIn` like the wheel; the section is bare,
             // the cards being boxes enough.
@@ -827,6 +841,7 @@ function makeResults(engine) {
     // written for, and the opinions' blurred spectra.
     const NOT_TEASED = [
         ".rows",
+        ".balance__readings",
         ".taste",
         ".result__lock",
         ".legend",
@@ -1151,10 +1166,19 @@ function makeResults(engine) {
         return location.origin + location.pathname + "?card=1&s=" + encodeURIComponent(pairs) + "&source=" + SHARED_SOURCE
     }
 
-    // What a run begun from somebody's shared link is filed as (`?source=`),
-    // so that people who came by way of a friend's results can be told apart
-    // from the ones a study sent, and from the Unknowns nobody sent at all.
-    const SHARED_SOURCE = "shared"
+    // What a run begun from somebody's shared link is filed as (`?source=`):
+    // the sharer's own source with `_shared1` after it, so that people who came
+    // by way of a friend's results can be told apart from the ones a study
+    // sent, and still be counted towards the study that started the chain
+    // (`SONA_shared1`, `Unknown_shared1`). A share of a share counts up rather
+    // than adding another (`SONA_shared2`), so the number is how many hands the
+    // link passed through and the name stays short however far it travels.
+    // The SONA credit is offered to `SONA` exactly, so a friend of a SONA
+    // participant is not offered it.
+    const SHARED_SOURCE = (() => {
+        const chain = source.match(/^(.*)_shared(\d+)$/)
+        return encodeURIComponent(chain ? chain[1] + "_shared" + (Number(chain[2]) + 1) : source + "_shared1")
+    })()
 
     // A link is somebody else's text: only a dimension this build's profile
     // carries, at a number inside its own scale, gets drawn.
@@ -1569,6 +1593,12 @@ function makeResults(engine) {
                 if (!archetype.aiArchetype()) continue
                 return archetype.badge()
             }
+            // The heavier pan, and the crowd standing in it.
+            if (name === balance.BALANCE_OF) {
+                if (!balance.ready()) continue
+                const at = balance.youAt()
+                return crop(figureIn(balance.renderBalance(false), "svg.balance__scales"), at[0], at[1], balance.CROWD_HIGH + 70)
+            }
             // The hero's face, out of the top of its painting.
             if (name === hyborian.HYBORIAN_OF) {
                 if (!hyborian.ready()) continue
@@ -1660,6 +1690,7 @@ function makeResults(engine) {
                 }
             } else if (name === volcano.VOLCANO_OF) add(volcano.VOLCANO_KEY, volcano.VOLCANO_KEY)
             else if (name === kinks.KINKS_OF) add(kinks.KINKS_KEY, kinks.KINKS_KEY)
+            else if (name === balance.BALANCE_OF) add(balance.BALANCE_KEY, balance.BALANCE_KEY)
             else if (name === archetype.ARCHETYPE_OF) add(archetype.ARCHETYPE_KEY, archetype.ARCHETYPE_KEY)
             // The god's card is not shown for now, so it files no vote.
             else if (name === hyborian.HYBORIAN_OF) add(hyborian.HERO_KEY, hyborian.HERO_KEY)
