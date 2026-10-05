@@ -52,7 +52,7 @@ function makeClimb(shared) {
             key: "alone",
             name: "Solitude",
             colour: "#a3c4f2",
-            what: "Who is on the hill with you. The more you have kept to yourself this year, the further off the other figures are, until there are none.",
+            what: "Who is on the hill with you. The more you have kept to yourself this year, the fewer other walkers there are.",
         },
         {
             key: "load",
@@ -225,12 +225,14 @@ function makeClimb(shared) {
         into.appendChild(g)
     }
 
-    // The other figures: three close by at the sociable end, thinning out and
-    // drawing off up the hill as the year was spent more alone, then none.
+    // The other figures: three at the sociable end, thinning out as the year
+    // was spent more alone, then none. Only how many there are moves: their
+    // places stay put, since how far off a walker is reads poorly on a
+    // flat picture and would be a second thing to decode in one channel.
     function company(into, alone, height) {
         const n = alone < 0.22 ? 3 : alone < 0.48 ? 2 : alone < 0.78 ? 1 : 0
         for (let k = 0; k < n; k++) {
-            const x = YOU_X + 62 + k * 52 + alone * 150
+            const x = YOU_X + 62 + k * 52
             walker(into, x, height(x), 0.82, 0.1, "climb__other")
         }
     }
@@ -340,7 +342,7 @@ function makeClimb(shared) {
         if (locked) return all
 
         all.appendChild(
-            text("p", "climbview__note", "This is how we think you might feel. This hill is drawn from four dimensions that emerged through your answers."),
+            text("p", "climbview__note", "This is how we think your last year might have felt. This hill is drawn from four dimensions that emerged through your answers."),
         )
         all.appendChild(bars(now))
 

@@ -15,7 +15,8 @@ defineBlock("hitop", [
             "<p>Some statements will describe you well and some not at all. Every one of them describes somebody, " +
             "and most describe more people than would admit to it.</p>" +
             "<p><em>Think of the times in the last twelve months when a statement applied to you, and say how well " +
-            "it described you then.</em></p>",
+            "it described you then. If it was an unusual year for you, answer for it all the same: the year is what " +
+            "these questions are about.</em></p>",
     },
 
     // HiTOP-BR =============================================================

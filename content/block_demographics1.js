@@ -111,6 +111,8 @@ defineBlock("demographics1", [
                 },
             },
             // Gender =================================================================
+            // Mandatory, so there is no "I'd rather not say". "Other" opens the
+            // two follow-ups, the second in the person's own words.
             {
                 key: "Demographics_Gender",
                 text: "I am...",
@@ -118,7 +120,7 @@ defineBlock("demographics1", [
                     options: [
                         { value: 1, text: "Male" },
                         { value: 2, text: "Female" },
-                        { value: 3, text: "It's more complex than that", small: true },
+                        { value: 3, text: "Other", small: true },
                     ],
                     columns: 2,
                 },

@@ -331,7 +331,7 @@ defineBlock("regulation", [
     // Differences, 41(6), 1045-1053; the full 36-item CERQ is Garnefski,
     // Kraaij & Spinhoven, 2001): nine strategies, two items each, on the
     // inventory's 1 (almost never) to 5 (almost always) scale, answered for
-    // what one generally thinks when facing stressful situations. No
+    // what one generally thinks when something negative or unpleasant happens. No
     // reversed items. Item texts are verbatim, and each carries the CERQ-36's
     // item number in a comment, so a saved file maps onto either form's
     // published scoring. Five of the nine are the "adaptive" strategies of
@@ -350,7 +350,11 @@ defineBlock("regulation", [
     {
         key: "cerq",
         name: "Coping Strategies",
-        instructions: "How often do you think in this way when facing <b>intense, threatening or stressful</b> situations?",
+        // The items say "it", "this", "the situation" and "what has happened",
+        // so the lead-in names one event for them to point back to, as the
+        // CERQ's own instructions do ("when you experience negative or
+        // unpleasant events"); a plural lead-in left "it" with nothing to mean.
+        instructions: "When something <b>negative or unpleasant</b> happens to you, how often do you think in this way?",
         // Kept off the whole-run profile web: nine more axes would crowd out
         // everything else on it.
         profile: false,

@@ -16,13 +16,15 @@ defineBlock("singles", [
         instructions: "",
 
         items: [
-            // Single Item Narcissism Scale (Konrath et al., 2014)
+            // Single Item Narcissism Scale (Konrath et al., 2014), on the 7-point
+            // scale and with the anchors the paper recommends (1 "not very true
+            // of me", 7 "very true of me").
             {
                 key: "SINS_Narcissism",
                 instructions: "To what extent do you agree with this statement",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
-                    anchors: ["Not at all", "Very much"],
+                    anchors: ["Not very true of me", "Very true of me"],
                     color: "#673AB7",
                     hovercolors: ["#22c55e", "#ef4444"],
                 },
@@ -37,7 +39,8 @@ defineBlock("singles", [
             {
                 key: "SRH_GeneralHealth",
                 dimension: "General Health",
-                instructions: "Please rate your general physical health and bodily well-being",
+                instructions:
+                    "Please rate your general physical health and bodily well-being",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
                     anchors: ["Poor", "Excellent"],
@@ -47,7 +50,9 @@ defineBlock("singles", [
                 text: "In general, would you say your health is...<br /><br /><small><b>Health</b>, here, refers to your physical health.</small>",
             },
 
-            // Single-Item Measure of Stress Symptoms (Elo et al., 2003)
+            // Single-Item Measure of Stress Symptoms (Elo et al., 2003), adapted.
+            // The source asks "Do you feel this kind of stress these days?",
+            // but following feedback we decided to specify what "these days" covered.
             {
                 key: "SIMS_Stress",
                 format: {
@@ -56,7 +61,7 @@ defineBlock("singles", [
                     color: "#7B1FA2",
                     hovercolors: ["#22c55e", "#ef4444"],
                 },
-                text: "Do you feel this kind of stress these days?<br /><br /><small><b>Stress</b>, here, means a situation in which a person feels tense, restless, nervous or anxious or is unable to sleep at night because his/her mind is troubled all the time.</small>",
+                text: "Over the past few days, how much have you felt this kind of stress?<br /><br /><small><b>Stress</b>, here, means a situation in which a person feels tense, restless, nervous or anxious or is unable to sleep at night because their mind is troubled all the time.</small>",
             },
 
             // Single-Item Self-Esteem Scale (SISE; Robins, Hendin &
@@ -65,7 +70,8 @@ defineBlock("singles", [
             // reliability and more acquiescence bias.
             {
                 key: "SISE_SelfEsteem",
-                instructions: "Please indicate how true this statement is of you",
+                instructions:
+                    "Please indicate how true this statement is of you",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
                     anchors: ["Not very true of me", "Very true of me"],
@@ -80,7 +86,8 @@ defineBlock("singles", [
             // positive. The original scale is on 5 points, but adapted to 7 for consistency.
             {
                 key: "SCCS_SelfConceptClarity",
-                instructions: "Please indicate the extent to which you agree or disagree with this statement",
+                instructions:
+                    "Please indicate the extent to which you agree or disagree with this statement",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
                     anchors: ["Strongly disagree", "Strongly agree"],
@@ -98,7 +105,8 @@ defineBlock("singles", [
             // for one. No norms, so it earns no row.
             {
                 key: "MLQ_SearchForMeaning",
-                instructions: "Please indicate how true this statement is of you",
+                instructions:
+                    "Please indicate how true this statement is of you",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
                     anchors: ["Absolutely untrue", "Absolutely true"],
@@ -111,7 +119,8 @@ defineBlock("singles", [
             // General Self-Efficacy Single-Item (GSE-SI; Di et al., 2023)
             {
                 key: "GSESI_TaskEfficacy",
-                instructions: "Please indicate the extent to which you agree or disagree with this statement",
+                instructions:
+                    "Please indicate the extent to which you agree or disagree with this statement",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
                     anchors: ["Strongly disagree", "Strongly agree"],
@@ -135,13 +144,15 @@ defineBlock("singles", [
             // clauses in one item, knowingly**: valuing beauty and going out
             // of one's way for it are meant here as one disposition, the effort
             // being how the valuing shows, so the conflation is the construct
-            // and not a slip. On the singles' 1-7. No norms, so it earns no row.
+            // and not a slip. On the singles' 1-7, with agreement anchors to
+            // answer the agreement it asks for. No norms, so it earns no row.
             {
                 key: "Aesthetics_Beauty",
-                instructions: "To what extent do you agree with this statement",
+                instructions:
+                    "Please indicate the extent to which you agree or disagree with this statement",
                 format: {
                     options: [1, 2, 3, 4, 5, 6, 7],
-                    anchors: ["Not at all", "Very much"],
+                    anchors: ["Strongly disagree", "Strongly agree"],
                     color: "#7B1FA2",
                 },
                 text: "I value beautiful things and I go out of my way to seek out beauty<br /><br /><small><b>Beauty</b>, here, means in art, music, nature, design or the world around you.</small>",

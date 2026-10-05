@@ -48,8 +48,9 @@ makes from the raw files and which is where the researchers work.
 - [ ] **Real norms** after the pilot (all but the MINT's and the HiTOP-BR's are
   placeholders, read to participants as comparisons with other people).
 - [ ] **Remove the test-mode consent bypass** (`checkConsent` in `js/app.js`).
-- [ ] Optional: **"Prefer not to say"** on gender and on the diagnoses and
-  treatment questions.
+- [ ] Optional: **"Prefer not to say"** on the diagnoses and treatment
+  questions. Not on gender, which stays mandatory (Male, Female, Other;
+  decided 5 October 2026).
 
 **Decided on 4 October 2026**: 1.0's "personal data" unticked, with 6.9 No to
 match, and 5.7 kept Yes because the demographics ask for ethnic origin; 6.7 No,

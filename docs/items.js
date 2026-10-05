@@ -28,7 +28,7 @@ const ITEMS = {
         "In general, would you say your health is... Health, here, refers to your physical health."
     ],
     "r4": [
-        "Do you feel this kind of stress these days? Stress, here, means a situation in which a person feels tense, restless, nervous or anxious or is unable to sleep at night because his/her mind is troubled all the time."
+        "Over the past few weeks, how much have you felt this kind of stress? Stress, here, means a situation in which a person feels tense, restless, nervous or anxious or is unable to sleep at night because their mind is troubled all the time."
     ],
     "r5": [
         "I have high self-esteem"
@@ -100,7 +100,7 @@ const ITEMS = {
         "I can always accurately answer to the extreme left on this question to show that I am reading it [attention check]"
     ],
     "r14": [
-        "Which of these descriptions comes closest to how you feel about your household's financial situation today?"
+        "Which of these descriptions comes closest to how you feel about your household's financial situation today? Household, here, means you and anyone you share money with day to day."
     ],
     "r15": [
         "Think of the ladder below as showing where people stand relative to other people in your country. At the top are people who have the most money, the most education and the most respected jobs. At the bottom are people who have the least money, the least education and the least respected jobs. Where would you place yourself on this ladder?"

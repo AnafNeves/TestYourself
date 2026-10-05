@@ -8,9 +8,14 @@ defineBlock("demographics3", [
             // ESS-FIN ==============================================================
             // Subjective Financial Well-Being (European Social Survey / OECD standard):
             // Validated 4- or 5-point ordinal indicator of financial strain vs. comfort.
+            // The gloss under it says whose household, since a student's own
+            // finances and their family's can be very different: what is asked
+            // is the money somebody lives on now, not the family they come from.
             {
                 key: "Demographics_FinancialComfort",
-                text: "Which of these descriptions comes closest to how you feel about your household's financial situation today?",
+                text:
+                    "Which of these descriptions comes closest to how you feel about your household's financial situation today?" +
+                    "<br /><br /><small><b>Household</b>, here, means you and anyone you share money with day to day.</small>",
                 format: {
                     options: [
                         { value: 1, text: "Living very comfortably on present income" },

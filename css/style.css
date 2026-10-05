@@ -39,6 +39,11 @@
        real one from how many levels this run asks; this is the whole run's. */
     --floor: 70.4%;
     --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    /* The page is dark throughout, so whatever the browser draws itself — the
+       scrollbars above all, which Windows otherwise draws white down a dark
+       panel — is drawn dark too, and the thumb as a faint line of the text. */
+    color-scheme: dark;
+    scrollbar-color: rgba(238, 241, 248, 0.22) transparent;
 }
 
 * {
@@ -1145,8 +1150,12 @@ body[data-screen="card"] {
     transition: transform 0.34s var(--ease), opacity 0.3s ease, visibility 0.34s;
 }
 
+/* A level's results, as wide as the level screen showed them (its 832px of
+   content, with this panel's padding round it), so a figure reopened is the
+   size it was first read at rather than squeezed into a drawer. */
 .panel--left {
     left: 0;
+    width: min(900px, 100% - 76px);
     transform: translateX(-100%);
     border-right: 1px solid var(--line);
     border-radius: 0 22px 22px 0;

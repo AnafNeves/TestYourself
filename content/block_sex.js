@@ -334,7 +334,7 @@ defineBlock("sex", [
             // but written in terms of women and men rather than of the
             // "opposite" and "same" sex, so that it means the same thing
             // whatever somebody answered to `Demographics_Gender` — including
-            // "It's more complex than that". Kinsey's X, attracted to nobody,
+            // "Other". Kinsey's X, attracted to nobody,
             // is an answer outside the scale rather than a point on it.
             //
             // "Something else" is for somebody the line between women and men

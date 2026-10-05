@@ -698,7 +698,7 @@ numbers and never jumps:
 | | |
 |---|---|
 | **Emotional Intensity** | how steep the hill is: a logistic ramp (`surface`) from a long gentle rise to a cliff face with a plateau above. The summit is always in frame, with no path up to it and no grass along the ridge, which would be furniture over the one line the eye follows |
-| **Solitude** | who is on the hill with you (`company`): three other walkers close by at the sociable end, fewer and further up the slope as the year was spent more alone, then none. The count steps at thresholds, since a walker cannot be two-thirds drawn; their distance moves continuously |
+| **Solitude** | who is on the hill with you (`company`): three other walkers close by at the sociable end, fewer as the year was spent more alone, then none. The count steps at thresholds, since a walker cannot be two-thirds drawn, and **only the count moves**: the walkers stand in the same places whatever the score, since how far off a figure is reads poorly on a flat picture (until October 2026 they also drew off up the slope) |
 | **Bodily Complaints** | the pack on your back (`walker`): from a day bag to a heavy load, with the figure leaning into it |
 | **Mood** | the weather (`sky`): the PHQ-4's *last two weeks*, not the year — more cloud, lower and greyer, and the sun going out, as the fortnight has weighed more. It is the one channel on a different clock, which is the point of having it there: the fortnight sits on the same picture as the year |
 
@@ -724,8 +724,10 @@ the package's development sample would have to be binned the way
 
 The section is a title ("Challenges"), the person's own hill at the width of
 the card (`.climbview__stage`), then one line saying what it was drawn from
-("This is how we think you might feel. This hill is drawn from four dimensions
-that emerged through your answers"), then the four channels as a bar chart
+("This is how we think your last year might have felt. This hill is drawn from
+four dimensions that emerged through your answers" — the year and not the
+person, since the HiTOP-BR asks about the last twelve months and an unusual
+year is not who somebody is), then the four channels as a bar chart
 under *that* (`bars`, `.climbview__bars`: a column apiece filled from the foot
 to the value the scene is drawn from, named underneath, and explained in the
 shared tooltip on hover or focus — the explanation lives there rather than on

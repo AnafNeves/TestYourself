@@ -347,50 +347,80 @@ if (nrow(table)) {
 ```{r}
 #| label: table
 
-span <- function(summary, digits = 1) {
+# Most-answered levels first, ties keeping the order they were met in.
+order_n <- order(-table$n, seq_len(nrow(table)))
+levels_n <- table[order_n, ]
+reading_n <- reading[order_n, ]
+
+range_of <- function(summary, digits) {
   ifelse(summary$n > 0, sprintf("%.*f to %.*f", digits, summary$min, digits, summary$max), "")
 }
-middle <- function(summary, digits = 1) ifelse(summary$n > 0, sprintf("%.*f", digits, summary$median), "")
-shown <- data.frame(
-  Level = table$level,
-  `Answering: n` = table$n,
-  `median (min)` = middle(table),
-  `range (min)` = span(table),
-  `Results: n` = reading$n,
-  `median (s)` = middle(reading, 0),
-  `range (s)` = span(reading, 0),
-  `Closed on results` = reading$closed,
-  check.names = FALSE
-)
+core_here <- length(core_keys) && is.finite(interim_at)
 
 # What the whole test would take somebody typical on every level: the levels'
 # medians (and minima, and maxima) added up, over the levels timed so far.
 added <- function(summary, digits) {
   has <- summary$n > 0
-  if (!any(has)) return(c(median = "", range = ""))
-  c(median = sprintf("%.*f", digits, sum(summary$median[has])),
-    range = sprintf("%.*f to %.*f", digits, sum(summary$min[has]), digits, sum(summary$max[has])))
+  if (!any(has)) return(list(median = NA_real_, range = ""))
+  list(median = sum(summary$median[has]),
+       range = sprintf("%.*f to %.*f", digits, sum(summary$min[has]), digits, sum(summary$max[has])))
 }
 subtotal <- function(label, keep) {
   answering <- added(table[keep, ], 1)
   results <- added(reading[keep, ], 0)
   data.frame(
     Level = sprintf("**%s** (%d levels)", label, sum(table$n[keep] > 0)),
-    `Answering: n` = "",
-    `median (min)` = answering[["median"]],
-    `range (min)` = answering[["range"]],
-    `Results: n` = "",
-    `median (s)` = results[["median"]],
-    `range (s)` = results[["range"]],
-    `Closed on results` = sum(reading$closed[keep]),
-    check.names = FALSE
+    kind = "total",
+    n = NA_integer_, median = answering$median, range = answering$range,
+    n_read = NA_integer_, median_read = results$median, range_read = results$range,
+    closed = sum(reading$closed[keep]),
+    stringsAsFactors = FALSE
   )
 }
+
+shown <- data.frame(
+  Level = levels_n$level,
+  kind = if (core_here) ifelse(levels_n$level %in% core_keys, "core", "optional") else "optional",
+  n = levels_n$n,
+  median = ifelse(levels_n$n > 0, levels_n$median, NA_real_),
+  range = range_of(levels_n, 1),
+  n_read = reading_n$n,
+  median_read = ifelse(reading_n$n > 0, reading_n$median, NA_real_),
+  range_read = range_of(reading_n, 0),
+  closed = reading_n$closed,
+  stringsAsFactors = FALSE
+)
 if (nrow(table)) {
-  if (length(core_keys) && is.finite(interim_at)) shown <- rbind(shown, subtotal("Core", table$level %in% core_keys))
+  if (core_here) shown <- rbind(shown, subtotal("Core", table$level %in% core_keys))
   shown <- rbind(shown, subtotal("Total", rep(TRUE, nrow(table))))
 }
-knitr::kable(shown, align = "lrrrrrrr")
+is_level <- shown$kind != "total"
+
+if (nrow(table)) {
+  gt::gt(shown[, setdiff(names(shown), "kind")]) |>
+    gt::fmt_markdown(columns = "Level") |>
+    gt::fmt_number(columns = "median", decimals = 1) |>
+    gt::fmt_number(columns = "median_read", decimals = 0) |>
+    gt::sub_missing(missing_text = "") |>
+    gt::cols_label(Level = "Level", n = "n", median = "median (min)", range = "range (min)",
+                   n_read = "n", median_read = "median (s)", range_read = "range (s)",
+                   closed = "Closed on results") |>
+    gt::tab_spanner("Answering", columns = c("n", "median", "range")) |>
+    gt::tab_spanner("Results screen", columns = c("n_read", "median_read", "range_read")) |>
+    gt::cols_align("right", columns = -Level) |>
+    gt::data_color(columns = "median", rows = is_level & !is.na(shown$median),
+                   fn = scales::col_numeric(c("#d8f3dc", "#fff1b8", "#f4a6a0"),
+                                            domain = range(shown$median[is_level], na.rm = TRUE))) |>
+    gt::tab_style(gt::cell_fill(color = "#d6e4ff"),
+                  gt::cells_body(columns = "Level", rows = shown$kind == "core")) |>
+    gt::tab_style(gt::cell_fill(color = "#ece6f7"),
+                  gt::cells_body(columns = "Level", rows = shown$kind == "optional")) |>
+    gt::tab_style(list(gt::cell_text(weight = "bold"), gt::cell_borders(sides = "top", color = "grey60")),
+                  gt::cells_body(rows = !is_level)) |>
+    gt::tab_source_note(paste0("Levels ordered by the number of runs that finished them. Level: blue is core (before the interim), ",
+                               "violet optional. Median answering time: green is quick, red slow, across the levels shown.")) |>
+    gt::tab_options(table.font.size = gt::px(14), data_row.padding = gt::px(4))
+}
 ```
 
 ## Ratings
