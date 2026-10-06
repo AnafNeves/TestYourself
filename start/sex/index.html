@@ -27,8 +27,9 @@
         <meta name="twitter:card" content="summary_large_image" />
         <script>
             const query = new URLSearchParams(location.search)
-            // This level first, then any the link names after it: start/sex/?start=a,b is ?start=sex,a,b.
-            const after = (query.get("start") || "").split(",").filter((name) => name && name !== "sex")
+            // This level first, then any the link names after it (`?start=` or its shorthand `?st=`): start/sex/?start=a,b is ?start=sex,a,b.
+            const after = (query.get("start") || query.get("st") || "").split(",").filter((name) => name && name !== "sex")
+            query.delete("st")
             query.set("start", ["sex"].concat(after).join(","))
             location.replace("../../?" + query.toString())
         </script>

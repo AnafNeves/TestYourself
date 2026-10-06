@@ -2508,6 +2508,15 @@ or a platform putting its own id on the end: it is somebody else's text, so only
 or impossible one is a code of our own. It is also the last part of the
 file's name (see **Where it goes**).
 
+**Shorthands.** `?s=` is `?source=`, `?st=` is `?start=` and `?b=` is
+`?battery=` (`SHORTHANDS` and `inLink()` at the top of `app.js`), for links
+typed by hand or kept short; the long name wins where a link gives both.
+**`s` is also a shared card's scores** (`?card=1&s=…`), so on a card link it
+is never read as the source, which is why the links a card or a level is
+shared under write `source=` out in full, and why anything taking a card's
+scores off a link goes through `dropCard()`, which leaves an `s` alone off a
+card. The entry pages under `start/` read `?st=` too.
+
 **Where it was handed out.** `?source=` says which project, experimenter or
 page the link came from, and is written into the file as `source` and into its
 name. It is never put on screen, so it may be words — letters of any alphabet,

@@ -39,6 +39,27 @@
     // is a field of the data and not a word of the link.
     const testMode = ["", "true", "1"].indexOf(query.get("test")) !== -1
 
+    // Shorthands a link may use for three of its words — `?s=` for `?source=`,
+    // `?st=` for `?start=`, `?b=` for `?battery=` — so that a link typed by
+    // hand or printed on a poster stays short. The long name wins where a link
+    // gives both. A shared card's `s` is its scores (`?card=1&s=…`, read by
+    // results.js), so on a card `s` is never the source; the link a card is
+    // shared under carries `source=` written out for that reason.
+    const SHORTHANDS = { source: "s", start: "st", battery: "b" }
+
+    function inLink(name) {
+        if (query.has(name) || !SHORTHANDS[name]) return query.get(name)
+        if (SHORTHANDS[name] === "s" && query.get("card") === "1") return null
+        return query.get(SHORTHANDS[name])
+    }
+
+    // A link with a shared card's scores taken out of it and everything else
+    // left: off a card `s` is the source's shorthand, and goes with nothing.
+    function dropCard(query) {
+        if (query.get("card") === "1") query.delete("s")
+        for (const name of ["card", "level", "m", "d"]) query.delete(name)
+    }
+
     // Every run is filed under a code of its own, made here unless the link
     // brought one — a prewritten list, or a platform putting its own id on the
     // end of the link (`?sub=`).
@@ -67,7 +88,7 @@
     // left null: in a deposit, a run nobody sent is the one to look at twice.
     const UNKNOWN_SOURCE = "Unknown"
     const source =
-        (query.get("source") || "")
+        (inLink("source") || "")
             .replace(/[^\p{L}\p{N} _.,:;/@()+#&'-]/gu, "")
             .replace(/\s+/g, " ")
             .trim()
@@ -89,7 +110,7 @@
     // from the item after them), and the blocks of HELD_TOGETHER come and go
     // as one, since one figure is drawn from both.
     function namesIn(param) {
-        return (query.get(param) || "").replace(/[^A-Za-z0-9_,-]/g, "").slice(0, 400).split(",").filter(Boolean)
+        return (inLink(param) || "").replace(/[^A-Za-z0-9_,-]/g, "").slice(0, 400).split(",").filter(Boolean)
     }
 
     const DEFAULT_BATTERY = "all"
@@ -3604,7 +3625,7 @@
             keeping = false // or hiding the page would keep the run again on the way out
             forgetRun()
             const query = new URLSearchParams(loadedSearch)
-            for (const name of ["card", "level", "s", "m", "d"]) query.delete(name)
+            dropCard(query)
             const rest = query.toString()
             location.replace(location.origin + location.pathname + (rest ? "?" + rest : ""))
         })
@@ -4131,7 +4152,8 @@
     $("visit-start").addEventListener("click", () => {
         if (visitingLevel) {
             const query = new URLSearchParams(location.search)
-            for (const name of ["card", "level", "s", "m", "d"]) query.delete(name)
+            dropCard(query)
+            query.delete("st") // `start`, written out below, would win over it anyway
             query.set("start", PLAN[visitingLevel.level - 1].blocks[0])
             location.assign(location.origin + location.pathname + "?" + query.toString())
             return
