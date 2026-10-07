@@ -1,5 +1,5 @@
 /* ==========================================================================
-   content/block_sex.js — a level on sexuality. ASKED ONLY BY `?battery=all`:
+   content/block_sex.js — a level on sexuality. ASKED ONLY BY `?project=all`:
    it is on the timeline, as a level of its own (`Sexuality`) in the second
    fork, but it is in NOT_YET_COVERED in content/timeline.js, so the `default`
    battery — what a link naming none asks — leaves it out. It is not in the

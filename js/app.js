@@ -39,18 +39,26 @@
     // is a field of the data and not a word of the link.
     const testMode = ["", "true", "1"].indexOf(query.get("test")) !== -1
 
-    // Shorthands a link may use for three of its words — `?s=` for `?source=`,
-    // `?st=` for `?start=`, `?b=` for `?battery=` — so that a link typed by
-    // hand or printed on a poster stays short. The long name wins where a link
-    // gives both. A shared card's `s` is its scores (`?card=1&s=…`, read by
+    // Other names a link may use for four of its words, tried in order after
+    // the word itself: `?s=` for `?source=`, `?st=` for `?start=`, `?p=` for
+    // `?project=` and `?pid=` for `?participant=`, so that a link typed by
+    // hand or printed on a poster stays short; and the words those two were
+    // until October 2026, `?battery=` (and its `?b=`) and `?sub=`. **TODO:
+    // drop `battery`, `b` and `sub` at v1.0**, once the ethics application is
+    // approved and the real deployment starts — they are kept only so that
+    // the pilots' links go on working. The long name wins where a link gives
+    // both. A shared card's `s` is its scores (`?card=1&s=…`, read by
     // results.js), so on a card `s` is never the source; the link a card is
     // shared under carries `source=` written out for that reason.
-    const SHORTHANDS = { source: "s", start: "st", battery: "b" }
+    const SHORTHANDS = { source: ["s"], start: ["st"], project: ["p", "battery", "b"], participant: ["pid", "sub"] }
 
     function inLink(name) {
-        if (query.has(name) || !SHORTHANDS[name]) return query.get(name)
-        if (SHORTHANDS[name] === "s" && query.get("card") === "1") return null
-        return query.get(SHORTHANDS[name])
+        if (query.has(name)) return query.get(name)
+        for (const other of SHORTHANDS[name] || []) {
+            if (other === "s" && query.get("card") === "1") continue
+            if (query.has(other)) return query.get(other)
+        }
+        return null
     }
 
     // A link with a shared card's scores taken out of it and everything else
@@ -62,7 +70,7 @@
 
     // Every run is filed under a code of its own, made here unless the link
     // brought one — a prewritten list, or a platform putting its own id on the
-    // end of the link (`?sub=`).
+    // end of the link (`?participant=`, or `?pid=`).
     const CODE_LENGTH = 12
     const CODE_LETTERS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789" // no I, L, O, 0 or 1: a code gets read off a screen and typed back
 
@@ -77,7 +85,7 @@
     // participant it was, whatever made the code.
     const participant = RESUMED
         ? RESUMED.participant
-        : (query.get("sub") || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || madeCode()
+        : (inLink("participant") || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || madeCode()
 
     // Where the link was handed out (`?source=`): a project, an experimenter,
     // a page it was posted on. It is only ever written into the file, never put
@@ -94,11 +102,12 @@
             .trim()
             .slice(0, 200) || UNKNOWN_SOURCE
 
-    // Which timeline this run walks — its battery. `?battery=<name>` picks
+    // Which timeline this run walks — its battery. `?project=<name>` picks
     // one out of BATTERIES (content/timeline.js), which is what a study
     // links with, and a link naming none, or one that is not there, gets
     // `all` — everything. The study the ethics application is written for
-    // is `?battery=mint`, and its links have to say so.
+    // is `?project=mint`, and its links have to say so. The link's word is
+    // `project` and the code's and the saved file's is still `battery`.
     // `?only=a,b` asks exactly those of its blocks and `?skip=a,b` everything
     // but those, for testing. Battery first, `only` over it, `skip` off it,
     // and whatever `?start=` names back onto it — from any timeline.
@@ -114,7 +123,7 @@
     }
 
     const DEFAULT_BATTERY = "all"
-    const wanted = namesIn("battery")[0] || DEFAULT_BATTERY
+    const wanted = namesIn("project")[0] || DEFAULT_BATTERY
     const battery = BATTERIES[wanted] ? wanted : DEFAULT_BATTERY
     if (wanted !== battery) console.warn("No battery called " + wanted + " in content/timeline.js; asking " + DEFAULT_BATTERY)
 
@@ -251,6 +260,18 @@
         })
         return walked
     })()
+
+    // **The core**: what a project asks of everybody, ahead of an interlude
+    // saying the main part is over (`mint`'s interim). It is every level
+    // written on this timeline before the first interlude this run asks, so a
+    // level a link brought forward is in it only if it was written there, and
+    // a run with no interlude (`all`) has no core at all. A fork never crosses
+    // an interlude, so a swap never takes a level in or out of it.
+    const CORE_BEFORE = (() => {
+        const opened = PLAN.flatMap((entry) => entry.opening)
+        return TIMELINE.findIndex((entry) => entry.interlude && entry.blocks.some((name) => opened.indexOf(name) !== -1))
+    })()
+    const inCore = (level) => PLAN[level - 1].written >= 0 && PLAN[level - 1].written < CORE_BEFORE
 
     // Whether an item belongs to its place rather than to the level asked
     // there — the demographics at its head, or an interlude — which a fork
@@ -2288,14 +2309,24 @@
     // where it falls in the descent and nothing about what it asks. The first
     // scored level takes the first colour and the last the last, whatever the
     // count between them.
+    // A run with a core (`inCore`) runs its core through a green of its own
+    // instead, lime to emerald, and the rest through the gradient after it
+    // from its blue, the cyan being too near the emerald to mark the break,
+    // so the levels everybody is asked are told from the optional ones at a
+    // glance — on the gauge and on the shelf alike — while the hue still
+    // turns one way all the way down.
     const GAUGE_COLOURS = ["#0891b2", "#1d4ed8", "#6d28d9", "#be185d"]
+    const CORE_COLOURS = ["#65a30d", "#059669"]
 
     function levelColour(level) {
-        const at = scoredLevels.indexOf(level)
-        const share = scoredLevels.length > 1 ? at / (scoredLevels.length - 1) : 0
-        const step = share * (GAUGE_COLOURS.length - 1)
-        const from = Math.min(Math.floor(step), GAUGE_COLOURS.length - 2)
-        return mix(GAUGE_COLOURS[from], GAUGE_COLOURS[from + 1], step - from)
+        const core = inCore(level)
+        const run = scoredLevels.filter((one) => inCore(one) === core)
+        const colours = core ? CORE_COLOURS : CORE_BEFORE === -1 ? GAUGE_COLOURS : GAUGE_COLOURS.slice(1)
+        const at = run.indexOf(level)
+        const share = run.length > 1 ? at / (run.length - 1) : 0
+        const step = share * (colours.length - 1)
+        const from = Math.min(Math.floor(step), colours.length - 2)
+        return mix(colours[from], colours[from + 1], step - from)
     }
 
     // "Level 4 · Traits & Symptoms" — how a level is written wherever it is named.
@@ -2464,6 +2495,11 @@
                 "</span>"
             labelStop(button)
             button.querySelector(".sidebar__level-card-depth").textContent = sounding(levelDepth(level))
+            // Where the run has a core, a stop says which side of it it is on.
+            if (CORE_BEFORE !== -1) {
+                button.classList.toggle("sidebar__level--core", inCore(level))
+                button.querySelector(".sidebar__level-card-eyebrow").textContent += inCore(level) ? " · Required" : " · Optional"
+            }
 
             // The button that opened it closes it again: a level is a thing on
             // the line that is either open or shut, not a link that only leads
@@ -3352,7 +3388,7 @@
     // the link was handed out, so that one study's files can be picked out of
     // the list by eye. The moment also keeps the name one nobody has used —
     // DataPipe refuses a name it has already taken, and a code brought in on
-    // the link (`?sub=`) may come round twice. The source is cut down to what a
+    // the link (`?participant=`) may come round twice. The source is cut down to what a
     // filename holds safely, with `_` kept for the gaps between the three. A
     // test run says what it is before any of it (`test_`), so that it can be
     // picked out and binned, which is what `data/collected/download.py` goes

@@ -29,9 +29,9 @@ makes from the raw files and which is where the researchers work.
 
 - [ ] **The reference**: once approved, put it in place of `XX/XXXX/XX` in
   `index.html` (and in `consent_form.docx`, highlighted, if it is kept).
-- [ ] **Recruitment links** carry `?battery=mint` (without it a participant
+- [ ] **Recruitment links** carry `?project=mint` (without it a participant
   gets the whole test, including the sexuality level, which is not in this
-  application); SONA's also `&source=SONA&sub=%SURVEY_CODE%`.
+  application); SONA's also `&source=SONA&pid=%SURVEY_CODE%`.
 - [ ] **SONA credit URL**: replace the placeholder `SONA_CREDIT` in
   `content/block_interim.js` once the study is set up on SONA (2 credits).
 - [ ] **Prolific completion**: the app has no Prolific completion URL. Build

@@ -473,7 +473,7 @@ if (length(runs) == 0) {
   cat("Nothing left once the test runs were dropped.\n")
 }
 
-# One participant code twice is either a code that came round on a `?sub=` link
+# One participant code twice is either a code that came round on a `?pid=` link
 # or two files of one person; either way it wants looking at before counting.
 codes <- vapply(runs, function(one) as.character(one$run$participant %||% NA), character(1))
 for (code in unique(codes[duplicated(codes)])) {
@@ -751,7 +751,7 @@ if (check_only) {
 #    canonical order, which lives in `content/`.
 #
 # 5. `clean/` IS NOT THE PUBLIC FILE. It still holds what must not be released:
-#    the platform's id where one came in on `?sub=` (`participant`), the day of
+#    the platform's id where one came in on `?pid=` (`participant`), the day of
 #    birth (`Demographics_BirthDay`, which with the month and the age is most
 #    of a date of birth) and the free text of `Interim_Comments` and
 #    `Closing_Comments`. Before any of it is made public the id goes, the day

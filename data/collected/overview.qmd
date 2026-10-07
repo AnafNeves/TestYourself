@@ -272,7 +272,6 @@ summarise <- function(frame, unit = "minutes") {
 # and came back: kept out of the times, and counted on the page instead.
 BREAK <- 45
 timed <- done[done$minutes <= BREAK, ]
-screens$seconds <- screens$minutes * 60
 read <- screens[screens$minutes <= BREAK, ]
 breaks <- sum(done$minutes > BREAK) + sum(screens$minutes > BREAK)
 
@@ -289,7 +288,7 @@ rows <- function(summary, levels) {
 where <- tapply(done$position, done$level, mean)
 met <- names(sort(where))
 table <- rows(summarise(timed), met)
-reading <- rows(summarise(read, "seconds"), met)
+reading <- rows(summarise(read), met)
 
 # A finished level with no screen in the file: the way on is only staged once
 # pressed, so the tab was closed on its results.
@@ -307,7 +306,7 @@ core_keys <- level_keys[seq_along(level_keys) < interim_at]
 
 ## How long a level takes
 
-Answering: first item shown to last answer, finished levels only. Results screen: until the way on was pressed. Anything over `r BREAK` minutes is a break rather than a time and is left out of both (`r breaks` so far). Total: the levels' medians added up (and their minima and maxima, for the range), which is how long the whole test would take somebody typical on every level, over the levels timed so far. Core: the same over the levels before the interim (`r paste(level_names[level_keys %in% core_keys], collapse = ", ")`), which is what somebody who stops there has taken.
+Answering: first item shown to last answer, finished levels only. Results screen: until the way on was pressed. Anything over `r BREAK` minutes is a break rather than a time and is left out of both (`r breaks` so far). Total: the levels' medians added up, which is how long the whole test would take somebody typical on every level, over the levels timed so far. Core: the same over the levels before the interim (`r paste(level_names[level_keys %in% core_keys], collapse = ", ")`), which is what somebody who stops there has taken.
 
 ```{r}
 #| label: plot
@@ -337,7 +336,7 @@ if (nrow(table)) {
   op <- par(no.readonly = TRUE)
   layout(matrix(1:2, 1), widths = c(1.45, 1))
   panel(table, timed, "minutes", "Answering", ANSWERING, TRUE)
-  panel(reading, read[read$level %in% table$level, ], "seconds", "Results screen", RESULTS, FALSE)
+  panel(reading, read[read$level %in% table$level, ], "minutes", "Results screen", RESULTS, FALSE)
   par(op)
 } else {
   cat("No level has been finished yet.")
@@ -352,73 +351,91 @@ order_n <- order(-table$n, seq_len(nrow(table)))
 levels_n <- table[order_n, ]
 reading_n <- reading[order_n, ]
 
-range_of <- function(summary, digits) {
-  ifelse(summary$n > 0, sprintf("%.*f to %.*f", digits, summary$min, digits, summary$max), "")
-}
+timed <- function(summary, column) ifelse(summary$n > 0, summary[[column]], NA_real_)
 core_here <- length(core_keys) && is.finite(interim_at)
 
 # What the whole test would take somebody typical on every level: the levels'
-# medians (and minima, and maxima) added up, over the levels timed so far.
-added <- function(summary, digits) {
+# medians added up, over the levels timed so far.
+added <- function(summary) {
   has <- summary$n > 0
-  if (!any(has)) return(list(median = NA_real_, range = ""))
-  list(median = sum(summary$median[has]),
-       range = sprintf("%.*f to %.*f", digits, sum(summary$min[has]), digits, sum(summary$max[has])))
+  if (any(has)) sum(summary$median[has]) else NA_real_
 }
 subtotal <- function(label, keep) {
-  answering <- added(table[keep, ], 1)
-  results <- added(reading[keep, ], 0)
   data.frame(
     Level = sprintf("**%s** (%d levels)", label, sum(table$n[keep] > 0)),
-    kind = "total",
-    n = NA_integer_, median = answering$median, range = answering$range,
-    n_read = NA_integer_, median_read = results$median, range_read = results$range,
+    median = added(table[keep, ]),
+    median_read = added(reading[keep, ]),
     closed = sum(reading$closed[keep]),
     stringsAsFactors = FALSE
   )
 }
 
+# The stars each level's results were given, filed under the level's key.
+rated <- lapply(levels_n$level, function(key) {
+  column <- paste0("Rating_", key)
+  given <- if (column %in% names(wide)) wide[[column]] else numeric()
+  given[!is.na(given)]
+})
+
 shown <- data.frame(
   Level = levels_n$level,
   kind = if (core_here) ifelse(levels_n$level %in% core_keys, "core", "optional") else "optional",
   n = levels_n$n,
-  median = ifelse(levels_n$n > 0, levels_n$median, NA_real_),
-  range = range_of(levels_n, 1),
+  median = timed(levels_n, "median"),
   n_read = reading_n$n,
-  median_read = ifelse(reading_n$n > 0, reading_n$median, NA_real_),
-  range_read = range_of(reading_n, 0),
+  median_read = timed(reading_n, "median"),
   closed = reading_n$closed,
+  n_rated = lengths(rated),
+  stars = vapply(rated, function(given) if (length(given)) mean(given) else NA_real_, 0),
   stringsAsFactors = FALSE
 )
-if (nrow(table)) {
-  if (core_here) shown <- rbind(shown, subtotal("Core", table$level %in% core_keys))
-  shown <- rbind(shown, subtotal("Total", rep(TRUE, nrow(table))))
-}
-is_level <- shown$kind != "total"
 
+# Sortable, so the totals are a table of their own under it: a sorted column
+# would otherwise carry them up among the levels.
 if (nrow(table)) {
   gt::gt(shown[, setdiff(names(shown), "kind")]) |>
-    gt::fmt_markdown(columns = "Level") |>
     gt::fmt_number(columns = "median", decimals = 1) |>
-    gt::fmt_number(columns = "median_read", decimals = 0) |>
+    gt::fmt_number(columns = "median_read", decimals = 1) |>
+    gt::fmt_number(columns = "stars", decimals = 2) |>
     gt::sub_missing(missing_text = "") |>
-    gt::cols_label(Level = "Level", n = "n", median = "median (min)", range = "range (min)",
-                   n_read = "n", median_read = "median (s)", range_read = "range (s)",
-                   closed = "Closed on results") |>
-    gt::tab_spanner("Answering", columns = c("n", "median", "range")) |>
-    gt::tab_spanner("Results screen", columns = c("n_read", "median_read", "range_read")) |>
+    gt::cols_label(Level = "Level", n = "n", median = "median (min)",
+                   n_read = "n", median_read = "median (min)", closed = "closed on it",
+                   n_rated = "n", stars = "mean stars") |>
+    gt::tab_spanner("Answering", columns = c("n", "median")) |>
+    gt::tab_spanner("Results screen", columns = c("n_read", "median_read", "closed")) |>
+    gt::tab_spanner("Rating", columns = c("n_rated", "stars")) |>
     gt::cols_align("right", columns = -Level) |>
-    gt::data_color(columns = "median", rows = is_level & !is.na(shown$median),
+    gt::data_color(columns = "median", rows = !is.na(shown$median),
                    fn = scales::col_numeric(c("#d8f3dc", "#fff1b8", "#f4a6a0"),
-                                            domain = range(shown$median[is_level], na.rm = TRUE))) |>
+                                            domain = range(shown$median, na.rm = TRUE))) |>
     gt::tab_style(gt::cell_fill(color = "#d6e4ff"),
                   gt::cells_body(columns = "Level", rows = shown$kind == "core")) |>
     gt::tab_style(gt::cell_fill(color = "#ece6f7"),
                   gt::cells_body(columns = "Level", rows = shown$kind == "optional")) |>
-    gt::tab_style(list(gt::cell_text(weight = "bold"), gt::cell_borders(sides = "top", color = "grey60")),
-                  gt::cells_body(rows = !is_level)) |>
-    gt::tab_source_note(paste0("Levels ordered by the number of runs that finished them. Level: blue is core (before the interim), ",
-                               "violet optional. Median answering time: green is quick, red slow, across the levels shown.")) |>
+    gt::tab_source_note(paste0("Click a column's header to sort by it. First shown by the number of runs that finished each level. ",
+                               "Level: blue is core (before the interim), violet optional. ",
+                               "Median answering time: green is quick, red slow, across the levels shown.")) |>
+    gt::tab_options(table.font.size = gt::px(14), data_row.padding = gt::px(4)) |>
+    gt::opt_interactive(use_sorting = TRUE, use_pagination = FALSE, use_highlight = TRUE, use_compact_mode = TRUE)
+}
+```
+
+```{r}
+#| label: totals
+
+if (nrow(table)) {
+  totals <- subtotal("Total", rep(TRUE, nrow(table)))
+  if (core_here) totals <- rbind(subtotal("Core", table$level %in% core_keys), totals)
+  gt::gt(totals) |>
+    gt::fmt_markdown(columns = "Level") |>
+    gt::fmt_number(columns = "median", decimals = 1) |>
+    gt::fmt_number(columns = "median_read", decimals = 1) |>
+    gt::sub_missing(missing_text = "") |>
+    gt::cols_label(Level = "", median = "median (min)", median_read = "median (min)", closed = "closed on it") |>
+    gt::tab_spanner("Answering", columns = "median") |>
+    gt::tab_spanner("Results screen", columns = c("median_read", "closed")) |>
+    gt::cols_align("right", columns = -Level) |>
+    gt::tab_source_note("The levels' medians added up, over the levels timed so far.") |>
     gt::tab_options(table.font.size = gt::px(14), data_row.padding = gt::px(4))
 }
 ```
@@ -436,7 +453,7 @@ stars <- do.call(rbind, lapply(table$level, function(key) {
   column <- paste0("Rating_", key)
   given <- if (column %in% names(wide)) wide[[column]] else numeric()
   given <- given[!is.na(given)]
-  data.frame(level = key, rated = length(given), stars = if (length(given)) median(given) else NA)
+  data.frame(level = key, rated = length(given), stars = if (length(given)) mean(given) else NA)
 }))
 liked <- cbind(table[, c("level", "median")], stars[, c("rated", "stars")])
 liked <- liked[table$n > 0 & liked$rated > 0, ]
@@ -445,7 +462,7 @@ if (nrow(liked)) {
   par(mar = c(4, 4, 1, 1))
   plot(liked$median, liked$stars, xlim = c(0, max(liked$median) * 1.25), ylim = c(1, 5),
        pch = 21, bg = ANSWERING["median"], col = "white", cex = 1.8, bty = "n", las = 1,
-       xlab = "Median answering time (minutes)", ylab = "Median rating (stars)")
+       xlab = "Median answering time (minutes)", ylab = "Mean rating (stars)")
   text(liked$median, liked$stars, sprintf("%s (%d)", liked$level, liked$rated), pos = 4, cex = 0.8, col = "grey30")
 } else {
   cat("No level has both a time and a rating yet.")

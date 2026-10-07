@@ -2,8 +2,8 @@
 // client-side completion URL SONA gives the study once it is set up there as
 // an online external study, cut after `survey_code=`. The participant's code
 // goes on the end, and it is SONA's own survey code only when the study's
-// link on SONA brings it, so that link has to say `?sub=%SURVEY_CODE%` beside
-// `&source=SONA&battery=mint` — without it the code is one the app made, and
+// link on SONA brings it, so that link has to say `?pid=%SURVEY_CODE%` beside
+// `&source=SONA&project=mint` — without it the code is one the app made, and
 // SONA grants nothing for it. Offered only to a run whose link says
 // `?source=SONA` (any case), under the debrief and over the choice to go on
 // (`Briefing_Onward`).

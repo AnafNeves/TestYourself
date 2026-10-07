@@ -23,7 +23,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).resolve().parent
-PAGE = "http://localhost:8123/?battery=all"
+PAGE = "http://localhost:8123/?project=all"
 
 # Per figure: the questionnaires its level's results are drawn from, the
 # scores to draw them at (a dimension's mean on its own scale, or its share

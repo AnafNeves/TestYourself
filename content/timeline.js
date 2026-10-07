@@ -358,7 +358,7 @@ const WATER_SHARE = 2 / 3
 // the same level in the saved file whichever battery asked it.
 //
 // `mint` is the study the ethics application is being written for, asked
-// only by a link that says `?battery=mint`: General, then the core (the MINT,
+// only by a link that says `?project=mint`: General, then the core (the MINT,
 // the BAIT and the HiTOP-BR) as a drawn fork of two, then the interim, then
 // the rest as a drawn fork of three.
 const TIMELINE_MINT = [
@@ -420,11 +420,11 @@ const TIMELINE_ALL = [
     { key: "Closing", name: "Closing", blocks: ["closing"] },
 ].flat()
 
-// Batteries: the timelines above by name. A link with `?battery=<name>` walks
+// Batteries: the timelines above by name. A link with `?project=<name>` walks
 // that one, so a study's battery is written in the repository, under a
 // version, rather than in a URL somebody pasted, and **a link naming none, or
 // one that is not here, walks `all`** — so a link for the MINT study has to
-// say `?battery=mint`. `?only=a,b` and `?skip=a,b` ask a part
+// say `?project=mint`. `?only=a,b` and `?skip=a,b` ask a part
 // of it by hand, for testing, and `?start=a,b` brings the levels holding those
 // blocks to the front — from whichever timeline has them, so `?start=sex`
 // under `mint` walks the sexuality level first and `mint` after it. `closing`
